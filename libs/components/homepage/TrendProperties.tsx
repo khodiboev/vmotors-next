@@ -93,7 +93,7 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 									);
 								})}
 							</Swiper>
-						)}
+						)} 
 					</Stack>
 				</Stack>
 			</Stack>
