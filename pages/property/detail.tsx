@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Box, Button, Checkbox, Stack, Typography } from '@mui/material';
+import { Box, Button, Checkbox, CircularProgress, Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
 import { NextPage } from 'next';
@@ -68,7 +68,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		error: getPropertyError,
 		refetch: getPropertyRefetch,
 	} = useQuery(GET_PROPERTY, {
-		fetchPolicy: 'cache-and-network',
+		fetchPolicy: 'network-only',
 		variables: { input: propertyId },
 		skip: !propertyId,
 		notifyOnNetworkStatusChange: true,
@@ -100,7 +100,6 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			if (data?.getProperties?.list) setDestinationProperties(data?.getProperties?.list);
-			setTrendProperties(data?.getProperties?.list);
 		},
 	});
 
@@ -191,6 +190,14 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		} catch (err: any) {
 			sweetErrorHandling(err);
 		}
+	}
+
+	if(getPropertyLoading) {
+		return (
+			<Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px', width: '100%' }}>
+				<CircularProgress size={'4rem'} />
+			</Stack>
+		)
 	}
 
 	if (device === 'mobile') {
@@ -659,6 +666,3 @@ PropertyDetail.defaultProps = {
 };
 
 export default withLayoutFull(PropertyDetail);
-function setTrendProperties(list: any) {
-	throw new Error('Function not implemented.');
-}
