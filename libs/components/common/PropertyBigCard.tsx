@@ -5,7 +5,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Property } from '../../types/property/property';
 import { REACT_APP_API_URL, topPropertyRank } from '../../config';
-import { formatterStr, likeTargetPropertyHandler } from '../../utils';
+import { formatterStr } from '../../utils';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { useRouter } from 'next/router';
@@ -17,7 +17,7 @@ interface PropertyBigCardProps {
 }
 
 const PropertyBigCard = (props: PropertyBigCardProps) => {
-	const { property } = props;
+	const { property, likePropertyHandler } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
@@ -78,7 +78,7 @@ const PropertyBigCard = (props: PropertyBigCardProps) => {
 								color={'default'}
 								onClick={(e) => {
 									e.stopPropagation();
-									likeTargetPropertyHandler(user, property._id);
+									likePropertyHandler(user, property._id);
 								}}
 							>
 								{property?.meLiked && property?.meLiked[0]?.myFavorite ? (
