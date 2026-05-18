@@ -8,7 +8,7 @@ import { REACT_APP_API_URL } from '../../config';
 
 interface CommunityCardProps {
 	vertical: boolean;
-	article: BoardArticle;
+	article: BoardArticle; 
 	index: number;
 }
 
