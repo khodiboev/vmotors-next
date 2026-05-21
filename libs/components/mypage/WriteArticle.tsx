@@ -7,7 +7,7 @@ const TuiEditor = dynamic(() => import('../community/Teditor'), { ssr: false });
 
 const WriteArticle: NextPage = () => {
 	const device = useDeviceDetect();
-
+ 
 	if (device === 'mobile') {
 		return <>ARTICLE PAGE MOBILE</>;
 	} else
