@@ -7,11 +7,13 @@ import { REACT_APP_API_URL, propertySquare } from '../../config';
 import { PropertyInput } from '../../types/property/property.input';
 import axios from 'axios';
 import { getJwtToken } from '../../auth';
-import { sweetMixinErrorAlert } from '../../sweetAlert';
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
+import { CREATE_PROPERTY, UPDATE_PROPERTY } from '../../../apollo/user/mutation';
+import { GET_PROPERTY } from '../../../apollo/user/query';
+import { sweetErrorHandling, sweetMixinErrorAlert, sweetMixinSuccessAlert } from '../../sweetAlert';
 
-const AddProperty = ({ initialValues, ...props }: any) => {
+const AddProperty = ({ initialValues, ...props }: any) => { 
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const inputRef = useRef<any>(null);
@@ -22,7 +24,21 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 	const user = useReactiveVar(userVar);
 
 	/** APOLLO REQUESTS **/
-	let getPropertyData: any, getPropertyLoading: any;
+	const [createProperty] = useMutation(CREATE_PROPERTY);
+	const [updateProperty] = useMutation(UPDATE_PROPERTY);
+
+	const {
+		loading: getPropertyLoading,
+		data: getPropertyData,
+		error: getPropertyError,
+		refetch: getPropertyRefetch,
+	} = useQuery(GET_PROPERTY, {
+		fetchPolicy: 'network-only',
+		skip: !router.query.propertyId,
+		variables: {
+			input: router.query.propertyId,
+		},
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -115,9 +131,45 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 		}
 	};
 
-	const insertPropertyHandler = useCallback(async () => {}, [insertPropertyData]);
+	const insertPropertyHandler = useCallback(async () => {
+		try {
+			await createProperty({
+				variables: {
+					input: insertPropertyData,
+				},
+			});
 
-	const updatePropertyHandler = useCallback(async () => {}, [insertPropertyData]);
+			await sweetMixinSuccessAlert('This property has been created successfully.');
+			await router.push({
+				pathname: '/mypage',
+				query: { category: 'myProperties' },
+			});
+		} catch (err: any) {
+			sweetErrorHandling(err).then();
+		}
+	}, [insertPropertyData]);
+
+	const updatePropertyHandler = useCallback(async () => {
+		try {
+			// @ts-ignore
+			insertPropertyData._id = getPropertyData?.getProperty?._id;
+
+			await updateProperty({
+				variables: {
+					input: insertPropertyData,
+				},
+			});
+
+			await sweetMixinSuccessAlert('This property has been updated successfully.');
+			await router.push({
+				pathname: '/mypage',
+				query: { category: 'myProperties' },
+			});
+		} catch (err: any) {
+			sweetErrorHandling(err).then();
+		}
+	}, [insertPropertyData]);
+
 
 	if (user?.memberType !== 'AGENT') {
 		router.back();
@@ -434,7 +486,7 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 								{insertPropertyData?.propertyImages.map((image: string) => {
 									const imagePath: string = `${REACT_APP_API_URL}/${image}`;
 									return (
-										<Stack className="image-box">
+										<Stack key={image} className="image-box">
 											<img src={imagePath} alt="" />
 										</Stack>
 									);
