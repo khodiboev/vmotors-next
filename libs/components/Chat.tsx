@@ -1,4 +1,22 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+interface MemberData {
+	_id: string;
+	memberImage?: string;
+	memberNick?: string;
+}
+
+interface MessagePayload {
+	_id: string;
+	event: string;
+	text: string;
+	memberData?: MemberData;
+}
+
+interface InfoPayload {
+	event: string;
+	totalClients: number;
+}
 import { Avatar, Box, Stack } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import Badge from '@mui/material/Badge';
@@ -7,6 +25,10 @@ import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
 import { useRouter } from 'next/router';
 import ScrollableFeed from 'react-scrollable-feed';
 import { RippleBadge } from '../../scss/MaterialTheme/styled';
+import { socketVar, userVar } from '../../apollo/store';
+import { useReactiveVar } from '@apollo/client';
+import { REACT_APP_API_URL, Messages } from '../config';
+import { sweetErrorAlert } from '../sweetAlert';
 
 const NewMessage = (type: any) => {
 	if (type === 'right') {
@@ -34,15 +56,40 @@ const NewMessage = (type: any) => {
 
 const Chat = () => {
 	const chatContentRef = useRef<HTMLDivElement>(null);
-	const [messagesList, setMessagesList] = useState([]);
-	const [onlineUsers, setOnlineUsers] = useState<number>(4);
+	const [messagesList, setMessagesList] = useState<MessagePayload[]>([]);
+	const [onlineUsers, setOnlineUsers] = useState<number>(0);
 	const textInput = useRef(null);
-	const [message, setMessage] = useState<string>('');
+	const [messageInput, setMessageInput] = useState<string>('');
 	const [open, setOpen] = useState(false);
 	const [openButton, setOpenButton] = useState(false);
 	const router = useRouter();
+	const user = useReactiveVar(userVar);
+	const socket = useReactiveVar(socketVar);
 
 	/** LIFECYCLES **/
+
+	useEffect(() => {
+		socket.onmessage = (msg) => {
+			const data = JSON.parse(msg.data);
+			console.log('WebSocket message:', data);
+
+			switch (data.event) {
+				case 'info':
+					const newInfo: InfoPayload = data;
+					setOnlineUsers(newInfo.totalClients);
+					break;
+				case 'getMessages':
+					const list: MessagePayload[] = data.list;
+					setMessagesList(list);
+					break;
+				case 'message':
+					const newMessage: MessagePayload = data;
+					setMessagesList((prev) => [...prev, newMessage]);
+					break;
+			}
+		};
+	}, [socket, messagesList]);
+
 	useEffect(() => {
 		const timeoutId = setTimeout(() => {
 			setOpenButton(true);
@@ -62,9 +109,9 @@ const Chat = () => {
 	const getInputMessageHandler = useCallback(
 		(e: any) => {
 			const text = e.target.value;
-			setMessage(text);
+			setMessageInput(text);
 		},
-		[message],
+		[messageInput],
 	);
 
 	const getKeyHandler = (e: any) => {
@@ -77,7 +124,13 @@ const Chat = () => {
 		}
 	};
 
-	const onClickHandler = () => {};
+	const onClickHandler = () => {
+		if(!messageInput.trim()) sweetErrorAlert(Messages.error4);
+		else {
+			socket.send(JSON.stringify({ event: 'message', data: messageInput }));
+			setMessageInput('');
+		}
+	};
 
 	return (
 		<Stack className="chatting">
@@ -89,7 +142,7 @@ const Chat = () => {
 			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
 				<Box className={'chat-top'} component={'div'}>
 					<div style={{ fontFamily: 'Nunito' }}>Online Chat</div>
-					<RippleBadge style={{margin: "-18px 0 0 21px"}} badgeContent={onlineUsers} />
+					<RippleBadge style={{ margin: '-18px 0 0 21px' }} badgeContent={onlineUsers} />
 				</Box>
 				<Box className={'chat-content'} id="chat-content" ref={chatContentRef} component={'div'}>
 					<ScrollableFeed>
@@ -97,23 +150,37 @@ const Chat = () => {
 							<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
 								<div className={'welcome'}>Welcome to Live chat!</div>
 							</Box>
-							{messagesList}
-							<>
-								<Box
-									component={'div'}
-									flexDirection={'row'}
-									style={{ display: 'flex' }}
-									alignItems={'flex-end'}
-									justifyContent={'flex-end'}
-									sx={{ m: '10px 0px' }}
-								>
-									<div className={'msg-right'}>hi</div>
-								</Box>
-								<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
-									<Avatar alt={'jonik'} src={'/img/profile/defaultUser.svg'} />
-									<div className={'msg-left'}>Hi</div>
-								</Box>
-							</>
+							{messagesList.map((ele: MessagePayload) => {
+								const { text, memberData } = ele;
+								const memberImage = memberData?.memberImage
+									? `${REACT_APP_API_URL}/${memberData.memberImage}`
+									: '/img/profile/defaultUser.svg';
+
+								return memberData?._id === user._id ? (
+									<Box
+										key={ele._id}
+										component={'div'}
+										flexDirection={'row'}
+										style={{ display: 'flex' }}
+										alignItems={'flex-end'}
+										justifyContent={'flex-end'}
+										sx={{ m: '10px 0px' }}
+									>
+										<div className={'msg_right'}>{text}</div>
+									</Box>
+								) : (
+									<Box
+										key={ele._id}
+										flexDirection={'row'}
+										style={{ display: 'flex' }}
+										sx={{ m: '10px 0px' }}
+										component={'div'}
+									>
+										<Avatar alt={'jonik'} src={memberImage} />
+										<div className={'msg_left'}>{text}</div>
+									</Box>
+								);
+							})}
 						</Stack>
 					</ScrollableFeed>
 				</Box>
@@ -124,6 +191,7 @@ const Chat = () => {
 						name={'message'}
 						className={'msg-input'}
 						placeholder={'Type message'}
+						value={messageInput}
 						onChange={getInputMessageHandler}
 						onKeyDown={getKeyHandler}
 					/>
