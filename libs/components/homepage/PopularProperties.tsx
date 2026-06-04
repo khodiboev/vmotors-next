@@ -6,10 +6,10 @@ import { Autoplay, Navigation, Pagination } from 'swiper';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 import PopularPropertyCard from './PopularPropertyCard';
-import { Property } from '../../types/property/property';
+import { Property } from '../../types/vehicle/vehicle';
 import Link from 'next/link';
-import { PropertiesInquiry } from '../../types/property/property.input';
-import { GET_PROPERTIES } from '../../../apollo/user/query';
+import { PropertiesInquiry } from '../../types/vehicle/vehicle.input';
+import { GET_VEHICLES } from '../../../apollo/user/query';
 import { useQuery } from '@apollo/client';
 import { T } from '../../types/common';
 
@@ -24,18 +24,18 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 
 	/** APOLLO REQUESTS **/
 		const {
-			loading: getPropertiesLoading,
-			data: getPropertiesData,
-			error: getPropertiesError,
-			refetch: getPropertiesRefetch,
-		} = useQuery(GET_PROPERTIES, {
+			loading: getVehiclesLoading,
+			data: getVehiclesData,
+			error: getVehiclesError,
+			refetch: getVehiclesRefetch,
+		} = useQuery(GET_VEHICLES, {
 			fetchPolicy: 'cache-and-network',
 			variables: {
 				input: initialInput,
 			},
 			notifyOnNetworkStatusChange: true,
 			onCompleted: (data: T) => {
-					setPopularProperties(data?.getProperties?.list);
+					setPopularProperties(data?.getVehicles?.list);
 			},
 		});
 	/** HANDLERS **/
@@ -44,10 +44,10 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 
 	if (device === 'mobile') {
 		return (
-			<Stack className={'popular-properties'}>
+			<Stack className={'popular-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Popular properties</span>
+						<span>Popular vehicles</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Swiper
@@ -71,11 +71,11 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 		);
 	} else {
 		return (
-			<Stack className={'popular-properties'}>
+			<Stack className={'popular-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Popular properties</span>
+							<span>Popular vehicles</span>
 							<p>Popularity is based on views</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
@@ -125,7 +125,7 @@ PopularProperties.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 7,
-		sort: 'propertyViews',
+		sort: 'vehicleViews',
 		direction: 'DESC',
 		search: {},
 	},

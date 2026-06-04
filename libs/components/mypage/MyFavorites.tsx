@@ -3,11 +3,11 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
 import PropertyCard from '../property/PropertyCard';
-import { Property } from '../../types/property/property';
+import { Property } from '../../types/vehicle/vehicle';
 import { T } from '../../types/common';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_FAVORITES } from '../../../apollo/user/query';
-import { LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
+import { LIKE_TARGET_VEHICLE } from '../../../apollo/user/mutation';
 import { Messages } from '../../config';
 import { sweetMixinErrorAlert } from '../../sweetAlert';
 
@@ -18,7 +18,7 @@ const MyFavorites: NextPage = () => {
 	const [searchFavorites, setSearchFavorites] = useState<T>({ page: 1, limit: 6 });
 
 	/** APOLLO REQUESTS **/
-	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
 	const {
 		loading: getFavoritesLoading,
@@ -47,7 +47,7 @@ const MyFavorites: NextPage = () => {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
-			await likeTargetProperty({
+			await likeTargetVehicle({
 				variables: {
 					input: id,
 				},

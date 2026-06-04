@@ -5,13 +5,13 @@ import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
-import { Property } from '../../types/property/property';
-import { PropertiesInquiry } from '../../types/property/property.input';
+import { Property } from '../../types/vehicle/vehicle';
+import { PropertiesInquiry } from '../../types/vehicle/vehicle.input';
 import TrendPropertyCard from './TrendPropertyCard';
-import { GET_PROPERTIES } from '../../../apollo/user/query';
+import { GET_VEHICLES } from '../../../apollo/user/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { T } from '../../types/common';
-import { LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
+import { LIKE_TARGET_VEHICLE } from '../../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
 
@@ -25,21 +25,21 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 	const [trendProperties, setTrendProperties] = useState<Property[]>([]);
 
 	/** APOLLO REQUESTS **/
-	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
 	const {
-		loading: getPropertiesLoading,
-		data: getPropertiesData,
-		error: getPropertiesError,
-		refetch: getPropertiesRefetch,
-	} = useQuery(GET_PROPERTIES, {
+		loading: getVehiclesLoading,
+		data: getVehiclesData,
+		error: getVehiclesError,
+		refetch: getVehiclesRefetch,
+	} = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: initialInput,
 		},
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setTrendProperties(data?.getProperties?.list);
+			setTrendProperties(data?.getVehicles?.list);
 		},
 	});
 
@@ -49,12 +49,12 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 
-			await likeTargetProperty({
+			await likeTargetVehicle({
 				variables: {
 					input: id,
 				},
 			});
-			await getPropertiesRefetch({ input: initialInput });
+			await getVehiclesRefetch({ input: initialInput });
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
 			console.log('ERROR, likePropertyHandler:', err.message);
@@ -62,15 +62,14 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		}
 	};
 
-	if (trendProperties) console.log('trendProperties: +++', trendProperties);
 	if (!trendProperties) return null;
 
 	if (device === 'mobile') {
 		return (
-			<Stack className={'trend-properties'}>
+			<Stack className={'trend-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Trend Properties</span>
+						<span>Trend Vehicles</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						{trendProperties.length === 0 ? (
@@ -100,11 +99,11 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		);
 	} else {
 		return (
-			<Stack className={'trend-properties'}>
+			<Stack className={'trend-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Trend Properties</span>
+							<span>Trend Vehicles</span>
 							<p>Trend is based on likes</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
@@ -154,7 +153,7 @@ TrendProperties.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 8,
-		sort: 'propertyLikes',
+		sort: 'vehicleLikes',
 		direction: 'DESC',
 		search: {},
 	},

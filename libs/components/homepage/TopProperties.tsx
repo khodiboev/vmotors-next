@@ -6,12 +6,12 @@ import EastIcon from '@mui/icons-material/East';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import TopPropertyCard from './TopPropertyCard';
-import { PropertiesInquiry } from '../../types/property/property.input';
-import { Property } from '../../types/property/property';
-import { GET_PROPERTIES } from '../../../apollo/user/query';
+import { PropertiesInquiry } from '../../types/vehicle/vehicle.input';
+import { Property } from '../../types/vehicle/vehicle';
+import { GET_VEHICLES } from '../../../apollo/user/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { T } from '../../types/common';
-import { LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
+import { LIKE_TARGET_VEHICLE } from '../../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
 // Message icon import removed; using string constant for auth error
@@ -26,21 +26,21 @@ const TopProperties = (props: TopPropertiesProps) => {
 	const [topProperties, setTopProperties] = useState<Property[]>([]);
 
 	/** APOLLO REQUESTS **/
-	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
 	const {
-		loading: getPropertiesLoading,
-		data: getPropertiesData,
-		error: getPropertiesError,
-		refetch: getPropertiesRefetch,
-	} = useQuery(GET_PROPERTIES, {
+		loading: getVehiclesLoading,
+		data: getVehiclesData,
+		error: getVehiclesError,
+		refetch: getVehiclesRefetch,
+	} = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: initialInput,
 		},
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setTopProperties(data?.getProperties?.list);
+			setTopProperties(data?.getVehicles?.list);
 		},
 	});
 	/** HANDLERS **/
@@ -49,12 +49,12 @@ const TopProperties = (props: TopPropertiesProps) => {
 				if (!id) return;
 				if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 	
-				await likeTargetProperty({
+				await likeTargetVehicle({
 					variables: {
 						input: id,
 					},
 				});
-				await getPropertiesRefetch({ input: initialInput });
+				await getVehiclesRefetch({ input: initialInput });
 				await sweetTopSmallSuccessAlert('success', 800);
 			} catch (err: any) {
 				console.log('ERROR, likePropertyHandler:', err.message);
@@ -64,10 +64,10 @@ const TopProperties = (props: TopPropertiesProps) => {
 
 	if (device === 'mobile') {
 		return (
-			<Stack className={'top-properties'}>
+			<Stack className={'top-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top properties</span>
+						<span>Top vehicles</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Swiper
@@ -91,12 +91,12 @@ const TopProperties = (props: TopPropertiesProps) => {
 		);
 	} else {
 		return (
-			<Stack className={'top-properties'}>
+			<Stack className={'top-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Top properties</span>
-							<p>Check out our Top Properties</p>
+							<span>Top vehicles</span>
+							<p>Check out our Top Vehicles</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'pagination-box'}>
@@ -139,7 +139,7 @@ TopProperties.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 8,
-		sort: 'propertyRank',
+		sort: 'vehicleRank',
 		direction: 'DESC',
 		search: {},
 	},

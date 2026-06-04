@@ -30,8 +30,8 @@ const AdminMenuList = (props: any) => {
 		if (device === 'mobile') setMobileLayout(true);
 
 		switch (pathnames[1]) {
-			case 'properties':
-				setClickMenu(['Properties']);
+			case 'vehicles':
+				setClickMenu(['Vehicles']);
 				break;
 			case 'community':
 				setClickMenu(['Community']);
@@ -84,9 +84,9 @@ const AdminMenuList = (props: any) => {
 			on_click: () => subMenuChangeHandler('Users'),
 		},
 		{
-			title: 'Properties',
+			title: 'Vehicles',
 			icon: <UserCircleGear size={20} color="#bdbdbd" weight="fill" />,
-			on_click: () => subMenuChangeHandler('Properties'),
+			on_click: () => subMenuChangeHandler('Vehicles'),
 		},
 		{
 			title: 'Community',
@@ -102,7 +102,7 @@ const AdminMenuList = (props: any) => {
 
 	const sub_menu_set: any = {
 		Users: [{ title: 'List', url: '/_admin/users' }],
-		Properties: [{ title: 'List', url: '/_admin/properties' }],
+		Vehicles: [{ title: 'List', url: '/_admin/vehicles' }],
 		Community: [{ title: 'List', url: '/_admin/community' }],
 		Cs: [
 			{ title: 'FAQ', url: '/_admin/cs/faq' },

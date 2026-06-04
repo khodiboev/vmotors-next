@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
 import PropertyCard from '../property/PropertyCard';
-import { Property } from '../../types/property/property';
+import { Property } from '../../types/vehicle/vehicle';
 import { T } from '../../types/common';
 import { useQuery } from '@apollo/client';
 import { GET_VISITED } from '../../../apollo/user/query';
@@ -55,7 +55,7 @@ const RecentlyVisited: NextPage = () => {
 					) : (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Recently Visited Properties found!</p>
+							<p>No recently visited vehicles found!</p>
 						</div>
 					)}
 				</Stack>

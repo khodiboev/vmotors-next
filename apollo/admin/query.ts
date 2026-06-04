@@ -20,7 +20,7 @@ export const GET_ALL_MEMBERS_BY_ADMIN = gql`
 				memberDesc
 				memberWarnings
 				memberBlocks
-				memberProperties
+				memberVehicles
 				memberRank
 				memberArticles
 				memberPoints
@@ -39,33 +39,34 @@ export const GET_ALL_MEMBERS_BY_ADMIN = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        VEHICLE         *
  *************************/
 
-export const GET_ALL_PROPERTIES_BY_ADMIN = gql`
-	query GetAllPropertiesByAdmin($input: AllPropertiesInquiry!) {
-		getAllPropertiesByAdmin(input: $input) {
+export const GET_ALL_VEHICLES_BY_ADMIN = gql`
+	query GetAllVehiclesByAdmin($input: AllVehiclesInquiry!) {
+		getAllVehiclesByAdmin(input: $input) {
 			list {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
+				vehicleBrand
+				vehicleModel
+				vehicleTrim
+				vehicleYear
+				vehicleFuel
+				vehicleTransmission
+				vehicleColor
+				vehiclePrice
+				vehicleLocation
+				vehicleStockQuantity
+				vehicleImages
+				vehicleDesc
+				vehicleStatus
+				vehicleViews
+				vehicleLikes
+				vehicleComments
+				vehicleRank
 				memberId
 				soldAt
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
 				memberData {
@@ -81,7 +82,7 @@ export const GET_ALL_PROPERTIES_BY_ADMIN = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberVehicles
 					memberRank
 					memberPoints
 					memberLikes
@@ -131,7 +132,7 @@ export const GET_ALL_BOARD_ARTICLES_BY_ADMIN = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberVehicles
 					memberRank
 					memberPoints
 					memberLikes
@@ -178,7 +179,7 @@ export const GET_COMMENTS = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberVehicles
 					memberRank
 					memberPoints
 					memberLikes

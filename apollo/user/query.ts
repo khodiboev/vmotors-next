@@ -20,7 +20,7 @@ export const GET_AGENTS = gql`
 				memberDesc
 				memberWarnings
 				memberBlocks
-				memberProperties
+				memberVehicles
 				memberRank
 				memberPoints
 				memberLikes
@@ -55,7 +55,7 @@ export const GET_MEMBER = gql(`
         memberImage
         memberAddress
         memberDesc
-        memberProperties
+        memberVehicles
         memberArticles
         memberPoints
         memberLikes
@@ -79,32 +79,33 @@ export const GET_MEMBER = gql(`
 `);
 
 /**************************
- *        PROPERTY        *
+ *        VEHICLE         *
  *************************/
 
-export const GET_PROPERTY = gql`
-	query GetProperty($input: String!) {
-		getProperty(propertyId: $input) {
+export const GET_VEHICLE = gql`
+	query GetVehicle($input: String!) {
+		getVehicle(vehicleId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
 			memberId
 			soldAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 			memberData {
@@ -120,9 +121,14 @@ export const GET_PROPERTY = gql`
 				memberDesc
 				memberWarnings
 				memberBlocks
+				memberVehicles
+				memberRank
 				memberPoints
 				memberLikes
 				memberViews
+				memberComments
+				memberFollowings
+				memberFollowers
 				deletedAt
 				createdAt
 				updatedAt
@@ -137,54 +143,58 @@ export const GET_PROPERTY = gql`
 	}
 `;
 
-export const GET_PROPERTIES = gql`
-	query GetProperties($input: PropertiesInquiry!) {
-		getProperties(input: $input) {
+export const GET_VEHICLES = gql`
+	query GetVehicles($input: VehiclesInquiry!) {
+		getVehicles(input: $input) {
 			list {
+			_id
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
+			memberId
+			soldAt
+			deletedAt
+			createdAt
+			updatedAt
+				memberData {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
-				memberId
-				soldAt
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberWarnings
+				memberBlocks
+				memberVehicles
+				memberRank
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberFollowings
+				memberFollowers
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
-				memberData {
-					_id
-					memberType
-					memberStatus
-					memberAuthType
-					memberPhone
-					memberNick
-					memberFullName
-					memberImage
-					memberAddress
-					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
-					memberPoints
-					memberLikes
-					memberViews
-					deletedAt
-					createdAt
-					updatedAt
+				accessToken
 				}
 				meLiked {
 					memberId
@@ -199,32 +209,33 @@ export const GET_PROPERTIES = gql`
 	}
 `;
 
-export const GET_AGENT_PROPERTIES = gql`
-	query GetAgentProperties($input: AgentPropertiesInquiry!) {
-		getAgentProperties(input: $input) {
+export const GET_DEALER_VEHICLES = gql`
+	query GetDealerVehicles($input: DealerVehiclesInquiry!) {
+		getDealerVehicles(input: $input) {
 			list {
-				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
-				memberId
-				soldAt
-				deletedAt
-				constructedAt
-				createdAt
-				updatedAt
+			_id
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
+			memberId
+			soldAt
+			deletedAt
+			createdAt
+			updatedAt
 			}
 			metaCounter {
 				total
@@ -237,56 +248,54 @@ export const GET_FAVORITES = gql`
 	query GetFavorites($input: OrdinaryInquiry!) {
 		getFavorites(input: $input) {
 			list {
+			_id
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
+			memberId
+			soldAt
+			deletedAt
+			createdAt
+			updatedAt
+				memberData {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyComments
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
-				memberId
-				soldAt
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberWarnings
+				memberBlocks
+				memberVehicles
+				memberRank
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberFollowings
+				memberFollowers
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
-				memberData {
-					_id
-					memberType
-					memberStatus
-					memberAuthType
-					memberPhone
-					memberNick
-					memberFullName
-					memberImage
-					memberAddress
-					memberDesc
-					memberProperties
-					memberArticles
-					memberPoints
-					memberLikes
-					memberViews
-					memberComments
-					memberFollowings
-					memberFollowers
-					memberRank
-					memberWarnings
-					memberBlocks
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
+				accessToken
 				}
 			}
 			metaCounter {
@@ -300,56 +309,54 @@ export const GET_VISITED = gql`
 	query GetVisited($input: OrdinaryInquiry!) {
 		getVisited(input: $input) {
 			list {
+			_id
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
+			memberId
+			soldAt
+			deletedAt
+			createdAt
+			updatedAt
+				memberData {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyComments
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
-				memberId
-				soldAt
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberWarnings
+				memberBlocks
+				memberVehicles
+				memberRank
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberFollowings
+				memberFollowers
 				deletedAt
-				constructedAt
 				createdAt
 				updatedAt
-				memberData {
-					_id
-					memberType
-					memberStatus
-					memberAuthType
-					memberPhone
-					memberNick
-					memberFullName
-					memberImage
-					memberAddress
-					memberDesc
-					memberProperties
-					memberArticles
-					memberPoints
-					memberLikes
-					memberViews
-					memberComments
-					memberFollowings
-					memberFollowers
-					memberRank
-					memberWarnings
-					memberBlocks
-					deletedAt
-					createdAt
-					updatedAt
-					accessToken
+				accessToken
 				}
 			}
 			metaCounter {
@@ -391,7 +398,7 @@ export const GET_BOARD_ARTICLE = gql`
 				memberDesc
 				memberWarnings
 				memberBlocks
-				memberProperties
+				memberVehicles
 				memberRank
 				memberPoints
 				memberLikes
@@ -443,7 +450,7 @@ export const GET_BOARD_ARTICLES = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberVehicles
 					memberRank
 					memberPoints
 					memberLikes
@@ -489,7 +496,7 @@ export const GET_COMMENTS = gql`
 					memberDesc
 					memberWarnings
 					memberBlocks
-					memberProperties
+					memberVehicles
 					memberRank
 					memberPoints
 					memberLikes
@@ -540,7 +547,7 @@ export const GET_MEMBER_FOLLOWERS = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberProperties
+					memberVehicles
 					memberArticles
 					memberPoints
 					memberLikes
@@ -583,7 +590,7 @@ export const GET_MEMBER_FOLLOWINGS = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberProperties
+					memberVehicles
 					memberArticles
 					memberPoints
 					memberLikes

@@ -17,7 +17,7 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 			memberImage
 			memberAddress
 			memberDesc
-			memberProperties
+			memberVehicles
 			memberRank
 			memberArticles
 			memberPoints
@@ -34,61 +34,63 @@ export const UPDATE_MEMBER_BY_ADMIN = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        VEHICLE         *
  *************************/
 
-export const UPDATE_PROPERTY_BY_ADMIN = gql`
-	mutation UpdatePropertyByAdmin($input: PropertyUpdate!) {
-		updatePropertyByAdmin(input: $input) {
+export const UPDATE_VEHICLE_BY_ADMIN = gql`
+	mutation UpdateVehicleByAdmin($input: VehicleUpdate!) {
+		updateVehicleByAdmin(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
 			memberId
 			soldAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const REMOVE_PROPERTY_BY_ADMIN = gql`
-	mutation RemovePropertyByAdmin($input: String!) {
-		removePropertyByAdmin(propertyId: $input) {
+export const REMOVE_VEHICLE_BY_ADMIN = gql`
+	mutation RemoveVehicleByAdmin($input: String!) {
+		removeVehicleByAdmin(vehicleId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
 			memberId
 			soldAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}

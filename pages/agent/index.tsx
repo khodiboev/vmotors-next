@@ -128,7 +128,7 @@ const {
 };
 
 	if (device === 'mobile') {
-		return <h1>AGENTS PAGE MOBILE</h1>;
+		return <h1>DEALERS PAGE MOBILE</h1>;
 	} else {
 		return (
 			<Stack className={'agent-list-page'}>
@@ -137,7 +137,7 @@ const {
 						<Box component={'div'} className={'left'}>
 							<input
 								type="text"
-								placeholder={'Search for an agent'}
+								placeholder={'Search for a dealer'}
 								value={searchText}
 								onChange={(e: any) => {
 									setSearchText(e.target.value);
@@ -175,7 +175,7 @@ const {
 						{agents?.length === 0 ? (
 							<div className={'no-data'}>
 								<img src="/img/icons/icoAlert.svg" alt="" />
-								<p>No Agents found!</p>
+								<p>No dealers found!</p>
 							</div>
 						) : (
 							agents.map((agent: Member) => {
@@ -200,7 +200,7 @@ const {
 
 						{agents.length !== 0 && (
 							<span>
-								Total {total} agent{total > 1 ? 's' : ''} available
+								Total {total} dealer{total > 1 ? 's' : ''} available
 							</span>
 						)}
 					</Stack>

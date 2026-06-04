@@ -19,7 +19,7 @@ export const SIGN_UP = gql`
 			memberDesc
 			memberWarnings
 			memberBlocks
-			memberProperties
+			memberVehicles
 			memberRank
 			memberArticles
 			memberPoints
@@ -48,7 +48,7 @@ export const LOGIN = gql`
 			memberDesc
 			memberWarnings
 			memberBlocks
-			memberProperties
+			memberVehicles
 			memberRank
 			memberPoints
 			memberLikes
@@ -74,7 +74,7 @@ export const UPDATE_MEMBER = gql`
 			memberImage
 			memberAddress
 			memberDesc
-			memberProperties
+			memberVehicles
 			memberRank
 			memberArticles
 			memberPoints
@@ -105,7 +105,7 @@ export const LIKE_TARGET_MEMBER = gql`
 			memberDesc
 			memberWarnings
 			memberBlocks
-			memberProperties
+			memberVehicles
 			memberRank
 			memberPoints
 			memberLikes
@@ -119,90 +119,93 @@ export const LIKE_TARGET_MEMBER = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        VEHICLE         *
  *************************/
 
-export const CREATE_PROPERTY = gql`
-	mutation CreateProperty($input: PropertyInput!) {
-		createProperty(input: $input) {
+export const CREATE_VEHICLE = gql`
+	mutation CreateVehicle($input: VehicleInput!) {
+		createVehicle(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
 			memberId
 			soldAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const UPDATE_PROPERTY = gql`
-	mutation UpdateProperty($input: PropertyUpdate!) {
-		updateProperty(input: $input) {
+export const UPDATE_VEHICLE = gql`
+	mutation UpdateVehicle($input: VehicleUpdate!) {
+		updateVehicle(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
 			memberId
 			soldAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const LIKE_TARGET_PROPERTY = gql`
-	mutation LikeTargetProperty($input: String!) {
-		likeTargetProperty(propertyId: $input) {
+export const LIKE_TARGET_VEHICLE = gql`
+	mutation LikeTargetVehicle($input: String!) {
+		likeTargetVehicle(vehicleId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			vehicleBrand
+			vehicleModel
+			vehicleTrim
+			vehicleYear
+			vehicleFuel
+			vehicleTransmission
+			vehicleColor
+			vehiclePrice
+			vehicleLocation
+			vehicleStockQuantity
+			vehicleImages
+			vehicleDesc
+			vehicleStatus
+			vehicleViews
+			vehicleLikes
+			vehicleComments
+			vehicleRank
 			memberId
 			soldAt
 			deletedAt
-			constructedAt
 			createdAt
 			updatedAt
 		}

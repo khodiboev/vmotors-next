@@ -28,34 +28,34 @@ const withLayoutBasic = (Component: any) => {
 				bgImage = '';
 
 			switch (router.pathname) {
-				case '/property':
-					title = 'Property Search';
-					desc = 'We are glad to see you again!';
+				case '/vehicle':
+					title = 'Vehicle Search';
+					desc = 'New Hyundai and Kia inventory';
 					bgImage = '/img/banner/properties.png';
 					break;
 				case '/agent':
-					title = 'Agents';
-					desc = 'Home / For Rent';
+					title = 'Dealers';
+					desc = 'Home / Vehicles';
 					bgImage = '/img/banner/agents.webp';
 					break;
 				case '/agent/detail':
-					title = 'Agent Page';
-					desc = 'Home / For Rent';
+					title = 'Dealer Page';
+					desc = 'Home / Vehicles';
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/mypage':
 					title = 'my page';
-					desc = 'Home / For Rent';
+					desc = 'Home / Vehicles';
 					bgImage = '/img/banner/header1.svg';
 					break;
 				case '/community':
 					title = 'Community';
-					desc = 'Home / For Rent';
+					desc = 'Home / Vehicles';
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/community/detail':
 					title = 'Community Detail';
-					desc = 'Home / For Rent';
+					desc = 'Home / Vehicles';
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/cs':
@@ -71,7 +71,7 @@ const withLayoutBasic = (Component: any) => {
 					break;
 				case '/member':
 					title = 'Member Page';
-					desc = 'Home / For Rent';
+					desc = 'Home / Vehicles';
 					bgImage = '/img/banner/header1.svg';
 					break;
 				default:
@@ -93,8 +93,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>VMotors</title>
+						<meta name={'title'} content={`VMotors`} />
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
@@ -115,8 +115,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>VMotors</title>
+						<meta name={'title'} content={`VMotors`} />
 					</Head>
 					<Stack id="pc-wrap">
 						<Stack id={'top'}>
