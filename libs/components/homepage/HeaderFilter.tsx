@@ -27,18 +27,6 @@ const HeaderFilter = () => {
 		<Stack className={'search-box'}>
 			<Stack className={'select-box'}>
 					<div className={'box'}>
-					<input
-						value={searchFilter.search.text ?? ''}
-						placeholder={t('Search vehicles')}
-						onChange={(e) =>
-							setSearchFilter({
-								...searchFilter,
-								search: { ...searchFilter.search, text: e.target.value },
-							})
-						}
-					/>
-					</div>
-					<div className={'box'}>
 					<FormControl fullWidth>
 						<Select
 							displayEmpty
