@@ -47,6 +47,52 @@ hr {
 	margin: auto;
 }
 
+img[src*='/img/logo/logoWhite.svg'],
+img[src*='/img/logo/logoText.svg'] {
+	transform-origin: center;
+	transition:
+		transform 260ms ease,
+		filter 260ms ease;
+	will-change: transform, filter;
+}
+
+img[src*='/img/logo/logoWhite.svg']:hover,
+img[src*='/img/logo/logoText.svg']:hover {
+	animation: vmotorsLogoPulse 760ms ease both;
+	filter: drop-shadow(0 8px 18px rgba(235, 103, 83, 0.36));
+	transform: translateY(-2px) scale(1.045);
+}
+
+@keyframes vmotorsLogoPulse {
+	0% {
+		transform: translateY(0) scale(1);
+		filter: drop-shadow(0 0 0 rgba(235, 103, 83, 0));
+	}
+	45% {
+		transform: translateY(-3px) scale(1.06);
+		filter: drop-shadow(0 10px 22px rgba(235, 103, 83, 0.45));
+	}
+	100% {
+		transform: translateY(-2px) scale(1.045);
+		filter: drop-shadow(0 8px 18px rgba(235, 103, 83, 0.36));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	img[src*='/img/logo/logoWhite.svg'],
+	img[src*='/img/logo/logoText.svg'] {
+		transition: none;
+		will-change: auto;
+	}
+
+	img[src*='/img/logo/logoWhite.svg']:hover,
+	img[src*='/img/logo/logoText.svg']:hover {
+		animation: none;
+		filter: none;
+		transform: none;
+	}
+}
+
 /** VERSION: PC **/
 #pc-wrap {
 	width: 100%;
