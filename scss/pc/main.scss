@@ -177,6 +177,55 @@ body::-webkit-scrollbar {
 		height: 860px;
 		background-image: url('/img/banner/header1.svg');
 		background-size: cover;
+
+		.hero-content {
+			position: absolute;
+			top: 148px;
+			left: 0;
+			right: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			pointer-events: none;
+			z-index: 10;
+
+			.hero-pill {
+				display: inline-block;
+				padding: 6px 18px;
+				border-radius: 20px;
+				background: rgba(255, 255, 255, 0.14);
+				border: 1px solid rgba(255, 255, 255, 0.32);
+				color: rgba(255, 255, 255, 0.9);
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 1.4px;
+				text-transform: uppercase;
+				backdrop-filter: blur(8px);
+				-webkit-backdrop-filter: blur(8px);
+			}
+
+			.hero-headline {
+				margin: 14px 0 0;
+				color: #ffffff;
+				font-family: $font;
+				font-size: 52px;
+				font-weight: 700;
+				line-height: 1.12;
+				letter-spacing: -0.5px;
+				text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+			}
+
+			.hero-sub {
+				margin: 12px 0 0;
+				color: rgba(255, 255, 255, 0.78);
+				font-family: $font;
+				font-size: 16px;
+				font-weight: 400;
+				line-height: 1.6;
+			}
+		}
 		.container {
 			position: relative;
 			margin-top: 20px;

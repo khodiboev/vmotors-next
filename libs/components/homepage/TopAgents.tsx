@@ -45,7 +45,7 @@ const TopAgents = (props: TopAgentsProps) => {
 			<Stack className={'top-agents'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top Agents</span>
+						<span>Our Top Dealers</span>
 					</Stack>
 					<Stack className={'wrapper'}>
 						<Swiper
@@ -73,12 +73,12 @@ const TopAgents = (props: TopAgentsProps) => {
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Top Agents</span>
-							<p>Our Top Agents always ready to serve you</p>
+							<span>Our Top Dealers</span>
+							<p>Certified VMotors dealer partners</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'more-box'}>
-								<span>See All Agents</span>
+								<span>Browse All Dealers</span>
 								<img src="/img/icons/rightup.svg" alt="" />
 							</div>
 						</Box>

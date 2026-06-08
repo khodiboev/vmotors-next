@@ -47,7 +47,7 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 			<Stack className={'popular-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Popular vehicles</span>
+						<span>Most Popular</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Swiper
@@ -75,13 +75,13 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Popular vehicles</span>
-							<p>Popularity is based on views</p>
+							<span>Most Popular</span>
+							<p>Top viewed vehicles right now</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'more-box'}>
-								<Link href={'/property'}>
-									<span>See All Categories</span>
+								<Link href={'/vehicle'}>
+									<span>Browse All Vehicles</span>
 								</Link>
 								<img src="/img/icons/rightup.svg" alt="" />
 							</div>

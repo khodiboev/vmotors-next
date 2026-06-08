@@ -971,4 +971,325 @@
 			}
 		}
 	}
+
+	// ── Brand Section ──────────────────────────────────────────────
+	.brand-section {
+		padding: 80px 0px 72px;
+		width: 100%;
+		background: #f8f8f8;
+
+		.container {
+			flex-direction: column;
+		}
+
+		.brand-cards {
+			margin-top: 48px;
+			display: flex;
+			flex-direction: row;
+			gap: 24px;
+			width: 100%;
+		}
+
+		.brand-card {
+			flex: 1;
+			height: 280px;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			padding: 36px 40px;
+			border-radius: 20px;
+			cursor: pointer;
+			box-sizing: border-box;
+			transition: transform 0.28s ease, box-shadow 0.28s ease;
+			position: relative;
+			overflow: hidden;
+
+			&::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background: linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.28) 100%);
+				border-radius: 20px;
+				transition: opacity 0.28s ease;
+			}
+
+			&:hover {
+				transform: translateY(-6px);
+				box-shadow: 0 24px 56px rgba(0, 0, 0, 0.22);
+
+				&::before { opacity: 0.6; }
+			}
+
+			&.hyundai {
+				background: linear-gradient(140deg, #1a2540 0%, #0d1a35 60%, #182038 100%);
+			}
+
+			&.kia {
+				background: linear-gradient(140deg, #1e1e1e 0%, #111111 60%, #1a1a1a 100%);
+			}
+
+			.brand-badge {
+				position: absolute;
+				top: 28px;
+				left: 40px;
+				padding: 4px 12px;
+				border-radius: 20px;
+				background: rgba(255, 255, 255, 0.12);
+				border: 1px solid rgba(255, 255, 255, 0.22);
+				color: rgba(255, 255, 255, 0.7);
+				font-family: $font;
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+			}
+
+			.brand-name {
+				color: #ffffff;
+				font-family: $font;
+				font-size: 42px;
+				font-weight: 800;
+				letter-spacing: 2px;
+				line-height: 1;
+				text-transform: uppercase;
+			}
+
+			.brand-tagline {
+				margin-top: 8px;
+				color: rgba(255, 255, 255, 0.55);
+				font-family: $font;
+				font-size: 13px;
+				font-weight: 400;
+				letter-spacing: 0.3px;
+			}
+
+			.brand-cta {
+				margin-top: 20px;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				gap: 8px;
+				color: #ffffff;
+				font-family: $font;
+				font-size: 14px;
+				font-weight: 600;
+
+				img {
+					width: 14px;
+					height: 14px;
+					filter: brightness(0) invert(1);
+				}
+			}
+		}
+	}
+
+	// ── Trust Section ──────────────────────────────────────────────
+	.trust-section {
+		padding: 96px 0px 88px;
+		width: 100%;
+		background: #181a20;
+
+		.container {
+			flex-direction: column;
+		}
+
+		.trust-grid {
+			margin-top: 52px;
+			display: flex;
+			flex-direction: row;
+			gap: 24px;
+			width: 100%;
+		}
+
+		.trust-card {
+			flex: 1;
+			padding: 36px 32px;
+			border-radius: 16px;
+			background: rgba(255, 255, 255, 0.05);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			display: flex;
+			flex-direction: column;
+			box-sizing: border-box;
+			transition: background 0.24s ease, border-color 0.24s ease, transform 0.24s ease;
+
+			&:hover {
+				background: rgba(255, 255, 255, 0.08);
+				border-color: rgba(235, 103, 83, 0.4);
+				transform: translateY(-4px);
+			}
+
+			.trust-icon {
+				width: 48px;
+				height: 48px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 12px;
+				background: rgba(235, 103, 83, 0.15);
+
+				svg {
+					color: #eb6753;
+					font-size: 24px;
+				}
+			}
+
+			strong {
+				margin-top: 20px;
+				color: #ffffff;
+				font-family: $font;
+				font-size: 16px;
+				font-weight: 600;
+				line-height: 1.4;
+			}
+
+			p {
+				margin-top: 10px;
+				color: rgba(255, 255, 255, 0.5);
+				font-family: $font;
+				font-size: 13px;
+				font-weight: 400;
+				line-height: 1.7;
+			}
+		}
+	}
+
+	// ── CTA Section ────────────────────────────────────────────────
+	.cta-section {
+		padding: 0;
+		width: 100%;
+
+		.cta-content {
+			padding: 88px 0px;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			background: linear-gradient(135deg, #e92c28 0%, #c01f1c 50%, #a01818 100%);
+
+			.cta-tag {
+				display: inline-block;
+				padding: 5px 16px;
+				border-radius: 20px;
+				background: rgba(255, 255, 255, 0.15);
+				border: 1px solid rgba(255, 255, 255, 0.25);
+				color: rgba(255, 255, 255, 0.85);
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 1.2px;
+				text-transform: uppercase;
+			}
+
+			.cta-headline {
+				margin: 16px 0 0;
+				color: #ffffff;
+				font-family: $font;
+				font-size: 40px;
+				font-weight: 700;
+				line-height: 1.2;
+			}
+
+			.cta-sub {
+				margin: 14px 0 0;
+				color: rgba(255, 255, 255, 0.78);
+				font-family: $font;
+				font-size: 15px;
+				font-weight: 400;
+				line-height: 1.7;
+			}
+
+			.cta-actions {
+				margin-top: 36px;
+				display: flex;
+				flex-direction: row;
+				gap: 16px;
+				align-items: center;
+
+				.cta-btn {
+					padding: 14px 32px;
+					border-radius: 12px;
+					font-family: $font;
+					font-size: 15px;
+					font-weight: 600;
+					cursor: pointer;
+					transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+					&:hover {
+						transform: translateY(-2px);
+					}
+
+					&.primary {
+						background: #ffffff;
+						color: #e92c28;
+						border: none;
+						box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+
+						&:hover {
+							box-shadow: 0 12px 32px rgba(0, 0, 0, 0.26);
+						}
+					}
+
+					&.secondary {
+						background: transparent;
+						color: #ffffff;
+						border: 2px solid rgba(255, 255, 255, 0.6);
+
+						&:hover {
+							border-color: #ffffff;
+							background: rgba(255, 255, 255, 0.08);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// ── Vehicle card enhancements ──────────────────────────────────
+	.trend-card-box,
+	.top-card-box {
+		border-radius: 14px;
+
+		&:hover {
+			transform: translateY(-6px) !important;
+			box-shadow: 0 20px 44px rgba(0, 0, 0, 0.13);
+		}
+
+		.card-img {
+			border-radius: 14px 14px 0 0;
+		}
+
+		.info {
+			border-radius: 0 0 14px 14px;
+		}
+	}
+
+	.popular-card-box {
+		border-radius: 14px;
+
+		&:hover {
+			transform: translateY(-6px) !important;
+			box-shadow: 0 20px 44px rgba(0, 0, 0, 0.13);
+		}
+
+		.card-img {
+			border-radius: 14px 14px 0 0;
+		}
+
+		.info {
+			border-radius: 0 0 14px 14px;
+		}
+	}
+
+	// ── Section heading upgrade ────────────────────────────────────
+	.trend-vehicles,
+	.popular-vehicles,
+	.top-vehicles,
+	.top-agents {
+		.info-box .left span {
+			font-size: 38px;
+			font-weight: 700;
+			letter-spacing: -0.5px;
+		}
+	}
 }

@@ -63,6 +63,11 @@ const withLayoutMain = (Component: any) => {
 
 						<Stack className={'header-main'}>
 							<FiberContainer />
+							<div className={'hero-content'}>
+								<span className={'hero-pill'}>Korea's Premier Automotive Platform</span>
+								<h1 className={'hero-headline'}>Drive Your Dream Car</h1>
+								<p className={'hero-sub'}>Browse certified Hyundai &amp; Kia vehicles from dealers nationwide</p>
+							</div>
 							<Stack className={'container'}>
 								<HeaderFilter />
 							</Stack>

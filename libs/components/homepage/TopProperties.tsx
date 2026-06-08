@@ -67,7 +67,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 			<Stack className={'top-vehicles'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Top vehicles</span>
+						<span>Top Rated</span>
 					</Stack>
 					<Stack className={'card-box'}>
 						<Swiper
@@ -95,8 +95,8 @@ const TopProperties = (props: TopPropertiesProps) => {
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Top vehicles</span>
-							<p>Check out our Top Vehicles</p>
+							<span>Top Rated</span>
+							<p>Highest ranked listings on VMotors</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'pagination-box'}>
