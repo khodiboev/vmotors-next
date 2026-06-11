@@ -32,6 +32,7 @@ const Top = () => {
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [logoutAnchor, setLogoutAnchor] = React.useState<null | HTMLElement>(null);
 	const logoutOpen = Boolean(logoutAnchor);
+	const isHome = router.pathname === '/';
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -162,7 +163,11 @@ const Top = () => {
 	} else {
 		return (
 			<Stack className={'navbar'}>
-				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`}>
+				<Stack
+					className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''} ${
+						isHome ? 'home-nav' : ''
+					}`}
+				>
 					<Stack className={'container'}>
 						<Box component={'div'} className={'logo-box'}>
 							<Link href={'/'}>

@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Stack } from '@mui/material';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyProperties from '../../libs/components/mypage/MyProperties';
 import MyFavorites from '../../libs/components/mypage/MyFavorites';
@@ -18,8 +17,12 @@ import MemberFollowers from '../../libs/components/member/MemberFollowers';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Messages } from '../../libs/config';
+import { Messages, REACT_APP_API_URL } from '../../libs/config';
 import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
+import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFilledOutlined';
+import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -28,10 +31,86 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const MyPage: NextPage = () => {
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
-	const category: any = router.query?.category ?? 'myProfile';
+	const category = typeof router.query?.category === 'string' ? router.query.category : 'myProfile';
+
+	const categoryMeta = useMemo(
+		() => ({
+			myProfile: {
+				eyebrow: 'Account overview',
+				title: 'Your VMotors dashboard',
+				description: 'Manage your buyer profile, saved Hyundai and Kia vehicles, and marketplace activity in one premium workspace.',
+			},
+			myFavorites: {
+				eyebrow: 'Saved vehicles',
+				title: 'Favorites worth revisiting',
+				description: 'Track the vehicles you liked most and return to the listings that still deserve a closer look.',
+			},
+			recentlyVisited: {
+				eyebrow: 'Recently viewed',
+				title: 'Continue your vehicle research',
+				description: 'Pick up where you left off with Hyundai and Kia listings you viewed across the marketplace.',
+			},
+			myVehicles: {
+				eyebrow: 'Dealer inventory',
+				title: 'Manage your live inventory',
+				description: 'Update availability, review engagement, and keep your dealership inventory polished for serious buyers.',
+			},
+			addVehicle: {
+				eyebrow: 'Add inventory',
+				title: 'Publish a new vehicle',
+				description: 'Create a clean, buyer-ready listing that fits the premium VMotors marketplace experience.',
+			},
+			myArticles: {
+				eyebrow: 'Community activity',
+				title: 'Your articles and updates',
+				description: 'Review your automotive community activity and keep your editorial presence organized.',
+			},
+			writeArticle: {
+				eyebrow: 'Community publishing',
+				title: 'Share insight with the community',
+				description: 'Create thoughtful articles for buyers, owners, and dealers in the VMotors community.',
+			},
+			followers: {
+				eyebrow: 'Dealer network',
+				title: 'People following your activity',
+				description: 'See who is tracking your updates, dealer profile, and marketplace presence.',
+			},
+			followings: {
+				eyebrow: 'Dealer network',
+				title: 'Accounts you follow',
+				description: 'Keep up with the dealers, members, and marketplace voices you want to watch closely.',
+			},
+		}),
+		[],
+	);
+
+	const activeMeta = categoryMeta[category as keyof typeof categoryMeta] ?? categoryMeta.myProfile;
+	const dashboardStats = [
+		{
+			label: user?.memberType === 'AGENT' ? 'Live inventory' : 'Saved activity',
+			value: user?.memberVehicles ?? 0,
+			icon: <DirectionsCarFilledOutlinedIcon />,
+		},
+		{
+			label: 'Profile views',
+			value: user?.memberViews ?? 0,
+			icon: <GroupOutlinedIcon />,
+		},
+		{
+			label: 'Articles',
+			value: user?.memberArticles ?? 0,
+			icon: <ForumOutlinedIcon />,
+		},
+		{
+			label: 'Likes',
+			value: user?.memberLikes ?? 0,
+			icon: <FavoriteBorderRoundedIcon />,
+		},
+	];
+
+	const memberImage = user?.memberImage ? `${REACT_APP_API_URL}/${user.memberImage}` : '/img/profile/defaultUser.svg';
 
 	/** APOLLO REQUESTS **/
 	const [subscribe] = useMutation(SUBSCRIBE);
@@ -41,7 +120,7 @@ const MyPage: NextPage = () => {
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (!user._id) router.push('/').then();
-	}, [user]);
+	}, [router, user]);
 
 	/** HANDLERS **/
 	const subscribeHandler = async (id: string, refetch: any, query: any) => {
@@ -107,50 +186,82 @@ const MyPage: NextPage = () => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>MY PAGE</div>;
-	} else {
-		return (
-			<div id="my-page" style={{ position: 'relative' }}>
-				<div className="container">
-					<Stack className={'my-page'}>
-						<Stack className={'back-frame'}>
-							<Stack className={'left-config'}>
-								<MyMenu />
+	return (
+		<div id="my-page">
+			<div className="container">
+				<Stack className={'my-page'}>
+					<section className={'dashboard-hero'}>
+						<div className={'hero-copy'}>
+							<span className={'eyebrow'}>{activeMeta.eyebrow}</span>
+							<h1>{activeMeta.title}</h1>
+							<p>{activeMeta.description}</p>
+							<div className={'hero-trust-row'}>
+								<span>Buyer and dealer ready</span>
+								<span>Live marketplace activity</span>
+								<span>Premium VMotors workspace</span>
+							</div>
+						</div>
+
+						<div className={'hero-sidecard'}>
+							<div className={'member-highlight'}>
+								<div className={'member-avatar'}>
+									<img src={memberImage} alt={user?.memberNick || 'VMotors member'} />
+								</div>
+								<div className={'member-copy'}>
+									<strong>{user?.memberNick || 'VMotors member'}</strong>
+									<span>{user?.memberType === 'AGENT' ? 'Trusted dealer dashboard' : 'Buyer account dashboard'}</span>
+									<p>{user?.memberAddress || 'Support your Hyundai and Kia journey from one calm account center.'}</p>
+								</div>
+							</div>
+
+							<div className={'stats-grid'}>
+								{dashboardStats.map((item) => (
+									<article className={'stat-card'} key={item.label}>
+										<div className={'stat-icon'}>{item.icon}</div>
+										<strong>{item.value}</strong>
+										<span>{item.label}</span>
+									</article>
+								))}
+							</div>
+						</div>
+					</section>
+
+					<Stack className={'back-frame'}>
+						<aside className={'left-config'}>
+							<MyMenu />
+						</aside>
+						<main className="main-config">
+							<Stack className={'list-config'}>
+								{category === 'addVehicle' && <AddProperty />}
+								{category === 'myVehicles' && <MyProperties />}
+								{category === 'myFavorites' && <MyFavorites />}
+								{category === 'recentlyVisited' && <RecentlyVisited />}
+								{category === 'myArticles' && <MyArticles />}
+								{category === 'writeArticle' && <WriteArticle />}
+								{category === 'myProfile' && <MyProfile />}
+								{category === 'followers' && (
+									<MemberFollowers
+										subscribeHandler={subscribeHandler}
+										unsubscribeHandler={unsubscribeHandler}
+										likeMemberHandler={likeMemberHandler}
+										redirectToMemberPageHandler={redirectToMemberPageHandler}
+									/>
+								)}
+								{category === 'followings' && (
+									<MemberFollowings
+										subscribeHandler={subscribeHandler}
+										unsubscribeHandler={unsubscribeHandler}
+										likeMemberHandler={likeMemberHandler}
+										redirectToMemberPageHandler={redirectToMemberPageHandler}
+									/>
+								)}
 							</Stack>
-							<Stack className="main-config" mb={'76px'}>
-								<Stack className={'list-config'}>
-									{category === 'addVehicle' && <AddProperty />}
-									{category === 'myVehicles' && <MyProperties />}
-									{category === 'myFavorites' && <MyFavorites />}
-									{category === 'recentlyVisited' && <RecentlyVisited />}
-									{category === 'myArticles' && <MyArticles />}
-									{category === 'writeArticle' && <WriteArticle />}
-									{category === 'myProfile' && <MyProfile />}
-									{category === 'followers' && (
-										<MemberFollowers
-											subscribeHandler={subscribeHandler}
-											unsubscribeHandler={unsubscribeHandler}
-											likeMemberHandler={likeMemberHandler}
-											redirectToMemberPageHandler={redirectToMemberPageHandler}
-										/>
-									)}
-									{category === 'followings' && (
-										<MemberFollowings
-											subscribeHandler={subscribeHandler}
-											unsubscribeHandler={unsubscribeHandler}
-											likeMemberHandler={likeMemberHandler}
-											redirectToMemberPageHandler={redirectToMemberPageHandler}
-										/>
-									)}
-								</Stack>
-							</Stack>
-						</Stack>
+						</main>
 					</Stack>
-				</div>
+				</Stack>
 			</div>
-		);
-	}
+		</div>
+	);
 };
 
 export default withLayoutBasic(MyPage);

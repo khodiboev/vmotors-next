@@ -1,224 +1,429 @@
 #pc-wrap {
 	#my-page {
-		#my-favorites-page {
+		.dashboard-collection-page {
 			width: 100%;
-			height: auto;
-			display: flex;
-			flex-direction: column;
-			gap: 57px;
-			.main-title-box {
-				width: auto;
-				height: auto;
-				flex-direction: row;
-				justify-content: space-between;
-				.right-box {
-					width: 315px;
-					.main-title {
-						color: #181a20;
-						font-family: $font;
-						font-size: 30px;
-						font-style: normal;
-						font-weight: 600;
-						line-height: normal;
-						letter-spacing: 0.6px;
-						text-transform: capitalize;
-					}
-					.sub-title {
-						color: #181a20;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 400;
-						line-height: 26px;
-					}
+
+			.dashboard-collection-grid {
+				margin-top: 26px;
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 20px;
+			}
+
+			.dashboard-vehicle-card {
+				display: flex;
+				flex-direction: column;
+				min-height: 100%;
+				border-radius: 28px;
+				overflow: hidden;
+				background: #ffffff;
+				border: 1px solid rgba(118, 135, 178, 0.12);
+				box-shadow: 0 18px 42px rgba(10, 31, 68, 0.08);
+				transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+
+				&:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 26px 54px rgba(10, 31, 68, 0.12);
+					border-color: rgba(55, 85, 195, 0.18);
 				}
 			}
-			.favorites-list-box {
-				width: 100%;
-				height: auto;
-				flex-wrap: wrap;
-				flex-direction: row;
-				gap: 22px;
-				.card-config {
-					width: 296px;
-					height: 413px;
-					margin-bottom: 7px;
-					border-radius: 12px;
-					background: #fff;
-					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
-					.top {
-						position: relative;
-						width: 100%;
-						height: 240px;
-						a {
-							height: 100%;
-						}
-						img {
-							width: 100%;
-							height: 100%;
-							object-fit: cover;
-							border-radius: 12px 12px 0 0;
-						}
-						.top-badge {
-							position: absolute;
-							top: 20px;
-							left: 16px;
-							display: flex;
-							width: 80px;
-							height: 30px;
-							justify-content: center;
-							align-items: center;
-							border-radius: 6px;
-							padding: 6px 20px;
-							background: #eb6753;
-							color: #fff;
-							text-align: center;
-							text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-							font-family: $font;
-							font-size: 12px;
-							font-style: normal;
-							font-weight: 600;
-							line-height: normal;
-							img {
-								height: 16px;
-							}
-						}
-						.price-box {
-							position: absolute;
-							bottom: 20px;
-							left: 20px;
-							padding: 8px 15px;
-							align-items: center;
-							border-radius: 6px;
-							border: 1px solid rgba(255, 255, 255, 0.5);
-							background: #fff;
-							p {
-								color: #181a20;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-							}
-						}
-					}
-					.bottom {
-						width: 100%;
-						height: 173px;
-						padding: 20px 16px 10px 16px;
-						.name-address {
-							width: 100%;
-							height: 48px;
-							gap: 5px;
-							margin-bottom: 20px;
-							.name {
-								width: 100%;
-								height: 23px;
-								overflow: hidden;
-								p {
-									color: #181a20;
-									font-family: $font;
-									font-size: 15px;
-									font-style: normal;
-									font-weight: 600;
-									line-height: normal;
-									text-transform: capitalize;
-								}
-							}
-							.address {
-								width: 100%;
-								overflow: hidden;
-								p {
-									color: #717171;
-									font-family: $font;
-									font-size: 13px;
-									font-style: normal;
-									font-weight: 400;
-									line-height: normal;
-								}
-							}
-						}
-						.options {
-							flex-direction: row;
-							width: 100%;
-							height: 20px;
-							gap: 20px;
-							margin-bottom: 10px;
-							.option {
-								flex-direction: row;
-								gap: 5px;
-								align-items: center;
-								p {
-									color: #181a20;
-									font-family: $font;
-									font-size: 13px;
-									font-style: normal;
-									font-weight: 400;
-									line-height: normal;
-								}
-							}
-						}
-						.divider {
-							width: 100%;
-							height: 1px;
-							background: #ddd;
-							margin-bottom: 17px;
-						}
-						.type-buttons {
-							flex-direction: row;
-							width: 100%;
-							justify-content: space-between;
-							align-items: center;
-							.type {
-								flex-direction: row;
-								align-items: center;
-								gap: 7px;
-								p {
-									color: #181a20;
-									font-family: $font;
-									font-style: normal;
-									line-height: normal;
-								}
-								.disabled-type {
-									color: rgba(143, 143, 143, 0.54);
-									font-family: $font;
-									font-style: normal;
-									line-height: normal;
-								}
-							}
-							.buttons {
-								flex-direction: row;
-								width: auto;
-								gap: 12px;
-								justify-content: center;
-								align-items: center;
-								padding-right: 10px;
-								svg {
-									cursor: pointer;
-								}
-							}
-						}
-					}
+
+			.card-media {
+				position: relative;
+				aspect-ratio: 1.4 / 1;
+				background:
+					radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 26%),
+					linear-gradient(135deg, #0a1f44 0%, #163397 60%, #3755c3 100%);
+
+				a,
+				img {
+					display: block;
+					width: 100%;
+					height: 100%;
+				}
+
+				img {
+					object-fit: cover;
 				}
 			}
-			.pagination-config {
-				width: 100%;
-				height: auto;
-				justify-content: center;
+
+			.media-topline,
+			.media-context-pill {
+				position: absolute;
+				display: inline-flex;
 				align-items: center;
-				margin-top: 30px;
-				.total-result {
-					p {
-						color: #181a20;
-						text-align: center;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 400;
-						line-height: 26px;
+				gap: 8px;
+				z-index: 1;
+			}
+
+			.media-topline {
+				top: 18px;
+				left: 18px;
+				flex-wrap: wrap;
+			}
+
+			.media-badge {
+				padding: 8px 12px;
+				border-radius: 999px;
+				border: 1px solid rgba(255, 255, 255, 0.14);
+				background: rgba(255, 255, 255, 0.12);
+				backdrop-filter: blur(12px);
+				color: #ffffff;
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+
+				&.featured {
+					background: rgba(10, 31, 68, 0.36);
+				}
+			}
+
+			.media-context-pill {
+				left: 18px;
+				bottom: 18px;
+				padding: 10px 12px;
+				border-radius: 999px;
+				background: rgba(255, 255, 255, 0.12);
+				border: 1px solid rgba(255, 255, 255, 0.14);
+				backdrop-filter: blur(12px);
+				color: #ffffff;
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+
+				svg {
+					font-size: 16px;
+				}
+			}
+
+			.price-chip {
+				position: absolute;
+				right: 18px;
+				bottom: 18px;
+				padding: 12px 14px;
+				border-radius: 18px;
+				background: rgba(10, 31, 68, 0.72);
+				border: 1px solid rgba(255, 255, 255, 0.16);
+				backdrop-filter: blur(12px);
+
+				span {
+					color: #ffffff;
+					font-family: $font;
+					font-size: 18px;
+					font-weight: 700;
+					line-height: 1;
+					letter-spacing: -0.04em;
+				}
+			}
+
+			.card-body {
+				display: flex;
+				flex-direction: column;
+				flex: 1;
+				padding: 22px;
+			}
+
+			.title-row,
+			.card-footer {
+				display: flex;
+				align-items: flex-start;
+				justify-content: space-between;
+				gap: 12px;
+			}
+
+			.title-copy {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				min-width: 0;
+			}
+
+			.vehicle-title {
+				color: var(--dashboard-text);
+				font-family: $font;
+				font-size: 23px;
+				font-weight: 700;
+				line-height: 1.08;
+				letter-spacing: -0.05em;
+				text-wrap: balance;
+			}
+
+			.location-row,
+			.stock-row,
+			.metric,
+			.dealer-box {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.location-row,
+			.stock-row {
+				color: var(--dashboard-muted);
+				font-family: $font;
+				font-size: 13px;
+				line-height: 1.6;
+
+				svg {
+					font-size: 18px;
+					color: var(--dashboard-secondary);
+				}
+			}
+
+			.status-pill {
+				padding: 8px 12px;
+				border-radius: 999px;
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				background: rgba(15, 23, 42, 0.06);
+				color: var(--dashboard-text);
+				flex-shrink: 0;
+
+				&.available {
+					background: rgba(26, 166, 88, 0.12);
+					color: #0c7a36;
+				}
+
+				&.reserved {
+					background: rgba(245, 158, 11, 0.14);
+					color: #b76c05;
+				}
+
+				&.sold {
+					background: rgba(99, 102, 241, 0.14);
+					color: #3243b4;
+				}
+			}
+
+			.spec-row {
+				margin-top: 18px;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+			}
+
+			.spec-pill {
+				padding: 8px 10px;
+				border-radius: 999px;
+				background: rgba(55, 85, 195, 0.08);
+				color: var(--dashboard-secondary);
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.04em;
+				text-transform: uppercase;
+			}
+
+			.stock-row {
+				margin-top: 16px;
+			}
+
+			.card-footer {
+				margin-top: auto;
+				padding-top: 22px;
+			}
+
+			.dealer-box {
+				min-width: 0;
+				flex: 1;
+
+				img {
+					width: 46px;
+					height: 46px;
+					border-radius: 16px;
+					object-fit: cover;
+					flex-shrink: 0;
+				}
+
+				strong,
+				span {
+					display: block;
+					font-family: $font;
+				}
+
+				strong {
+					color: var(--dashboard-text);
+					font-size: 14px;
+					font-weight: 700;
+					line-height: 1.3;
+				}
+
+				span {
+					margin-top: 5px;
+					color: var(--dashboard-muted);
+					font-size: 12px;
+					line-height: 1.6;
+				}
+			}
+
+			.placeholder {
+				align-items: flex-start;
+			}
+
+			.engagement-box {
+				display: inline-flex;
+				align-items: center;
+				gap: 10px;
+				flex-shrink: 0;
+			}
+
+			.metric,
+			.metric-count {
+				color: var(--dashboard-muted);
+				font-family: $font;
+				font-size: 12px;
+				font-weight: 600;
+			}
+
+			.metric svg,
+			.like-button svg {
+				font-size: 18px;
+			}
+
+			.like-button {
+				width: 38px;
+				height: 38px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid rgba(118, 135, 178, 0.16);
+				border-radius: 14px;
+				background: rgba(246, 249, 255, 0.92);
+				color: var(--dashboard-text);
+				cursor: pointer;
+				transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+
+				&:hover:not(:disabled) {
+					transform: translateY(-1px);
+					border-color: rgba(55, 85, 195, 0.22);
+				}
+
+				&:disabled {
+					cursor: default;
+					opacity: 0.72;
+				}
+			}
+
+			.skeleton {
+				.card-media,
+				.skeleton-line,
+				.skeleton-pill-row span,
+				.dealer-skeleton i,
+				.dealer-skeleton span,
+				.metric-skeleton span {
+					background: linear-gradient(90deg, rgba(220, 227, 238, 0.7) 25%, rgba(240, 244, 250, 0.96) 50%, rgba(220, 227, 238, 0.7) 75%);
+					background-size: 200% 100%;
+					animation: dashboard-skeleton 1.3s linear infinite;
+				}
+
+				.card-media {
+					min-height: 236px;
+				}
+
+				.skeleton-line {
+					height: 14px;
+					border-radius: 999px;
+
+					&.large {
+						width: 74%;
+						height: 18px;
+					}
+
+					&.medium {
+						margin-top: 14px;
+						width: 54%;
+					}
+
+					&.short {
+						margin-top: 18px;
+						width: 44%;
+					}
+				}
+
+				.skeleton-pill-row {
+					margin-top: 18px;
+					display: flex;
+					gap: 8px;
+
+					span {
+						width: 82px;
+						height: 32px;
+						border-radius: 999px;
+					}
+				}
+
+				.skeleton-footer {
+					margin-top: auto;
+					padding-top: 24px;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					gap: 12px;
+				}
+
+				.dealer-skeleton {
+					display: flex;
+					align-items: center;
+					gap: 10px;
+					flex: 1;
+
+					i {
+						width: 44px;
+						height: 44px;
+						border-radius: 14px;
+						flex-shrink: 0;
+					}
+
+					div {
+						display: flex;
+						flex-direction: column;
+						gap: 8px;
+						width: 100%;
+					}
+
+					span:first-child {
+						display: block;
+						width: 76%;
+						height: 12px;
+						border-radius: 999px;
+					}
+
+					span:last-child {
+						display: block;
+						width: 54%;
+						height: 12px;
+						border-radius: 999px;
+					}
+				}
+
+				.metric-skeleton {
+					display: flex;
+					gap: 8px;
+
+					span {
+						width: 34px;
+						height: 34px;
+						border-radius: 12px;
 					}
 				}
 			}
 		}
+	}
+}
+
+@keyframes dashboard-skeleton {
+	0% {
+		background-position: 200% 0;
+	}
+
+	100% {
+		background-position: -200% 0;
 	}
 }

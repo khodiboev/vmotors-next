@@ -15,23 +15,23 @@ interface TrustItem {
 const trustItems: TrustItem[] = [
 	{
 		icon: <VerifiedIcon />,
-		title: 'Verified Listings',
-		description: 'Every vehicle listing is reviewed and verified by our team before going live on the platform.',
+		title: 'Verified Inventory',
+		description: 'Every vehicle listing is reviewed before it appears on VMotors, keeping the shopping experience cleaner and more trustworthy.',
 	},
 	{
 		icon: <DirectionsCarIcon />,
-		title: 'Hyundai & Kia Certified',
-		description: 'We partner exclusively with authorized Hyundai and Kia dealers across Korea.',
+		title: 'Hyundai & Kia Focused',
+		description: 'A tighter catalog means clearer decisions for buyers comparing Korea’s most trusted mainstream brands.',
 	},
 	{
 		icon: <SearchIcon />,
-		title: 'Easy Online Browsing',
-		description: 'Search by brand, fuel type, transmission, and more — find exactly what you need in seconds.',
+		title: 'Smarter Search Flow',
+		description: 'Brand, fuel, and transmission filters stay front and center so high-intent buyers move faster.',
 	},
 	{
 		icon: <HandshakeIcon />,
-		title: 'Dealer Support',
-		description: 'Connect directly with certified dealers who are ready to guide you through your purchase.',
+		title: 'Trusted Dealer Support',
+		description: 'Connect directly with certified dealers who can guide you from shortlist to delivery-ready conversation.',
 	},
 ];
 
@@ -42,6 +42,12 @@ const TrustSection = () => {
 		return (
 			<Stack className={'trust-section'}>
 				<Stack className={'container'}>
+					<Stack className={'info-box'}>
+						<Box component={'div'} className={'left'}>
+							<span className={'white'}>Built for confident buyers</span>
+							<p className={'white'}>A more trusted way to browse Korea’s Hyundai and Kia market.</p>
+						</Box>
+					</Stack>
 					<Stack className={'trust-grid'}>
 						{trustItems.map((item) => (
 							<Box component={'div'} className={'trust-card'} key={item.title}>
@@ -60,8 +66,8 @@ const TrustSection = () => {
 			<Stack className={'container'}>
 				<Stack className={'info-box'}>
 					<Box component={'div'} className={'left'}>
-						<span className={'white'}>Why Choose VMotors</span>
-						<p className={'white'}>Your trusted partner in finding the perfect vehicle</p>
+						<span className={'white'}>Built for confident buyers</span>
+						<p className={'white'}>A more trusted way to browse Korea’s Hyundai and Kia market.</p>
 					</Box>
 				</Stack>
 				<Stack className={'trust-grid'}>

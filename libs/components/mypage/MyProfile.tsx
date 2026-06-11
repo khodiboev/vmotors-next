@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { MemberUpdate } from '../../types/member/member.update';
@@ -11,31 +14,27 @@ import { UPDATE_MEMBER } from '../../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../sweetAlert';
 import { Messages, REACT_APP_API_URL } from '../../config';
 
-const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
-	const device = useDeviceDetect();
+const MyProfile: NextPage = ({ initialValues }: any) => {
 	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
 	const [updateData, setUpdateData] = useState<MemberUpdate>(initialValues);
 
-	/** APOLLO REQUESTS **/
 	const [updateMember] = useMutation(UPDATE_MEMBER);
 
-	/** LIFECYCLES **/
 	useEffect(() => {
-		setUpdateData({
-			...updateData,
-			memberNick: user.memberNick,
-			memberPhone: user.memberPhone,
-			memberAddress: user.memberAddress,
-			memberImage: user.memberImage,
-		});
+		setUpdateData((prev) => ({
+			...prev,
+			memberNick: user?.memberNick ?? '',
+			memberPhone: user?.memberPhone ?? '',
+			memberAddress: user?.memberAddress ?? '',
+			memberImage: user?.memberImage ?? '',
+		}));
 	}, [user]);
 
-	/** HANDLERS **/
 	const uploadImage = async (e: any) => {
 		try {
 			const image = e.target.files[0];
-			console.log('+image:', image);
+			if (!image) return;
 
 			const formData = new FormData();
 			formData.append(
@@ -67,9 +66,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			});
 
 			const responseImage = response.data.data.imageUploader;
-			console.log('+responseImage: ', responseImage);
-			updateData.memberImage = responseImage;
-			setUpdateData({ ...updateData });
+			setUpdateData((prev) => ({ ...prev, memberImage: responseImage }));
 
 			return `${REACT_APP_API_URL}/${responseImage}`;
 		} catch (err) {
@@ -80,10 +77,12 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 	const updatePropertyHandler = useCallback(async () => {
 		try {
 			if (!user._id) throw new Error(Messages.error2);
-			updateData._id = user._id;
 			const result = await updateMember({
 				variables: {
-					input: updateData,
+					input: {
+						...updateData,
+						_id: user._id,
+					},
 				},
 			});
 
@@ -91,97 +90,118 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 			const jwtToken = result.data.updateMember?.accessToken;
 			updateStorage({ jwtToken });
 			updateUserInfo(result.data.updateMember?.accessToken);
-			await sweetMixinSuccessAlert('information updated successfully.');
+			await sweetMixinSuccessAlert('Profile updated successfully.');
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
-	}, [updateData]);
+	}, [updateData, updateMember, user]);
 
-	const doDisabledCheck = () => {
-		if (
-			updateData.memberNick === '' ||
-			updateData.memberPhone === '' ||
-			updateData.memberAddress === '' ||
-			updateData.memberImage === ''
-		) {
-			return true;
-		}
-	};
+	const isUpdateDisabled =
+		updateData.memberNick === '' ||
+		updateData.memberPhone === '' ||
+		updateData.memberAddress === '' ||
+		updateData.memberImage === '';
 
-	console.log('+updateData', updateData);
+	const profileImage = updateData?.memberImage ? `${REACT_APP_API_URL}/${updateData.memberImage}` : '/img/profile/defaultUser.svg';
 
-	if (device === 'mobile') {
-		return <>MY PROFILE PAGE MOBILE</>;
-	} else
-		return (
-			<div id="my-profile-page">
-				<Stack className="main-title-box">
-					<Stack className="right-box">
-						<Typography className="main-title">My Profile</Typography>
-						<Typography className="sub-title">We are glad to see you again!</Typography>
-					</Stack>
+	return (
+		<div id="my-profile-page">
+			<Stack className="dashboard-section-shell">
+				<Stack className="dashboard-shell-header">
+					<div className={'copy'}>
+						<span className={'section-kicker'}>Profile settings</span>
+						<Typography className="main-title">Your VMotors account profile</Typography>
+						<Typography className="sub-title">Keep your contact details, location, and profile image ready for buyers, dealers, and community activity.</Typography>
+					</div>
+					<div className={'shell-badge'}>
+						<SettingsOutlinedIcon />
+						<span>{user?.memberType === 'AGENT' ? 'Dealer account' : 'Buyer account'}</span>
+					</div>
 				</Stack>
-				<Stack className="top-box">
+
+				<Stack className="profile-overview-grid">
+					<article className={'overview-card'}>
+						<div className={'overview-icon'}>
+							<BadgeOutlinedIcon />
+						</div>
+						<div>
+							<strong>{user?.memberNick || 'VMotors member'}</strong>
+							<span>Display name</span>
+						</div>
+					</article>
+					<article className={'overview-card'}>
+						<div className={'overview-icon'}>
+							<LocalPhoneOutlinedIcon />
+						</div>
+						<div>
+							<strong>{user?.memberPhone || 'Not set yet'}</strong>
+							<span>Primary contact</span>
+						</div>
+					</article>
+					<article className={'overview-card'}>
+						<div className={'overview-icon'}>
+							<LocationOnOutlinedIcon />
+						</div>
+						<div>
+							<strong>{user?.memberAddress || 'Add your region'}</strong>
+							<span>Marketplace location</span>
+						</div>
+					</article>
+				</Stack>
+
+				<Stack className="profile-editor-shell">
 					<Stack className="photo-box">
-						<Typography className="title">Photo</Typography>
+						<div className={'section-title-row'}>
+							<Typography className="title">Profile image</Typography>
+							<Typography className="helper-copy">Use a clean photo to strengthen trust across VMotors.</Typography>
+						</div>
 						<Stack className="image-big-box">
 							<Stack className="image-box">
-								<img
-									src={
-										updateData?.memberImage
-											? `${REACT_APP_API_URL}/${updateData?.memberImage}`
-											: `/img/profile/defaultUser.svg`
-									}
-									alt=""
-								/>
+								<img src={profileImage} alt={user?.memberNick || 'VMotors member'} />
 							</Stack>
 							<Stack className="upload-big-box">
-								<input
-									type="file"
-									hidden
-									id="hidden-input"
-									onChange={uploadImage}
-									accept="image/jpg, image/jpeg, image/png"
-								/>
+								<input type="file" hidden id="hidden-input" onChange={uploadImage} accept="image/jpg, image/jpeg, image/png" />
 								<label htmlFor="hidden-input" className="labeler">
-									<Typography>Upload Profile Image</Typography>
+									<Typography>Upload profile image</Typography>
 								</label>
-								<Typography className="upload-text">A photo must be in JPG, JPEG or PNG format!</Typography>
+								<Typography className="upload-text">JPG, JPEG, or PNG files work best for a crisp marketplace profile.</Typography>
 							</Stack>
 						</Stack>
 					</Stack>
-					<Stack className="small-input-box">
+
+					<Stack className="profile-form-grid">
 						<Stack className="input-box">
-							<Typography className="title">Username</Typography>
+							<Typography className="title">Display name</Typography>
 							<input
 								type="text"
-								placeholder="Your username"
+								placeholder="Your display name"
 								value={updateData.memberNick}
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberNick: value })}
 							/>
 						</Stack>
 						<Stack className="input-box">
-							<Typography className="title">Phone</Typography>
+							<Typography className="title">Phone number</Typography>
 							<input
 								type="text"
-								placeholder="Your Phone"
+								placeholder="Your phone number"
 								value={updateData.memberPhone}
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberPhone: value })}
 							/>
 						</Stack>
+						<Stack className="input-box full-width">
+							<Typography className="title">Location</Typography>
+							<input
+								type="text"
+								placeholder="Your city or region"
+								value={updateData.memberAddress}
+								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
+							/>
+						</Stack>
 					</Stack>
-					<Stack className="address-box">
-						<Typography className="title">Address</Typography>
-						<input
-							type="text"
-							placeholder="Your address"
-							value={updateData.memberAddress}
-							onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
-						/>
-					</Stack>
+
 					<Stack className="about-me-box">
-						<Button className="update-button" onClick={updatePropertyHandler} disabled={doDisabledCheck()}>
-							<Typography>Update Profile</Typography>
+						<Button className="update-button" onClick={updatePropertyHandler} disabled={isUpdateDisabled}>
+							<Typography>Update profile</Typography>
 							<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
 								<g clipPath="url(#clip0_7065_6985)">
 									<path
@@ -198,8 +218,9 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 						</Button>
 					</Stack>
 				</Stack>
-			</div>
-		);
+			</Stack>
+		</div>
+	);
 };
 
 MyProfile.defaultProps = {

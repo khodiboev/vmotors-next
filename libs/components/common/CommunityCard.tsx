@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 
 interface CommunityCardProps {
 	boardArticle: BoardArticle;
@@ -23,9 +24,8 @@ const CommunityCard = (props: CommunityCardProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
-	const imagePath: string = boardArticle?.articleImage
-		? `${REACT_APP_API_URL}/${boardArticle?.articleImage}`
-		: '/img/community/communityImg.png';
+	const hasImage = Boolean(boardArticle?.articleImage);
+	const imagePath: string = hasImage ? `${REACT_APP_API_URL}/${boardArticle?.articleImage}` : '';
 
 	/** HANDLERS **/
 	const chooseArticleHandler = (e: React.SyntheticEvent, boardArticle: BoardArticle) => {
@@ -54,7 +54,13 @@ const CommunityCard = (props: CommunityCardProps) => {
 				onClick={(e) => chooseArticleHandler(e, boardArticle)}
 			>
 				<Stack className="image-box">
-					<img src={imagePath} alt="" className="card-img" />
+					{hasImage ? (
+						<img src={imagePath} alt="" className="card-img" />
+					) : (
+						<div className="card-img-placeholder">
+							<ArticleOutlinedIcon />
+						</div>
+					)}
 				</Stack>
 				<Stack className="desc-box" sx={{ marginTop: '-20px' }}>
 					<Stack>

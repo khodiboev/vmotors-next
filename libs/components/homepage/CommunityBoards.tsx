@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Stack, Typography } from '@mui/material';
-import CommunityCard from './CommunityCard';
+import { Box, Stack } from '@mui/material';
 import { BoardArticle } from '../../types/board-article/board-article';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 import { useQuery } from '@apollo/client';
 import { BoardArticleCategory } from '../../enums/board-article.enum';
 import { T } from '../../types/common';
+import HomepageCommunityCard from './HomepageCommunityCard';
 
 const CommunityBoards = () => {
 	const device = useDeviceDetect();
-	const [searchCommunity, setSearchCommunity] = useState({
+	const [searchCommunity] = useState({
 		page: 1,
 		sort: 'articleViews',
 		direction: 'DESC',
@@ -19,82 +19,78 @@ const CommunityBoards = () => {
 	const [newsArticles, setNewsArticles] = useState<BoardArticle[]>([]);
 	const [freeArticles, setFreeArticles] = useState<BoardArticle[]>([]);
 
-/** APOLLO REQUESTS **/
-const {
-  loading: getNewsArticlesLoading,
-  data: getNewsArticlesData,
-  error: getNewsArticlesError,
-  refetch: getNewsArticlesRefetch,
-} = useQuery(GET_BOARD_ARTICLES, {
-  fetchPolicy: "network-only",
-  variables: {
-    input: {
-      ...searchCommunity,
-      limit: 6,
-      search: { articleCategory: BoardArticleCategory.NEWS },
-    },
-  },
-  notifyOnNetworkStatusChange: true,
-  onCompleted: (data: T) => {
-    setNewsArticles(data?.getBoardArticles?.list);
-  },
-});
+	/** APOLLO REQUESTS **/
+	useQuery(GET_BOARD_ARTICLES, {
+		fetchPolicy: 'network-only',
+		variables: {
+			input: {
+				...searchCommunity,
+				limit: 3,
+				search: { articleCategory: BoardArticleCategory.NEWS },
+			},
+		},
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setNewsArticles(data?.getBoardArticles?.list ?? []);
+		},
+	});
 
-const {
-  loading: getFreeArticlesLoading,
-  data: getFreeArticlesData,
-  error: getFreeArticlesError,
-  refetch: getFreeArticlesRefetch,
-} = useQuery(GET_BOARD_ARTICLES, {
-  fetchPolicy: "network-only",
-  variables: {
-    input: {
-      ...searchCommunity,
-      limit: 3,
-      search: { articleCategory: BoardArticleCategory.FREE },
-    },
-  },
-  notifyOnNetworkStatusChange: true,
-  onCompleted: (data: T) => {
-    setFreeArticles(data?.getBoardArticles?.list);
-  },
-});
-
+	useQuery(GET_BOARD_ARTICLES, {
+		fetchPolicy: 'network-only',
+		variables: {
+			input: {
+				...searchCommunity,
+				limit: 3,
+				search: { articleCategory: BoardArticleCategory.FREE },
+			},
+		},
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setFreeArticles(data?.getBoardArticles?.list ?? []);
+		},
+	});
 
 	if (device === 'mobile') {
-		return <div>COMMUNITY BOARDS (MOBILE)</div>;
-	} else {
 		return (
 			<Stack className={'community-board'}>
 				<Stack className={'container'}>
-					<Stack>
-						<Typography variant={'h1'}>COMMUNITY BOARD HIGHLIGHTS</Typography>
+					<Stack className={'info-box'}>
+						<Box component={'div'} className={'left'}>
+							<span>Community Highlights</span>
+							<p>News, owner stories, and updates from the VMotors community.</p>
+						</Box>
 					</Stack>
-					<Stack className="community-main">
-						<Stack className={'community-left'}>
-							<Stack className={'content-top'}>
-								<Link href={'/community?articleCategory=NEWS'}>
-									<span>News</span>
-								</Link>
-								<img src="/img/icons/arrowBig.svg" alt="" />
-							</Stack>
+
+					<Stack className={'community-main mobile'}>
+						<Stack className={'community-column'}>
+							<div className={'content-top'}>
+								<span>News</span>
+								<Link href={'/community?articleCategory=NEWS'}>See all</Link>
+							</div>
 							<Stack className={'card-wrap'}>
-								{newsArticles.map((article, index) => {
-									return <CommunityCard vertical={true} article={article} index={index} key={article?._id} />;
-								})}
+								{newsArticles.length > 0 ? (
+									newsArticles.slice(0, 3).map((article) => (
+										<HomepageCommunityCard article={article} key={article?._id} />
+									))
+								) : (
+									<div className={'community-empty'}>No articles yet</div>
+								)}
 							</Stack>
 						</Stack>
-						<Stack className={'community-right'}>
-							<Stack className={'content-top'}>
-								<Link href={'/community?articleCategory=FREE'}>
-									<span>Free</span>
-								</Link>
-								<img src="/img/icons/arrowBig.svg" alt="" />
-							</Stack>
-							<Stack className={'card-wrap vertical'}>
-								{freeArticles.map((article, index) => {
-									return <CommunityCard vertical={false} article={article} index={index} key={article?._id} />;
-								})}
+
+						<Stack className={'community-column'}>
+							<div className={'content-top'}>
+								<span>Stories</span>
+								<Link href={'/community?articleCategory=FREE'}>See all</Link>
+							</div>
+							<Stack className={'card-wrap'}>
+								{freeArticles.length > 0 ? (
+									freeArticles.slice(0, 3).map((article) => (
+										<HomepageCommunityCard article={article} key={article?._id} />
+									))
+								) : (
+									<div className={'community-empty'}>No articles yet</div>
+								)}
 							</Stack>
 						</Stack>
 					</Stack>
@@ -102,6 +98,52 @@ const {
 			</Stack>
 		);
 	}
+
+	return (
+		<Stack className={'community-board'}>
+			<Stack className={'container'}>
+				<Stack className={'info-box'}>
+					<Box component={'div'} className={'left'}>
+						<span>Community Highlights</span>
+						<p>News, owner stories, and updates from the broader VMotors automotive conversation.</p>
+					</Box>
+				</Stack>
+				<Stack className={'community-main'}>
+					<Stack className={'community-column'}>
+						<div className={'content-top'}>
+							<span>Market News</span>
+							<Link href={'/community?articleCategory=NEWS'}>See all</Link>
+						</div>
+						<Stack className={'card-wrap'}>
+							{newsArticles.length > 0 ? (
+								newsArticles.slice(0, 3).map((article) => (
+									<HomepageCommunityCard article={article} key={article?._id} />
+								))
+							) : (
+								<div className={'community-empty'}>No articles yet</div>
+							)}
+						</Stack>
+					</Stack>
+
+					<Stack className={'community-column'}>
+						<div className={'content-top'}>
+							<span>Owner Stories</span>
+							<Link href={'/community?articleCategory=FREE'}>See all</Link>
+						</div>
+						<Stack className={'card-wrap'}>
+							{freeArticles.length > 0 ? (
+								freeArticles.slice(0, 3).map((article) => (
+									<HomepageCommunityCard article={article} key={article?._id} />
+								))
+							) : (
+								<div className={'community-empty'}>No articles yet</div>
+							)}
+						</Stack>
+					</Stack>
+				</Stack>
+			</Stack>
+		</Stack>
+	);
 };
 
 export default CommunityBoards;

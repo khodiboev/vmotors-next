@@ -1,6 +1,6 @@
 import React from 'react';
-import VehicleCard from '../property/PropertyCard';
 import { Vehicle } from '../../types/vehicle/vehicle';
+import HomepageVehicleCard from './HomepageVehicleCard';
 
 interface TrendPropertyCardProps {
 	property: Vehicle;
@@ -8,7 +8,7 @@ interface TrendPropertyCardProps {
 }
 
 const TrendPropertyCard = ({ property, likePropertyHandler }: TrendPropertyCardProps) => {
-	return <VehicleCard property={property} likePropertyHandler={likePropertyHandler} />;
+	return <HomepageVehicleCard property={property} likePropertyHandler={likePropertyHandler} />;
 };
 
 export default TrendPropertyCard;

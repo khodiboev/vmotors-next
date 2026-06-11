@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { PropertyCard } from './PropertyCard';
 import { Vehicle } from '../../types/vehicle/vehicle';
 import { DealerVehiclesInquiry } from '../../types/vehicle/vehicle.input';
@@ -15,7 +17,6 @@ import { GET_DEALER_VEHICLES } from '../../../apollo/user/query';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
 
 const MyProperties: NextPage = ({ initialInput }: any) => {
-	const device = useDeviceDetect();
 	const [searchFilter, setSearchFilter] = useState<DealerVehiclesInquiry>(initialInput);
 	const [dealerVehicles, setDealerVehicles] = useState<Vehicle[]>([]);
 	const [total, setTotal] = useState<number>(0);
@@ -24,7 +25,7 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 
 	const [updateVehicle] = useMutation(UPDATE_VEHICLE);
 
-	const { refetch: getDealerVehiclesRefetch } = useQuery(GET_DEALER_VEHICLES, {
+	const { loading, refetch: getDealerVehiclesRefetch } = useQuery(GET_DEALER_VEHICLES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
@@ -33,6 +34,10 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 			setTotal(data?.getDealerVehicles?.metaCounter?.[0]?.total ?? 0);
 		},
 	});
+
+	useEffect(() => {
+		if (user?._id && user?.memberType !== 'AGENT') router.back();
+	}, [router, user]);
 
 	const paginationHandler = (e: T, value: number) => setSearchFilter({ ...searchFilter, page: value });
 	const changeStatusHandler = (value: VehicleStatus) => setSearchFilter({ ...searchFilter, search: { vehicleStatus: value } });
@@ -48,63 +53,119 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 		}
 	};
 
-	if (user?.memberType !== 'AGENT') router.back();
-	if (device === 'mobile') return <div>VMOTORS VEHICLES MOBILE</div>;
-
 	return (
 		<div id="my-property-page">
-			<Stack className="main-title-box">
-				<Stack className="right-box">
-					<Typography className="main-title">My Vehicles</Typography>
-					<Typography className="sub-title">Manage your new-car inventory.</Typography>
+			<Stack className="dashboard-section-shell">
+				<Stack className="dashboard-shell-header">
+					<div className={'copy'}>
+						<span className={'section-kicker'}>Dealer inventory</span>
+						<Typography className="main-title">Manage your live vehicle listings</Typography>
+						<Typography className="sub-title">Track availability, update status, and keep your Hyundai and Kia inventory ready for serious buyers on VMotors.</Typography>
+					</div>
+					<div className={'shell-badge'}>
+						<Inventory2OutlinedIcon />
+						<span>{total} active vehicle{total === 1 ? '' : 's'}</span>
+					</div>
 				</Stack>
-			</Stack>
-			<Stack className="property-list-box">
-				<Stack className="tab-name-box">
-					{Object.values(VehicleStatus).map((status) => (
-						<Typography
-							key={status}
-							onClick={() => changeStatusHandler(status)}
-							className={searchFilter.search.vehicleStatus === status ? 'active-tab-name' : 'tab-name'}
-						>
-							{status}
-						</Typography>
-					))}
-				</Stack>
-				<Stack className="list-box">
-					<Stack className="listing-title-box">
-						<Typography className="title-text">Vehicle</Typography>
-						<Typography className="title-text">Date Published</Typography>
-						<Typography className="title-text">Status</Typography>
-						<Typography className="title-text">Views</Typography>
-						<Typography className="title-text">Action</Typography>
-					</Stack>
-					{dealerVehicles.length === 0 ? (
-						<div className={'no-data'}>
-							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No vehicle found!</p>
+
+				<Stack className="dashboard-mini-metrics">
+					<article className={'mini-metric-card'}>
+						<div className={'metric-icon'}>
+							<Inventory2OutlinedIcon />
 						</div>
-					) : (
-						dealerVehicles.map((vehicle) => (
-							<PropertyCard key={vehicle._id} property={vehicle} updatePropertyHandler={updatePropertyHandler} />
-						))
-					)}
-					{dealerVehicles.length !== 0 && (
-						<Stack className="pagination-config">
-							<Stack className="pagination-box">
-								<Pagination
-									count={Math.ceil(total / searchFilter.limit)}
-									page={searchFilter.page}
-									shape="circular"
-									color="primary"
-									onChange={paginationHandler}
-								/>
-							</Stack>
-							<Stack className="total-result">
-								<Typography>{total} vehicle{total > 1 ? 's' : ''} available</Typography>
-							</Stack>
+						<div>
+							<strong>{total}</strong>
+							<span>Visible inventory</span>
+						</div>
+					</article>
+					<article className={'mini-metric-card'}>
+						<div className={'metric-icon'}>
+							<VerifiedOutlinedIcon />
+						</div>
+						<div>
+							<strong>{searchFilter.search.vehicleStatus}</strong>
+							<span>Current status filter</span>
+						</div>
+					</article>
+					<article className={'mini-metric-card'}>
+						<div className={'metric-icon'}>
+							<VisibilityOutlinedIcon />
+						</div>
+						<div>
+							<strong>{searchFilter.page}</strong>
+							<span>Current page</span>
+						</div>
+					</article>
+				</Stack>
+
+				<Stack className="property-list-box">
+					<Stack className="tab-name-box">
+						{Object.values(VehicleStatus).map((status) => (
+							<button
+								type="button"
+								key={status}
+								onClick={() => changeStatusHandler(status)}
+								className={searchFilter.search.vehicleStatus === status ? 'active-tab-name' : 'tab-name'}
+							>
+								{status}
+							</button>
+						))}
+					</Stack>
+
+					<Stack className="list-box">
+						<Stack className="listing-title-box">
+							<Typography className="title-text">Vehicle</Typography>
+							<Typography className="title-text">Published</Typography>
+							<Typography className="title-text">Status</Typography>
+							<Typography className="title-text">Views</Typography>
+							<Typography className="title-text">Actions</Typography>
 						</Stack>
-					)}
+
+						{loading && !dealerVehicles.length
+							? Array.from({ length: 4 }).map((_, index) => (
+									<div className={'inventory-row-skeleton'} key={`inventory-skeleton-${index}`}>
+										<div className={'vehicle-block'} />
+										<div className={'date-block'} />
+										<div className={'status-block'} />
+										<div className={'views-block'} />
+										<div className={'actions-block'} />
+									</div>
+							  ))
+							: null}
+
+						{!loading && dealerVehicles.length === 0 ? (
+							<div className={'dashboard-empty-state'}>
+								<div className={'empty-icon'}>
+									<Inventory2OutlinedIcon />
+								</div>
+								<strong>No vehicles found</strong>
+								<p>Try another status filter or add a fresh vehicle listing to expand your dealer inventory.</p>
+							</div>
+						) : null}
+
+						{dealerVehicles.length !== 0
+							? dealerVehicles.map((vehicle) => (
+									<PropertyCard key={vehicle._id} property={vehicle} updatePropertyHandler={updatePropertyHandler} />
+							  ))
+							: null}
+
+						{dealerVehicles.length !== 0 && (
+							<Stack className="pagination-config">
+								<Stack className="pagination-box">
+									<Pagination
+										count={Math.ceil(total / searchFilter.limit)}
+										page={searchFilter.page}
+										shape="circular"
+										color="primary"
+										onChange={paginationHandler}
+									/>
+								</Stack>
+								<Stack className="total-result">
+									<Typography>{total} vehicle{total === 1 ? '' : 's'} available</Typography>
+								</Stack>
+							</Stack>
+						)}
+					</Stack>
 				</Stack>
 			</Stack>
 		</div>

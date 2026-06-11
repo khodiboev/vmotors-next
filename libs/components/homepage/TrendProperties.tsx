@@ -3,6 +3,8 @@ import { Stack, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
+import { motion, useReducedMotion } from 'framer-motion';
+import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Property } from '../../types/vehicle/vehicle';
@@ -19,9 +21,12 @@ interface TrendPropertiesProps {
 	initialInput: PropertiesInquiry;
 }
 
+const premiumEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 const TrendProperties = (props: TrendPropertiesProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
+	const shouldReduceMotion = useReducedMotion();
 	const [trendProperties, setTrendProperties] = useState<Property[]>([]);
 
 	/** APOLLO REQUESTS **/
@@ -62,38 +67,116 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		}
 	};
 
+	const sectionVariants = shouldReduceMotion
+		? {
+				hidden: { opacity: 1 },
+				visible: {
+					opacity: 1,
+					transition: {
+						staggerChildren: 0,
+						delayChildren: 0,
+					},
+				},
+		  }
+		: {
+				hidden: { opacity: 1 },
+				visible: {
+					opacity: 1,
+					transition: {
+						staggerChildren: 0.09,
+						delayChildren: 0.08,
+					},
+				},
+		  };
+
+	const headerVariants = shouldReduceMotion
+		? {
+				hidden: { opacity: 1, y: 0 },
+				visible: {
+					opacity: 1,
+					y: 0,
+					transition: { duration: 0.01 },
+				},
+		  }
+		: {
+				hidden: { opacity: 0, y: 24 },
+				visible: {
+					opacity: 1,
+					y: 0,
+					transition: {
+						duration: 0.55,
+						ease: premiumEase,
+					},
+				},
+		  };
+
+	const cardVariants = shouldReduceMotion
+		? {
+				hidden: { opacity: 1, y: 0 },
+				visible: {
+					opacity: 1,
+					y: 0,
+					transition: { duration: 0.01 },
+				},
+		  }
+		: {
+				hidden: { opacity: 0, y: 28 },
+				visible: {
+					opacity: 1,
+					y: 0,
+					transition: {
+						duration: 0.62,
+						ease: premiumEase,
+					},
+				},
+		  };
+
 	if (!trendProperties) return null;
 
 	if (device === 'mobile') {
 		return (
 			<Stack className={'trend-vehicles'}>
 				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<span>Trending Now</span>
-					</Stack>
-					<Stack className={'card-box'}>
-						{trendProperties.length === 0 ? (
-							<Box component={'div'} className={'empty-list'}>
-								Trends Empty
-							</Box>
-						) : (
-							<Swiper
-								className={'trend-property-swiper'}
-								slidesPerView={'auto'}
-								centeredSlides={true}
-								spaceBetween={15}
-								modules={[Autoplay]}
-							>
-								{trendProperties.map((property: Property) => {
-									return (
-										<SwiperSlide key={property._id} className={'trend-property-slide'}>
-											<TrendPropertyCard property={property} likePropertyHandler={likePropertyHandler} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
-						)} 
-					</Stack>
+					<motion.div
+						className={'section-motion-shell'}
+						variants={sectionVariants}
+						initial={'hidden'}
+						whileInView={'visible'}
+						viewport={{ once: true, amount: 0.2 }}
+					>
+						<motion.div className={'section-motion-header'} variants={headerVariants}>
+							<Stack className={'info-box'}>
+								<span>New Arrivals</span>
+							</Stack>
+						</motion.div>
+						<Stack className={'card-box'}>
+							{trendProperties.length === 0 ? (
+								<motion.div className={'section-motion-empty'} variants={headerVariants}>
+									<Box component={'div'} className={'empty-list'}>
+										Trends Empty
+									</Box>
+								</motion.div>
+							) : (
+								<Swiper
+									className={'trend-property-swiper'}
+									slidesPerView={'auto'}
+									centeredSlides={true}
+									spaceBetween={15}
+									modules={[Autoplay]}
+								>
+									{trendProperties.map((property: Property) => {
+										return (
+											<SwiperSlide key={property._id} className={'trend-property-slide'}>
+												<motion.div className={'section-motion-card'} variants={cardVariants}>
+													<TrendPropertyCard property={property} likePropertyHandler={likePropertyHandler} />
+												</motion.div>
+											</SwiperSlide>
+										);
+									})}
+								</Swiper>
+							)}
+						</Stack>
+					</motion.div>
 				</Stack>
 			</Stack>
 		);
@@ -101,48 +184,70 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		return (
 			<Stack className={'trend-vehicles'}>
 				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<Box component={'div'} className={'left'}>
-							<span>Trending Now</span>
-							<p>Most liked vehicles this week</p>
-						</Box>
-						<Box component={'div'} className={'right'}>
-							<div className={'pagination-box'}>
-								<WestIcon className={'swiper-trend-prev'} />
-								<div className={'swiper-trend-pagination'}></div>
-								<EastIcon className={'swiper-trend-next'} />
-							</div>
-						</Box>
-					</Stack>
-					<Stack className={'card-box'}>
-						{trendProperties.length === 0 ? (
-							<Box component={'div'} className={'empty-list'}>
-								Trends Empty
-							</Box>
-						) : (
-							<Swiper
-								className={'trend-property-swiper'}
-								slidesPerView={'auto'}
-								spaceBetween={15}
-								modules={[Autoplay, Navigation, Pagination]}
-								navigation={{
-									nextEl: '.swiper-trend-next',
-									prevEl: '.swiper-trend-prev',
-								}}
-								pagination={{
-									el: '.swiper-trend-pagination',
-								}}
-							>
-								{trendProperties.map((property: Property) => {
-									return (
-										<SwiperSlide key={property._id} className={'trend-property-slide'}>
-											<TrendPropertyCard property={property} likePropertyHandler={likePropertyHandler} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
-						)}
-					</Stack>
+					<motion.div
+						className={'section-motion-shell'}
+						variants={sectionVariants}
+						initial={'hidden'}
+						whileInView={'visible'}
+						viewport={{ once: true, amount: 0.2 }}
+					>
+						<motion.div className={'section-motion-header'} variants={headerVariants}>
+							<Stack className={'info-box'}>
+								<Box component={'div'} className={'left'}>
+									<span>New Arrivals</span>
+									<p>The latest Hyundai and Kia listings just added to VMotors.</p>
+								</Box>
+								<Box component={'div'} className={'right'}>
+									<div className={'more-box'}>
+										<Link href={'/vehicle'}>
+											<span>Browse all vehicles</span>
+										</Link>
+										<img src="/img/icons/rightup.svg" alt="" />
+									</div>
+									<div className={'pagination-box'}>
+										<WestIcon className={'swiper-trend-prev'} />
+										<div className={'swiper-trend-pagination'}></div>
+										<EastIcon className={'swiper-trend-next'} />
+									</div>
+								</Box>
+							</Stack>
+						</motion.div>
+						<Stack className={'card-box'}>
+							{trendProperties.length === 0 ? (
+								<motion.div className={'section-motion-empty'} variants={headerVariants}>
+									<Box component={'div'} className={'empty-list'}>
+										Trends Empty
+									</Box>
+								</motion.div>
+							) : (
+								<Swiper
+									className={'trend-property-swiper'}
+									slidesPerView={4}
+									spaceBetween={20}
+									watchOverflow={true}
+									modules={[Autoplay, Navigation, Pagination]}
+									navigation={{
+										nextEl: '.swiper-trend-next',
+										prevEl: '.swiper-trend-prev',
+									}}
+									pagination={{
+										el: '.swiper-trend-pagination',
+										clickable: true,
+									}}
+								>
+									{trendProperties.map((property: Property) => {
+										return (
+											<SwiperSlide key={property._id} className={'trend-property-slide'}>
+												<motion.div className={'section-motion-card'} variants={cardVariants}>
+													<TrendPropertyCard property={property} likePropertyHandler={likePropertyHandler} />
+												</motion.div>
+											</SwiperSlide>
+										);
+									})}
+								</Swiper>
+							)}
+						</Stack>
+					</motion.div>
 				</Stack>
 			</Stack>
 		);
@@ -152,8 +257,8 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 TrendProperties.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 8,
-		sort: 'vehicleLikes',
+		limit: 12,
+		sort: 'createdAt',
 		direction: 'DESC',
 		search: {},
 	},

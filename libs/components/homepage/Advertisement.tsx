@@ -1,41 +1,28 @@
 import React from 'react';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Stack } from '@mui/material';
+import { useRouter } from 'next/router';
 
 const Advertisement = () => {
-	const device = useDeviceDetect();
+	const router = useRouter();
 
-	if (device == 'mobile') {
-		return (
-			<Stack className={'video-frame'}>
-				<video
-					autoPlay
-					muted
-					loop
-					playsInline
-					preload="auto"
-					style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-				>
-					<source src="/video/ads.mov" type="video/mp4" />
-				</video>
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'video-frame'}>
-				<video
-					autoPlay
-					muted
-					loop
-					playsInline
-					preload="auto"
-					style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-				>
-					<source src="/video/ads.mov" type="video/mp4" />
-				</video>
-			</Stack>
-		);
-	}
+	return (
+		<div className={'video-frame'}>
+			<div className={'video-overlay'}>
+				<span className={'video-eyebrow'}>Cinematic brand moment</span>
+				<h3>Premium presentation, real vehicle discovery.</h3>
+				<p>VMotors keeps the browsing experience elegant while your next shortlist takes shape.</p>
+				<button onClick={() => router.push('/vehicle')}>Explore inventory</button>
+			</div>
+			<video
+				autoPlay
+				muted
+				loop
+				playsInline
+				preload="auto"
+			>
+				<source src="/video/ads.mp4" type="video/mp4" />
+			</video>
+		</div>
+	);
 };
 
 export default Advertisement;

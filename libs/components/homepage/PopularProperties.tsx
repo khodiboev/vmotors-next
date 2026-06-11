@@ -76,12 +76,12 @@ const PopularProperties = (props: PopularPropertiesProps) => {
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
 							<span>Most Popular</span>
-							<p>Top viewed vehicles right now</p>
+							<p>Most viewed listings for buyers building their shortlist.</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'more-box'}>
 								<Link href={'/vehicle'}>
-									<span>Browse All Vehicles</span>
+									<span>Browse all vehicles</span>
 								</Link>
 								<img src="/img/icons/rightup.svg" alt="" />
 							</div>

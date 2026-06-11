@@ -1,6 +1,6 @@
 import React from 'react';
-import VehicleCard from '../property/PropertyCard';
 import { Vehicle } from '../../types/vehicle/vehicle';
+import HomepageVehicleCard from './HomepageVehicleCard';
 
 interface TopPropertyCardProps {
 	property: Vehicle;
@@ -8,7 +8,7 @@ interface TopPropertyCardProps {
 }
 
 const TopPropertyCard = ({ property, likePropertyHandler }: TopPropertyCardProps) => {
-	return <VehicleCard property={property} likePropertyHandler={likePropertyHandler} />;
+	return <HomepageVehicleCard property={property} likePropertyHandler={likePropertyHandler} />;
 };
 
 export default TopPropertyCard;

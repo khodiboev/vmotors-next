@@ -60,6 +60,10 @@ const HeaderFilter = () => {
 			animate="visible"
 		>
 			<div className={'liquid-sheen'} />
+			<div className={'search-box-copy'}>
+				<span className={'search-kicker'}>Smart vehicle search</span>
+				<p>Filter Hyundai and Kia inventory by the essentials, then jump straight into live listings.</p>
+			</div>
 			<div className={'select-box'}>
 				<motion.div className={'box'} variants={filterItemVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22 }}>
 					<span className={'filter-label'}>{t('Brand')}</span>
@@ -153,6 +157,7 @@ const HeaderFilter = () => {
 				>
 					<Button className={'search-btn'} onClick={pushSearchHandler} aria-label={t('Search')}>
 						<img src="/img/icons/search_white.svg" alt="" />
+						<span>{t('Search')}</span>
 					</Button>
 				</motion.div>
 			</div>

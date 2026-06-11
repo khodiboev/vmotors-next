@@ -1,64 +1,93 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
-import PropertyCard from '../property/PropertyCard';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import { useQuery } from '@apollo/client';
 import { Property } from '../../types/vehicle/vehicle';
 import { T } from '../../types/common';
-import { useQuery } from '@apollo/client';
 import { GET_VISITED } from '../../../apollo/user/query';
+import DashboardVehicleCard, { DashboardVehicleCardSkeleton } from './DashboardVehicleCard';
 
 const RecentlyVisited: NextPage = () => {
-	const device = useDeviceDetect();
 	const [recentlyVisited, setRecentlyVisited] = useState<Property[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [searchVisited, setSearchVisited] = useState<T>({ page: 1, limit: 6 });
 
-	/** APOLLO REQUESTS **/
-	const {
-		loading: getVisitedLoading,
-		data: getVisitedData,
-		error: getVisitedError,
-		refetch: getVisitedRefetch,
-	} = useQuery(GET_VISITED, {
+	const { loading: getVisitedLoading } = useQuery(GET_VISITED, {
 		fetchPolicy: 'network-only',
 		variables: {
 			input: searchVisited,
 		},
+		notifyOnNetworkStatusChange: true,
 		onCompleted(data: T) {
-			setRecentlyVisited(data.getVisited?.list);
+			setRecentlyVisited(data.getVisited?.list ?? []);
 			setTotal(data.getVisited?.metaCounter?.[0]?.total || 0);
 		},
 	});
 
-	/** HANDLERS **/
 	const paginationHandler = (e: T, value: number) => {
 		setSearchVisited({ ...searchVisited, page: value });
 	};
 
-	if (device === 'mobile') {
-		return <div>VMOTORS RECENTLY VISITED MOBILE</div>;
-	} else {
-		return (
-			<div id="my-favorites-page">
-				<Stack className="main-title-box">
-					<Stack className="right-box">
-						<Typography className="main-title">Recently Visited</Typography>
-						<Typography className="sub-title">We are glad to see you again!</Typography>
-					</Stack>
+	return (
+		<div id="recently-visited-page" className={'dashboard-collection-page'}>
+			<Stack className="dashboard-section-shell">
+				<Stack className="dashboard-shell-header">
+					<div className={'copy'}>
+						<span className={'section-kicker'}>Recently viewed</span>
+						<Typography className="main-title">Continue comparing recent vehicles</Typography>
+						<Typography className="sub-title">Return to the Hyundai and Kia listings you viewed most recently and pick up your research without starting over.</Typography>
+					</div>
+					<div className={'shell-badge'}>
+						<HistoryRoundedIcon />
+						<span>{total} recently viewed</span>
+					</div>
 				</Stack>
-				<Stack className="favorites-list-box">
-					{recentlyVisited?.length ? (
-						recentlyVisited?.map((property: Property) => {
-							return <PropertyCard key={property._id} property={property} recentlyVisited={true} />;
-						})
-					) : (
-						<div className={'no-data'}>
-							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No recently visited vehicles found!</p>
+
+				<Stack className="dashboard-mini-metrics">
+					<article className={'mini-metric-card'}>
+						<div className={'metric-icon'}>
+							<HistoryRoundedIcon />
 						</div>
-					)}
+						<div>
+							<strong>{total}</strong>
+							<span>Vehicles in history</span>
+						</div>
+					</article>
+					<article className={'mini-metric-card'}>
+						<div className={'metric-icon'}>
+							<AutoAwesomeOutlinedIcon />
+						</div>
+						<div>
+							<strong>{searchVisited.page}</strong>
+							<span>Current page</span>
+						</div>
+					</article>
 				</Stack>
+
+				<Stack className="favorites-list-box dashboard-collection-grid">
+					{getVisitedLoading && !recentlyVisited.length
+						? Array.from({ length: 3 }).map((_, index) => <DashboardVehicleCardSkeleton key={`visited-skeleton-${index}`} />)
+						: null}
+
+					{!getVisitedLoading && recentlyVisited?.length
+						? recentlyVisited.map((vehicle: Property) => (
+								<DashboardVehicleCard key={vehicle._id} vehicle={vehicle} contextLabel={'Recently viewed'} />
+						  ))
+						: null}
+
+					{!getVisitedLoading && !recentlyVisited?.length ? (
+						<div className={'dashboard-empty-state'}>
+							<div className={'empty-icon'}>
+								<HistoryRoundedIcon />
+							</div>
+							<strong>No recently viewed vehicles yet</strong>
+							<p>Your browsing history will appear here after you explore more VMotors inventory.</p>
+						</div>
+					) : null}
+				</Stack>
+
 				{recentlyVisited?.length ? (
 					<Stack className="pagination-config">
 						<Stack className="pagination-box">
@@ -71,15 +100,13 @@ const RecentlyVisited: NextPage = () => {
 							/>
 						</Stack>
 						<Stack className="total-result">
-							<Typography>
-								Total {total} recently visited propert{total > 1 ? 'ies' : 'y'}
-							</Typography>
+							<Typography>Total {total} recently viewed vehicle{total === 1 ? '' : 's'}</Typography>
 						</Stack>
 					</Stack>
 				) : null}
-			</div>
-		);
-	}
+			</Stack>
+		</div>
+	);
 };
 
 export default RecentlyVisited;

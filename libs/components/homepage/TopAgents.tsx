@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { Stack, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import TopAgentCard from './TopAgentCard';
@@ -19,25 +18,24 @@ interface TopAgentsProps {
 const TopAgents = (props: TopAgentsProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
-	const router = useRouter();
 	const [topAgents, setTopAgents] = useState<Member[]>([]);
 
 	/** APOLLO REQUESTS **/
 	const {
-			loading: getAgentsLoading,
-			data: getAgentsData,
-			error: getAgentsError,
-			refetch: getAgentsRefetch,
-		} = useQuery(GET_AGENTS, {
-			fetchPolicy: 'cache-and-network',
-			variables: {
-				input: initialInput,
-			},
-			notifyOnNetworkStatusChange: true,
-			onCompleted: (data: T) => {
-					setTopAgents(data?.getAgents?.list);
-			},
-		});
+		loading: getAgentsLoading,
+		data: getAgentsData,
+		error: getAgentsError,
+		refetch: getAgentsRefetch,
+	} = useQuery(GET_AGENTS, {
+		fetchPolicy: 'cache-and-network',
+		variables: {
+			input: initialInput,
+		},
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setTopAgents(data?.getAgents?.list);
+		},
+	});
 	/** HANDLERS **/
 
 	if (device === 'mobile') {
@@ -45,7 +43,10 @@ const TopAgents = (props: TopAgentsProps) => {
 			<Stack className={'top-agents'}>
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
-						<span>Our Top Dealers</span>
+						<Box component={'div'} className={'left'}>
+							<span>Trusted Dealers</span>
+							<p>Certified partners helping buyers move from discovery to decision with confidence.</p>
+						</Box>
 					</Stack>
 					<Stack className={'wrapper'}>
 						<Swiper
@@ -73,25 +74,25 @@ const TopAgents = (props: TopAgentsProps) => {
 				<Stack className={'container'}>
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
-							<span>Our Top Dealers</span>
-							<p>Certified VMotors dealer partners</p>
+							<span>Trusted Dealers</span>
+							<p>Certified partners helping buyers move from discovery to decision with confidence.</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
 							<div className={'more-box'}>
-								<span>Browse All Dealers</span>
+								<Link href={'/agent'}>
+									<span>Browse all dealers</span>
+								</Link>
 								<img src="/img/icons/rightup.svg" alt="" />
 							</div>
 						</Box>
 					</Stack>
 					<Stack className={'wrapper'}>
-						<Box component={'div'} className={'switch-btn swiper-agents-prev'}>
-							<ArrowBackIosNewIcon />
-						</Box>
 						<Box component={'div'} className={'card-wrapper'}>
 							<Swiper
 								className={'top-agents-swiper'}
-								slidesPerView={'auto'}
-								spaceBetween={29}
+								slidesPerView={4}
+								spaceBetween={24}
+								watchOverflow={true}
 								modules={[Autoplay, Navigation, Pagination]}
 								navigation={{
 									nextEl: '.swiper-agents-next',
@@ -107,8 +108,23 @@ const TopAgents = (props: TopAgentsProps) => {
 								})}
 							</Swiper>
 						</Box>
-						<Box component={'div'} className={'switch-btn swiper-agents-next'}>
-							<ArrowBackIosNewIcon />
+						<Box component={'div'} className={'switch-buttons'}>
+							<Box
+								component={'button'}
+								type={'button'}
+								className={'switch-btn swiper-agents-prev'}
+								aria-label={'Previous dealers'}
+							>
+								<span aria-hidden={'true'}>‹</span>
+							</Box>
+							<Box
+								component={'button'}
+								type={'button'}
+								className={'switch-btn swiper-agents-next'}
+								aria-label={'Next dealers'}
+							>
+								<span aria-hidden={'true'}>›</span>
+							</Box>
 						</Box>
 					</Stack>
 				</Stack>
@@ -128,4 +144,3 @@ TopAgents.defaultProps = {
 };
 
 export default TopAgents;
-

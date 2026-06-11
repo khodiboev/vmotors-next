@@ -2,10 +2,10 @@ import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useMutation, useQuery } from '@apollo/client';
-import PropertyCard from '../../libs/components/property/PropertyCard';
 import Filter from '../../libs/components/property/Filter';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -16,6 +16,8 @@ import { GET_VEHICLES } from '../../apollo/user/query';
 import { LIKE_TARGET_VEHICLE } from '../../apollo/user/mutation';
 import { T } from '../../libs/types/common';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import VehicleListCard from '../../libs/components/vehicle-list/VehicleListCard';
+import VehicleListSkeleton from '../../libs/components/vehicle-list/VehicleListSkeleton';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -35,10 +37,11 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [sortingOpen, setSortingOpen] = useState(false);
 	const [filterSortName, setFilterSortName] = useState('Newest');
+	const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
-	const { refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
+	const { loading, refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
@@ -52,6 +55,10 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 		if (router.query.input) setSearchFilter(JSON.parse(router.query.input as string));
 		setCurrentPage(searchFilter.page ?? 1);
 	}, [router.query.input]);
+
+	useEffect(() => {
+		if (device !== 'mobile') setMobileFilterOpen(false);
+	}, [device]);
 
 	const likeVehicleHandler = async (user: T, id: string) => {
 		try {
@@ -95,40 +102,99 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 		setAnchorEl(null);
 	};
 
-	if (device === 'mobile') return <h1>VEHICLES MOBILE</h1>;
-
 	return (
 		<div id="property-list-page" style={{ position: 'relative' }}>
 			<div className="container">
-				<Box component={'div'} className={'right'}>
-					<span>Sort by</span>
-					<div>
-						<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
-							{filterSortName}
-						</Button>
-						<Menu anchorEl={anchorEl} open={sortingOpen} onClose={() => setSortingOpen(false)} sx={{ paddingTop: '5px' }}>
-							<MenuItem onClick={sortingHandler} id={'new'} disableRipple>Newest</MenuItem>
-							<MenuItem onClick={sortingHandler} id={'lowest'} disableRipple>Lowest Price</MenuItem>
-							<MenuItem onClick={sortingHandler} id={'highest'} disableRipple>Highest Price</MenuItem>
-							<MenuItem onClick={sortingHandler} id={'year'} disableRipple>Newest Model Year</MenuItem>
-						</Menu>
-					</div>
-				</Box>
+				<Stack className={'vehicles-page-shell'}>
+					<Stack className={'vehicles-page-header'}>
+						<div className={'eyebrow'}>VMotors inventory</div>
+						<div className={'heading-row'}>
+							<div className={'copy'}>
+								<h1>Discover Hyundai and Kia vehicles across Korea</h1>
+								<p>
+									Explore premium new-car inventory with trusted dealer listings, cleaner filters, and a more
+									confident marketplace experience.
+								</p>
+							</div>
+							<div className={'count-card'}>
+								<strong>{total}</strong>
+								<span>Vehicles available now</span>
+							</div>
+						</div>
+						<div className={'toolbar-row'}>
+							<div className={'filter-summary'}>
+								<span>Premium search</span>
+								<p>Brand, fuel, transmission, location, and keyword filters stay fully live.</p>
+							</div>
+							<div className={'sort-actions'}>
+								{device === 'mobile' && (
+									<Button
+										className={'mobile-filter-toggle'}
+										onClick={() => setMobileFilterOpen((prev) => !prev)}
+										startIcon={<TuneRoundedIcon />}
+									>
+										{mobileFilterOpen ? 'Hide Filters' : 'Show Filters'}
+									</Button>
+								)}
+								<Box component={'div'} className={'sort-box'}>
+									<span>Sort by</span>
+									<div>
+										<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
+											{filterSortName}
+										</Button>
+										<Menu
+											anchorEl={anchorEl}
+											open={sortingOpen}
+											onClose={() => setSortingOpen(false)}
+											sx={{ paddingTop: '5px' }}
+										>
+											<MenuItem onClick={sortingHandler} id={'new'} disableRipple>
+												Newest
+											</MenuItem>
+											<MenuItem onClick={sortingHandler} id={'lowest'} disableRipple>
+												Lowest Price
+											</MenuItem>
+											<MenuItem onClick={sortingHandler} id={'highest'} disableRipple>
+												Highest Price
+											</MenuItem>
+											<MenuItem onClick={sortingHandler} id={'year'} disableRipple>
+												Newest Model Year
+											</MenuItem>
+										</Menu>
+									</div>
+								</Box>
+							</div>
+						</div>
+					</Stack>
+				</Stack>
 				<Stack className={'property-page'}>
-					<Stack className={'filter-config'}>
+					<Stack className={`filter-config ${device === 'mobile' && !mobileFilterOpen ? 'mobile-hidden' : ''}`}>
 						<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
 					</Stack>
 					<Stack className="main-config" mb={'76px'}>
-						<Stack className={'list-config'}>
-							{vehicles.length === 0 ? (
+						<Stack className={`list-config ${loading ? 'loading' : ''}`}>
+							{loading && vehicles.length === 0 ? (
+								Array.from({ length: device === 'mobile' ? 4 : searchFilter.limit }).map((_, index) => (
+									<VehicleListSkeleton key={`vehicle-skeleton-${index}`} />
+								))
+							) : vehicles.length === 0 ? (
 								<div className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No vehicles found!</p>
+									<h3>No vehicles matched your search.</h3>
+									<p>Try broadening the filters or reset the search to explore the full VMotors inventory.</p>
+									<Button
+										className={'reset-empty-state'}
+										onClick={() =>
+											router.push(`/vehicle?input=${JSON.stringify(initialInput)}`, `/vehicle?input=${JSON.stringify(initialInput)}`, {
+												scroll: false,
+											})
+										}
+									>
+										Reset filters
+									</Button>
 								</div>
 							) : (
-								vehicles.map((vehicle) => (
-									<PropertyCard property={vehicle} likePropertyHandler={likeVehicleHandler} key={vehicle._id} />
-								))
+								vehicles.map((vehicle) => <VehicleListCard vehicle={vehicle} likeVehicleHandler={likeVehicleHandler} key={vehicle._id} />)
 							)}
 						</Stack>
 						<Stack className="pagination-config">
@@ -159,7 +225,7 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 VehicleList.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 9,
+		limit: 8,
 		sort: 'createdAt',
 		direction: Direction.DESC,
 		search: {
