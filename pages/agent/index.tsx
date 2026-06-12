@@ -131,24 +131,37 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 		<Stack className={'agent-list-page'}>
 			<Stack className={'container'}>
 				<Stack className={'dealers-page-header'}>
-					<div className={'eyebrow'}>VMotors dealer network</div>
-					<div className={'heading-row'}>
-						<div className={'copy'}>
-							<h1>Connect with trusted Hyundai and Kia dealers across Korea.</h1>
-							<p>
-								Discover professional dealer partners, explore inventory strength, and connect with the people
-								behind Korea&apos;s premium new-car marketplace.
-							</p>
+					<div className={'header-shell'}>
+						<div className={'copy-column'}>
+							<div className={'eyebrow'}>VMotors dealer network</div>
+							<div className={'copy'}>
+								<h1>Meet the dealer side of Korea&apos;s premium Hyundai and Kia marketplace.</h1>
+								<p>
+									Browse trusted dealer partners, compare who is actively listing inventory, and start your next
+									conversation with a clearer sense of credibility before you ever open a profile.
+								</p>
+							</div>
+							<div className={'trust-row'}>
+								<span>Verified marketplace presence</span>
+								<span>Live inventory visibility</span>
+								<span>Professional buyer support</span>
+							</div>
 						</div>
-						<div className={'count-card'}>
-							<strong>{total}</strong>
-							<span>Dealer partners available</span>
+						<div className={'insight-column'}>
+							<div className={'count-card'}>
+								<span className={'card-label'}>Directory snapshot</span>
+								<strong>{total}</strong>
+								<span className={'card-copy'}>Dealer partners currently visible on VMotors</span>
+							</div>
+							<div className={'info-card'}>
+								<span className={'info-label'}>Verification first</span>
+								<p>Profile identity, location details, and direct contact points stay visible before outreach.</p>
+							</div>
+							<div className={'info-card accent'}>
+								<span className={'info-label'}>Built for discovery</span>
+								<p>Use the search bar below to narrow by dealer name, company, or where they operate.</p>
+							</div>
 						</div>
-					</div>
-					<div className={'trust-row'}>
-						<span>Trusted dealer network</span>
-						<span>Live inventory visibility</span>
-						<span>Premium automotive support</span>
 					</div>
 				</Stack>
 

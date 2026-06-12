@@ -13,6 +13,7 @@ const CommunityListingSkeleton = () => {
 					<div className={'skeleton-like shimmer'} />
 				</div>
 				<div className={'skeleton-copy'}>
+					<div className={'skeleton-line xs shimmer'} />
 					<div className={'skeleton-line lg shimmer'} />
 					<div className={'skeleton-line md shimmer'} />
 					<div className={'skeleton-line md short shimmer'} />

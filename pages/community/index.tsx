@@ -8,6 +8,10 @@ import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFi
 import NewspaperRoundedIcon from '@mui/icons-material/NewspaperRounded';
 import MoodRoundedIcon from '@mui/icons-material/MoodRounded';
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import Moment from 'react-moment';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { T } from '../../libs/types/common';
@@ -16,7 +20,7 @@ import { BoardArticlesInquiry } from '../../libs/types/board-article/board-artic
 import { BoardArticleCategory } from '../../libs/enums/board-article.enum';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_BOARD_ARTICLES } from '../../apollo/user/query';
-import { Messages } from '../../libs/config';
+import { Messages, REACT_APP_API_URL } from '../../libs/config';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
 import CommunityListingCard from '../../libs/components/community/CommunityListingCard';
@@ -57,6 +61,38 @@ const categoryMeta: Record<
 		icon: <MoodRoundedIcon />,
 	},
 };
+
+const topicalHighlights = [
+	'Ownership stories',
+	'Hyundai discussions',
+	'Kia discussions',
+	'Dealer experiences',
+	'Recommendations',
+	'News & updates',
+];
+
+const categoryLabelMap: Record<string, string> = {
+	FREE: 'Open board',
+	RECOMMEND: 'Recommendations',
+	NEWS: 'Industry news',
+	HUMOR: 'Car culture',
+};
+
+const stripHtml = (value?: string) => {
+	if (!value) return '';
+	return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+};
+
+const getArticleSummary = (value?: string, maxLength = 180) => {
+	const clean = stripHtml(value);
+	if (!clean) return '';
+	return clean.length > maxLength ? `${clean.slice(0, maxLength - 3).trimEnd()}...` : clean;
+};
+
+const getArticleHref = (article: BoardArticle) => ({
+	pathname: '/community/detail',
+	query: { articleCategory: article?.articleCategory, id: article?._id },
+});
 
 const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const router = useRouter();
@@ -146,79 +182,206 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		}
 	};
 
-	const heroStats = useMemo(
-		() => [
-			{ label: 'Live articles', value: totalCount },
-			{ label: 'Active board', value: currentCategoryMeta.label },
-		],
-		[totalCount, currentCategoryMeta.label],
-	);
+	const featuredArticle = useMemo(() => {
+		return [...boardArticles].sort((left, right) => {
+			if ((right?.articleComments ?? 0) !== (left?.articleComments ?? 0)) {
+				return (right?.articleComments ?? 0) - (left?.articleComments ?? 0);
+			}
+
+			if ((right?.articleLikes ?? 0) !== (left?.articleLikes ?? 0)) {
+				return (right?.articleLikes ?? 0) - (left?.articleLikes ?? 0);
+			}
+
+			if ((right?.articleViews ?? 0) !== (left?.articleViews ?? 0)) {
+				return (right?.articleViews ?? 0) - (left?.articleViews ?? 0);
+			}
+
+			return new Date(right?.createdAt ?? 0).getTime() - new Date(left?.createdAt ?? 0).getTime();
+		})[0];
+	}, [boardArticles]);
+
+	const recentActivityItems = useMemo(() => {
+		return [...boardArticles]
+			.sort((left, right) => new Date(right?.createdAt ?? 0).getTime() - new Date(left?.createdAt ?? 0).getTime())
+			.slice(0, 3);
+	}, [boardArticles]);
+
+	const featuredImagePath = featuredArticle?.articleImage
+		? `${REACT_APP_API_URL}/${featuredArticle.articleImage}`
+		: '/img/community/communityImg.png';
+	const featuredAuthor =
+		featuredArticle?.memberData?.memberFullName ?? featuredArticle?.memberData?.memberNick ?? 'VMotors community';
+	const featuredSummary =
+		getArticleSummary(featuredArticle?.articleContent, 210) ||
+		'Start the conversation in this board with a clear perspective, useful owner context, and a headline other members will want to open.';
 
 	return (
 		<div id="community-list-page">
 			<div className="container">
 				<section className="community-hero">
-					<div className="hero-copy">
-						<span className="eyebrow">VMotors community</span>
-						<h1>Join Korea&apos;s cleaner Hyundai and Kia conversation.</h1>
-						<p>
-							Explore buyer stories, dealer tips, industry updates, and enthusiast discussion in a community shaped
-							for high-intent automotive conversation.
-						</p>
-						<div className="hero-trust-row">
-							<span>Automotive-focused discussion</span>
-							<span>Buyer and dealer insight</span>
-							<span>News, culture, and recommendations</span>
+					<div className="hero-grid">
+						<div className="hero-intro">
+							<span className="eyebrow">VMotors journal & community</span>
+							<h1>Stories, advice, and real Hyundai-Kia conversation from across Korea.</h1>
+							<p>
+								Read owner notes, dealer experiences, model recommendations, and market updates in a community
+								designed to feel more like an automotive publication than a generic discussion board.
+							</p>
+							<div className="hero-topic-row">
+								{topicalHighlights.map((item) => (
+									<span key={item} className="topic-chip">
+										{item}
+									</span>
+								))}
+							</div>
+							<div className="hero-board-note">
+								<span className="label">Current editorial lane</span>
+								<strong>{currentCategoryMeta.title}</strong>
+								<p>{currentCategoryMeta.description}</p>
+							</div>
 						</div>
+
+						<article className={`hero-featured-card ${featuredArticle ? '' : 'empty'}`}>
+							{featuredArticle ? (
+								<>
+									<Link href={getArticleHref(featuredArticle)} className="featured-media">
+										<img src={featuredImagePath} alt={featuredArticle?.articleTitle} />
+										<span className="featured-kicker">Featured discussion</span>
+									</Link>
+
+									<div className="featured-content">
+										<div className="featured-topline">
+											<span className="label">{categoryLabelMap[featuredArticle?.articleCategory] ?? featuredArticle?.articleCategory}</span>
+											<div className="featured-meta">
+												<span className="author">{featuredAuthor}</span>
+												<span className="meta-divider" />
+												<span className="date">
+													<Moment format={'MMM DD, YYYY'}>{featuredArticle?.createdAt}</Moment>
+												</span>
+											</div>
+										</div>
+
+										<Link href={getArticleHref(featuredArticle)} className="featured-copy">
+											<strong>{featuredArticle?.articleTitle}</strong>
+											<p>{featuredSummary}</p>
+										</Link>
+
+										<div className="featured-footer">
+											<div className="article-metrics compact">
+												<div className="article-metric">
+													<RemoveRedEyeOutlinedIcon />
+													<span>{featuredArticle?.articleViews ?? 0}</span>
+												</div>
+												<div className="article-metric">
+													<ChatBubbleOutlineRoundedIcon />
+													<span>{featuredArticle?.articleComments ?? 0}</span>
+												</div>
+												<div className="article-metric">
+													<FavoriteBorderIcon />
+													<span>{featuredArticle?.articleLikes ?? 0}</span>
+												</div>
+											</div>
+
+											<Link href={getArticleHref(featuredArticle)} className="article-link">
+												<span>Read discussion</span>
+												<KeyboardArrowRightRoundedIcon />
+											</Link>
+										</div>
+									</div>
+								</>
+							) : (
+								<div className="featured-empty">
+									<span className="label">Featured discussion</span>
+									<strong>Start the first standout story in this board.</strong>
+									<p>
+										There is no live article to spotlight yet, so this space is ready for a thoughtful owner note,
+										recommendation, market reaction, or dealer experience.
+									</p>
+									<Link
+										href={{
+											pathname: '/mypage',
+											query: { category: 'writeArticle' },
+										}}
+										className="write-link"
+									>
+										<span>Write article</span>
+										<KeyboardArrowRightRoundedIcon />
+									</Link>
+								</div>
+							)}
+						</article>
 					</div>
 
-					<div className="hero-sidecard">
-						<div className="hero-count-card">
-							<strong>{totalCount}</strong>
-							<span>Articles in this board</span>
+					<div className="hero-activity-panel">
+						<div className="activity-copy">
+							<span className="label">Board focus</span>
+							<strong>{currentCategoryMeta.label}</strong>
+							<p>{currentCategoryMeta.description}</p>
 						</div>
-						<div className="hero-mini-stats">
-							{heroStats.map((item) => (
-								<div className="hero-mini-stat" key={item.label}>
-									<span>{item.label}</span>
-									<strong>{item.value}</strong>
-								</div>
-							))}
+
+						<div className="activity-total-card">
+							<span className="total-label">Articles in this board</span>
+							<strong>{totalCount}</strong>
+						</div>
+
+						<div className="activity-rail">
+							<span className="label">Recent activity</span>
+							{recentActivityItems.length ? (
+								recentActivityItems.map((article) => {
+									const articleAuthor =
+										article?.memberData?.memberFullName ?? article?.memberData?.memberNick ?? 'VMotors community';
+
+									return (
+										<Link href={getArticleHref(article)} className="activity-item" key={`recent-${article?._id}`}>
+											<strong>{article?.articleTitle}</strong>
+											<div className="activity-meta">
+												<span>{articleAuthor}</span>
+												<span className="meta-divider" />
+												<span>
+													<Moment format={'MMM DD'}>{article?.createdAt}</Moment>
+												</span>
+											</div>
+										</Link>
+									);
+								})
+							) : (
+								<p className="activity-empty">Fresh conversation starts with the first story published in this board.</p>
+							)}
 						</div>
 					</div>
 				</section>
 
-				<div className="community-layout">
-					<aside className="community-sidebar">
-						<div className="sidebar-card">
-							<div className="sidebar-topline">
-								<span className="label">Board categories</span>
-								<strong>Choose your lane</strong>
-							</div>
+				<section className="community-category-section">
+					<div className="section-heading">
+						<span className="label">Board categories</span>
+						<h2>Choose the conversation you want to join.</h2>
+					</div>
 
-							<div className="category-rail">
-								{Object.entries(categoryMeta).map(([value, meta]) => (
-									<button
-										type="button"
-										key={value}
-										className={`category-button ${currentCategory === value ? 'active' : ''}`}
-										onClick={() => tabChangeHandler(value as BoardArticleCategory)}
-									>
-										<span className="category-icon">{meta.icon}</span>
-										<span className="category-copy">
-											<strong>{meta.label}</strong>
-											<span>{meta.title}</span>
-										</span>
-									</button>
-								))}
-							</div>
-						</div>
-					</aside>
+					<div className="category-grid">
+						{Object.entries(categoryMeta).map(([value, meta]) => (
+							<button
+								type="button"
+								key={value}
+								className={`category-button ${currentCategory === value ? 'active' : ''}`}
+								onClick={() => tabChangeHandler(value as BoardArticleCategory)}
+								aria-pressed={currentCategory === value}
+							>
+								<span className="category-icon">{meta.icon}</span>
+								<span className="category-copy">
+									<span className="category-label">{meta.label}</span>
+									<strong>{meta.title}</strong>
+									<span className="category-description">{meta.description}</span>
+								</span>
+							</button>
+						))}
+					</div>
+				</section>
 
-					<section className="community-main">
+				<section className="community-feed-section">
+					<div className="community-main">
 						<div className="board-header-card">
 							<div className="board-header-copy">
-								<span className="label">{currentCategoryMeta.label}</span>
+								<span className="label">Current board</span>
 								<h2>{currentCategoryMeta.title}</h2>
 								<p>{currentCategoryMeta.description}</p>
 							</div>
@@ -254,8 +417,8 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 								</div>
 							)}
 						</div>
-					</section>
-				</div>
+					</div>
+				</section>
 
 				{totalCount > 0 && (
 					<Stack className="pagination-config">

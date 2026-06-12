@@ -51,8 +51,9 @@ const CommunityListingCard = ({ article, likeArticleHandler }: CommunityListingC
 
 			<div className={'article-body'}>
 				<div className={'article-topline'}>
-					<div className={'article-author-group'}>
+					<div className={'article-meta-line'}>
 						<span className={'author'}>{articleAuthor}</span>
+						<span className={'meta-divider'} />
 						<span className={'date'}>
 							<Moment format={'MMM DD, YYYY'}>{article?.createdAt}</Moment>
 						</span>
@@ -74,6 +75,7 @@ const CommunityListingCard = ({ article, likeArticleHandler }: CommunityListingC
 					}}
 					className={'article-copy'}
 				>
+					<span className={'article-kicker'}>{categoryLabelMap[article?.articleCategory] ?? article?.articleCategory}</span>
 					<strong className={'article-title'}>{article?.articleTitle}</strong>
 					<p className={'article-summary'}>{summary}</p>
 				</Link>
