@@ -78,13 +78,13 @@ const MyMenu = () => {
 				<Box component={'div'} className={'profile-img'}>
 					<img
 						src={user?.memberImage ? `${REACT_APP_API_URL}/${user.memberImage}` : '/img/profile/defaultUser.svg'}
-						alt={user?.memberNick || 'VMotors member'}
+						alt={user?.memberNick || 'Santa member'}
 					/>
 				</Box>
 
 				<Stack className={'user-info'}>
 					<div className={'identity-row'}>
-						<Typography className={'user-name'}>{user?.memberNick || 'VMotors member'}</Typography>
+						<Typography className={'user-name'}>{user?.memberNick || 'Santa member'}</Typography>
 						<span className={'member-badge'}>{user?.memberType || 'USER'}</span>
 					</div>
 

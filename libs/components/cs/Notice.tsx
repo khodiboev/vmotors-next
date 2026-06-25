@@ -7,13 +7,13 @@ const noticeData = [
 	{
 		no: '01',
 		event: true,
-		title: 'Welcome to the upgraded VMotors support center for Hyundai and Kia buyers.',
+		title: 'Welcome to the upgraded Santa support desk for Hyundai and Kia buyers.',
 		date: '2026.06.09',
 		tag: 'Featured',
 	},
 	{
 		no: '02',
-		title: 'Dealer and buyer support guidance has been refreshed to match the new VMotors marketplace experience.',
+		title: 'Dealer and buyer support guidance has been refreshed to match the new Santa marketplace standard.',
 		date: '2026.06.09',
 		tag: 'Update',
 	},
@@ -30,7 +30,7 @@ const Notice = () => {
 		<Stack className={'notice-content'}>
 			<div className={'section-heading'}>
 				<span className={'label'}>Platform notices</span>
-				<strong>Important updates for VMotors users and dealers</strong>
+				<strong>Important updates for Santa buyers and dealers</strong>
 				<p>Stay current on support guidance, service updates, and key marketplace notices before you buy, list, or manage your account.</p>
 			</div>
 

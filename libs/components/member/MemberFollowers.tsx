@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { Button, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FollowInquiry } from '../../types/follow/follow.input';
 import { useQuery, useReactiveVar } from '@apollo/client';
@@ -21,20 +20,15 @@ interface MemberFollowsProps {
 }
 
 const MemberFollowers = (props: MemberFollowsProps) => {
-	const { initialInput, subscribeHandler, unsubscribeHandler, likeMemberHandler, redirectToMemberPageHandler } =
-		props;
-	const device = useDeviceDetect();
+	const { initialInput, subscribeHandler, unsubscribeHandler, likeMemberHandler, redirectToMemberPageHandler } = props;
 	const router = useRouter();
 	const [total, setTotal] = useState<number>(0);
-	const category: any = router.query?.category ?? 'vehicles';
 	const [followInquiry, setFollowInquiry] = useState<FollowInquiry>(initialInput);
 	const [memberFollowers, setMemberFollowers] = useState<Follower[]>([]);
 	const user = useReactiveVar(userVar);
 
 	/** APOLLO REQUESTS **/
-	const {
-		refetch: getMemberFollowersRefetch,
-	} = useQuery(GET_MEMBER_FOLLOWERS, {
+	const { refetch: getMemberFollowersRefetch } = useQuery(GET_MEMBER_FOLLOWERS, {
 		fetchPolicy: 'network-only',
 		variables: { input: followInquiry },
 		skip: !followInquiry?.search?.followingId,
@@ -62,109 +56,92 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 		setFollowInquiry({ ...followInquiry });
 	};
 
-	if (device === 'mobile') {
-		return <div>VMOTORS FOLLOWS MOBILE</div>;
-	} else {
-		return (
-			<div id="member-follows-page">
-				<Stack className="main-title-box">
-					<Stack className="right-box">
-						<Typography className="main-title">{category === 'followers' ? 'Followers' : 'Followings'}</Typography>
-					</Stack>
-				</Stack>
-				<Stack className="follows-list-box">
-					<Stack className="listing-title-box">
-						<Typography className="title-text">Name</Typography>
-						<Typography className="title-text">Details</Typography>
-						<Typography className="title-text">Subscription</Typography>
-					</Stack>
-					{memberFollowers?.length === 0 && (
-						<div className={'no-data'}>
-							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Followers yet!</p>
-						</div>
-					)}
+	return (
+		<div id="member-follows-page">
+			<div className="section-header">
+				<h2>Followers</h2>
+				{total > 0 && <span>{total} follower{total > 1 ? 's' : ''}</span>}
+			</div>
+
+			{memberFollowers?.length === 0 ? (
+				<div className="empty-state">
+					<img src="/img/icons/icoAlert.svg" alt="" />
+					<h3>No followers yet</h3>
+					<p>This member doesn&apos;t have any followers on Santa yet.</p>
+				</div>
+			) : (
+				<div className="people-list">
 					{memberFollowers.map((follower: Follower) => {
 						const imagePath: string = follower?.followerData?.memberImage
-							? `${REACT_APP_API_URL}/${follower?.followerData?.memberImage}`
+							? `${REACT_APP_API_URL}/${follower.followerData.memberImage}`
 							: '/img/profile/defaultUser.svg';
+						const isSelf = user?._id === follower?.followerId;
+						const isFollowingBack = follower.meFollowed?.[0]?.myFollowing;
+
 						return (
-							<Stack className="follows-card-box" key={follower._id}>
-								<Stack className={'info'} onClick={() => redirectToMemberPageHandler(follower?.followerData?._id)}>
-									<Stack className="image-box">
-										<img src={imagePath} alt="" />
-									</Stack>
-									<Stack className="information-box">
-										<Typography className="name">{follower?.followerData?.memberNick}</Typography>
-									</Stack>
-								</Stack>
-								<Stack className={'details-box'}>
-									<Box className={'info-box'} component={'div'}>
-										<p>Followers</p>
-										<span>({follower?.followerData?.memberFollowers})</span>
-									</Box>
-									<Box className={'info-box'} component={'div'}>
-										<p>Followings</p>
-										<span>({follower?.followerData?.memberFollowings})</span>
-									</Box>
-									<Box className={'info-box'} component={'div'}>
-										{follower?.meLiked && follower?.meLiked[0]?.myFavorite ? (
-											<FavoriteIcon color="primary" onClick={() => likeMemberHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)} />
-										) : ( 
-											<FavoriteBorderIcon 
-												onClick={() => likeMemberHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
-											/>
+							<div className="person-card" key={follower._id}>
+								<div className="person-left" onClick={() => redirectToMemberPageHandler(follower?.followerData?._id)}>
+									<img src={imagePath} alt="" />
+									<div className="person-info">
+										<strong>{follower?.followerData?.memberNick}</strong>
+										<div className="person-meta">
+											<span>{follower?.followerData?.memberFollowers ?? 0} followers</span>
+											<span className="dot">·</span>
+											<span>{follower?.followerData?.memberFollowings ?? 0} following</span>
+										</div>
+									</div>
+								</div>
+								<div className="person-actions">
+									<button
+										type="button"
+										className={`like-btn${follower?.meLiked?.[0]?.myFavorite ? ' liked' : ''}`}
+										onClick={() => likeMemberHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
+									>
+										{follower?.meLiked?.[0]?.myFavorite ? (
+											<FavoriteIcon />
+										) : (
+											<FavoriteBorderIcon />
 										)}
-										<span>({follower?.followerData?.memberLikes})</span>
-									</Box>
-								</Stack>
-								{user?._id !== follower?.followerId && (
-									<Stack className="action-box">
-										{follower.meFollowed && follower.meFollowed[0]?.myFollowing ? (
-											<>
-												<Typography>Following</Typography>
-												<Button
-													variant="outlined"
-													sx={{ background: '#ed5858', ':hover': { background: '#ee7171' } }}
-													onClick={() => unsubscribeHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
-												>
-													Unfollow
-												</Button>
-											</>
+										<span>{follower?.followerData?.memberLikes ?? 0}</span>
+									</button>
+									{!isSelf && (
+										isFollowingBack ? (
+											<Button
+												className="unfollow-btn"
+												onClick={() => unsubscribeHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
+											>
+												Following
+											</Button>
 										) : (
 											<Button
-												variant="contained"
-												sx={{ background: '#60eb60d4', ':hover': { background: '#60eb60d4' } }}
+												className="follow-btn"
 												onClick={() => subscribeHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
 											>
 												Follow
 											</Button>
-										)}
-									</Stack>
-								)}
-							</Stack>
+										)
+									)}
+								</div>
+							</div>
 						);
 					})}
-				</Stack>
-				{memberFollowers.length !== 0 && (
-					<Stack className="pagination-config">
-						<Stack className="pagination-box">
-							<Pagination
-								page={followInquiry.page}
-								count={Math.ceil(total / followInquiry.limit)}
-								onChange={paginationHandler}
-								shape="circular"
-								color="primary"
-							/>
-						</Stack>
-						<Stack className="total-result">
-							<Typography>{total} followers</Typography>
-						</Stack>
-					</Stack>
-				)}
-			</div>
-		);
-	}
+				</div>
+			)}
+
+			{memberFollowers.length !== 0 && (
+				<div className="pagination-config">
+					<Pagination
+						page={followInquiry.page}
+						count={Math.ceil(total / followInquiry.limit)}
+						onChange={paginationHandler}
+						shape="circular"
+						color="primary"
+					/>
+					<span>{total} follower{total > 1 ? 's' : ''}</span>
+				</div>
+			)}
+		</div>
+	);
 };
 
 MemberFollowers.defaultProps = {

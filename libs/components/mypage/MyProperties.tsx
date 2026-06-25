@@ -60,7 +60,7 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 					<div className={'copy'}>
 						<span className={'section-kicker'}>Dealer inventory</span>
 						<Typography className="main-title">Manage your live vehicle listings</Typography>
-						<Typography className="sub-title">Track availability, update status, and keep your Hyundai and Kia inventory ready for serious buyers on VMotors.</Typography>
+						<Typography className="sub-title">Track availability, update status, and keep your Hyundai and Kia inventory ready for serious buyers on Santa.</Typography>
 					</div>
 					<div className={'shell-badge'}>
 						<Inventory2OutlinedIcon />

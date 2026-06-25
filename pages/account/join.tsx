@@ -73,12 +73,13 @@ const Join: NextPage = () => {
 						<Stack className={'left'}>
 							{/* @ts-ignore */}
 							<Box className={'logo'}>
-								<img src="/img/logo/logoText.svg" alt="" />
-								<span>VMotors</span>
+								<img src="/img/logo/logo.svg" alt="Santa" />
 							</Box>
 							<Box className={'info'}>
 								<span>{loginView ? 'login' : 'signup'}</span>
-								<p>{loginView ? 'Login' : 'Sign'} in with this account across the following sites.</p>
+								<p>
+									{loginView ? 'Sign in to your Santa account for verified listings, saved research, and dealer outreach.' : 'Create your Santa account to save vehicles, connect with dealers, and manage your marketplace activity.'}
+								</p>
 							</Box>
 							<Box className={'input-wrap'}>
 								<div className={'input-box'}>

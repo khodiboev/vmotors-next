@@ -24,14 +24,15 @@
 						flex-direction: row;
 						gap: 11px;
 						img {
-							width: 80px;
-							height: 80px;
-							border-radius: 50%;
-							object-fit: cover;
+							width: 108px;
+							height: auto;
+							border-radius: 0;
+							object-fit: contain;
+							flex-shrink: 0;
 						}
 						.community-name {
 							.name {
-								margin-top: 15px;
+								margin-top: 10px;
 								color: #181a20;
 								font-family: $font;
 								font-size: 15px;

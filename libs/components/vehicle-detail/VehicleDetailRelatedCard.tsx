@@ -88,7 +88,7 @@ const VehicleDetailRelatedCard = ({ vehicle, likeVehicleHandler }: VehicleDetail
 
 				<div className={'card-footer'}>
 					<div className={'dealer-copy'}>
-						<strong>{dealerName || 'VMotors listing'}</strong>
+						<strong>{dealerName || 'Santa market listing'}</strong>
 						<span>{vehicle?.memberData?.memberAddress || 'Curated new-car inventory'}</span>
 					</div>
 

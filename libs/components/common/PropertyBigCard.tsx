@@ -1,94 +1,92 @@
 import React from 'react';
-import { Stack, Box, Divider, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import { useReactiveVar } from '@apollo/client';
+import { useRouter } from 'next/router';
 import { Vehicle } from '../../types/vehicle/vehicle';
 import { REACT_APP_API_URL, topPropertyRank } from '../../config';
 import { formatterStr } from '../../utils';
-import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
-import { useRouter } from 'next/router';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { vehicleSpecs, vehicleStockLabel, vehicleTitle } from '../../vehicle';
 
 interface PropertyBigCardProps {
 	property: Vehicle;
-	likePropertyHandler: any;
+	likePropertyHandler?: any;
 }
 
 const PropertyBigCard = (props: PropertyBigCardProps) => {
 	const { property, likePropertyHandler } = props;
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
-
-	/** HANDLERS **/
-	const goPropertyDetatilPage = (propertyId: string) => {
-		router.push(`/vehicle/detail?id=${propertyId}`);
-	};
 	const specs = vehicleSpecs(property);
 
-	if (device === 'mobile') {
-		return <div>VEHICLE BIG CARD</div>;
-	} else {
-		return (
-			<Stack className="property-big-card-box" onClick={() => goPropertyDetatilPage(property?._id)}>
-				<Box
-					component={'div'}
-					className={'card-img'}
-					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${property?.vehicleImages?.[0]})` }}
-				>
-					{property && property?.vehicleRank >= topPropertyRank && (
-						<div className={'status'}>
-							<img src="/img/icons/electricity.svg" alt="" />
-							<span>top</span>
-						</div>
-					)}
+	const goPropertyDetailPage = (propertyId: string) => {
+		router.push(`/vehicle/detail?id=${propertyId}`);
+	};
 
-					<div className={'price'}>${formatterStr(property?.vehiclePrice)}</div>
-				</Box>
-				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{vehicleTitle(property)}</strong>
-					<p className={'desc'}>{property?.vehicleLocation}</p>
-					<div className={'options'}>
+	return (
+		<article className="dealer-vehicle-card" onClick={() => goPropertyDetailPage(property?._id)}>
+			<div className="card-media">
+				<div
+					className="card-media-inner"
+					style={{
+						backgroundImage: property?.vehicleImages?.[0]
+							? `url(${REACT_APP_API_URL}/${property.vehicleImages[0]})`
+							: 'none',
+					}}
+				/>
+				<div className="card-badges">
+					{property?.vehicleRank >= topPropertyRank && (
+						<span className="badge badge-top">Top</span>
+					)}
+					{(property as any)?.vehicleBrand && (
+						<span className="badge badge-brand">{(property as any).vehicleBrand}</span>
+					)}
+				</div>
+				<div className="price-chip">${formatterStr(property?.vehiclePrice)}</div>
+			</div>
+			<div className="card-body">
+				<div className="card-copy">
+					<h3 className="vehicle-title">{vehicleTitle(property)}</h3>
+					<div className="meta-row">
+						<span className="vehicle-location">{property?.vehicleLocation}</span>
+						{property?.vehicleStatus && (
+							<span className="status-pill">{property.vehicleStatus}</span>
+						)}
+					</div>
+				</div>
+				{specs.length > 0 && (
+					<div className="spec-list">
 						{specs.slice(0, 3).map((spec) => (
-							<div key={spec}>
-								<span>{spec}</span>
-							</div>
+							<span key={spec} className="spec-chip">{spec}</span>
 						))}
 					</div>
-					<Divider sx={{ mt: '15px', mb: '17px' }} />
-					<div className={'bott'}>
-						<div>
-							<p>{property?.vehicleStatus}</p>
-							<p>{vehicleStockLabel(property)}</p>
-						</div>
-						<div className="buttons-box">
-							<IconButton color={'default'}>
-								<RemoveRedEyeIcon />
-							</IconButton>
-							<Typography className="view-cnt">{property?.vehicleViews}</Typography>
-							<IconButton
-								color={'default'}
+				)}
+				<div className="card-footer">
+					<span className="stock-info">{vehicleStockLabel(property)}</span>
+					<div className="engagement">
+						<span className="metric">
+							<RemoveRedEyeIcon />
+							{property?.vehicleViews}
+						</span>
+						{likePropertyHandler && (
+							<button
+								type="button"
+								className={`like-btn${property?.meLiked?.[0]?.myFavorite ? ' liked' : ''}`}
 								onClick={(e) => {
 									e.stopPropagation();
 									likePropertyHandler(user, property._id);
 								}}
 							>
-								{property?.meLiked && property?.meLiked[0]?.myFavorite ? (
-									<FavoriteIcon style={{ color: 'red' }} />
-								) : (
-									<FavoriteIcon />
-								)}
-							</IconButton>
-							<Typography className="view-cnt">{property?.vehicleLikes}</Typography>
-						</div>
+								<FavoriteIcon />
+								{property?.vehicleLikes}
+							</button>
+						)}
 					</div>
-				</Box>
-			</Stack>
-		);
-	}
+				</div>
+			</div>
+		</article>
+	);
 };
 
 export default PropertyBigCard;

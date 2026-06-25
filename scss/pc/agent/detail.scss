@@ -1,342 +1,730 @@
-#pc-wrap {
+/* ═══════════════════════════════════════════════════════
+   SHARED: .dealer-vehicle-card
+   Available globally inside #pc-wrap and #mobile-wrap.
+   Used on: /agent/detail, /member, any future page.
+═══════════════════════════════════════════════════════ */
+#pc-wrap,
+#mobile-wrap {
+	.dealer-vehicle-card {
+		border-radius: 24px;
+		border: 1px solid rgba(118, 135, 178, 0.16);
+		background: #ffffff;
+		overflow: hidden;
+		cursor: pointer;
+		transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+
+		&:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 28px 80px rgba(10, 31, 68, 0.1);
+			border-color: rgba(118, 135, 178, 0.26);
+
+			.card-media-inner {
+				transform: scale(1.04);
+			}
+		}
+
+		.card-media {
+			position: relative;
+			padding-top: 70%;
+			overflow: hidden;
+			background: #edf3ff;
+
+			.card-media-inner {
+				position: absolute;
+				inset: 0;
+				background-size: cover;
+				background-position: center;
+				background-repeat: no-repeat;
+				transition: transform 0.45s ease;
+			}
+
+			.card-badges {
+				position: absolute;
+				top: 14px;
+				left: 14px;
+				display: flex;
+				gap: 6px;
+				z-index: 1;
+
+				.badge {
+					padding: 4px 10px;
+					border-radius: 999px;
+					font-family: $font;
+					font-size: 10px;
+					font-weight: 700;
+					text-transform: uppercase;
+					letter-spacing: 0.06em;
+					line-height: 1;
+				}
+
+				.badge-top {
+					background: rgba(10, 31, 68, 0.78);
+					color: #ffffff;
+				}
+
+				.badge-brand {
+					background: rgba(255, 255, 255, 0.84);
+					color: #0a1f44;
+					backdrop-filter: blur(8px);
+				}
+			}
+
+			.price-chip {
+				position: absolute;
+				bottom: 14px;
+				left: 14px;
+				z-index: 1;
+				padding: 7px 13px;
+				background: rgba(10, 31, 68, 0.86);
+				color: #ffffff;
+				border-radius: 12px;
+				font-family: $font;
+				font-size: 15px;
+				font-weight: 700;
+				letter-spacing: -0.02em;
+				backdrop-filter: blur(10px);
+				box-shadow: 0 8px 24px rgba(10, 31, 68, 0.28);
+			}
+		}
+
+		.card-body {
+			padding: 18px 20px 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+
+			.card-copy {
+				.vehicle-title {
+					font-family: $font;
+					font-size: 15px;
+					font-weight: 700;
+					color: #0a1f44;
+					line-height: 1.3;
+					margin: 0;
+				}
+
+				.meta-row {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					margin-top: 6px;
+
+					.vehicle-location {
+						font-family: $font;
+						font-size: 12px;
+						font-weight: 500;
+						color: #5a667d;
+					}
+
+					.status-pill {
+						padding: 3px 9px;
+						border-radius: 999px;
+						font-family: $font;
+						font-size: 10px;
+						font-weight: 700;
+						text-transform: uppercase;
+						letter-spacing: 0.06em;
+						background: rgba(55, 85, 195, 0.1);
+						color: #3755c3;
+					}
+				}
+			}
+
+			.spec-list {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 5px;
+
+				.spec-chip {
+					padding: 3px 9px;
+					background: #edf3ff;
+					color: #0a1f44;
+					border-radius: 999px;
+					font-family: $font;
+					font-size: 10px;
+					font-weight: 700;
+					text-transform: uppercase;
+					letter-spacing: 0.05em;
+				}
+			}
+
+			.card-footer {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding-top: 10px;
+				border-top: 1px solid rgba(118, 135, 178, 0.16);
+
+				.stock-info {
+					font-family: $font;
+					font-size: 12px;
+					font-weight: 600;
+					color: #5a667d;
+				}
+
+				.engagement {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+
+					.metric {
+						display: flex;
+						align-items: center;
+						gap: 4px;
+						font-family: $font;
+						font-size: 12px;
+						font-weight: 600;
+						color: #5a667d;
+
+						svg {
+							width: 14px;
+							height: 14px;
+						}
+					}
+
+					.like-btn {
+						display: flex;
+						align-items: center;
+						gap: 4px;
+						font-family: $font;
+						font-size: 12px;
+						font-weight: 600;
+						color: #5a667d;
+						background: none;
+						border: none;
+						cursor: pointer;
+						padding: 4px 6px;
+						border-radius: 8px;
+						transition: background 0.2s, color 0.2s;
+
+						svg {
+							width: 14px;
+							height: 14px;
+						}
+
+						&:hover {
+							background: rgba(233, 44, 40, 0.08);
+							color: #e92c28;
+						}
+
+						&.liked {
+							color: #e92c28;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* ═══════════════════════════════════════════════════════
+   DEALER DETAIL PAGE  (/agent/detail)
+═══════════════════════════════════════════════════════ */
+#pc-wrap,
+#mobile-wrap {
 	.agent-detail-page {
-		position: relative;
-		padding: 133px 0 75px;
-		width: 100%;
-		height: auto;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
+		--dd-bg: #f5f8ff;
+		--dd-surface: #ffffff;
+		--dd-border: rgba(118, 135, 178, 0.16);
+		--dd-border-strong: rgba(118, 135, 178, 0.26);
+		--dd-text: #0f172a;
+		--dd-muted: #5a667d;
+		--dd-primary: #0a1f44;
+		--dd-secondary: #3755c3;
+		--dd-soft: #edf3ff;
+		--dd-shadow: 0 28px 80px rgba(10, 31, 68, 0.1);
+		--dd-shadow-soft: 0 18px 44px rgba(10, 31, 68, 0.08);
+
+		padding: 52px 0 96px;
+		background: var(--dd-bg);
+
 		.container {
 			display: flex;
 			flex-direction: column;
-			align-items: center;
-			.agent-info {
-				margin-left: 58px;
-				width: 100%;
+			gap: 48px;
+		}
+
+		/* ─── DEALER HERO ─── */
+		.dealer-hero {
+			.hero-card {
 				display: flex;
-				flex-direction: row;
-				align-items: center;
-				img {
-					margin-right: 32px;
-					width: 135px;
-					height: 135px;
-					border-radius: 50%;
-					cursor: pointer;
-					object-fit: cover;
-				}
-				.info {
-					display: flex;
-					flex-direction: column;
-					strong {
-						color: #181a20;
-						font-family: $font;
-						font-size: 24px;
-						font-style: normal;
-						font-weight: 600;
-						line-height: normal;
-						text-transform: capitalize;
-						cursor: pointer;
-					}
-					div {
-						margin-top: 13px;
-						display: flex;
-						flex-direction: row;
-						align-items: center;
-						img {
-							margin-right: 10px;
-							width: 16px;
-							height: 16px;
-						}
-						span {
-							color: #181a20;
-							font-family: $font;
-							font-size: 20px;
-							font-style: normal;
-							font-weight: 400;
-							line-height: 28px;
-						}
-					}
-				}
-			}
-			.agent-home-list {
-				position: relative;
-				width: 100%;
-				margin-top: 33px;
-				padding: 0px 0 46px;
-				display: flex;
-				flex-direction: column;
-				border-radius: 12px;
-				background: #fff;
-				box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
-				.card-wrap {
+				align-items: flex-start;
+				gap: 48px;
+				padding: 48px;
+				background: var(--dd-surface);
+				border-radius: 32px;
+				border: 1px solid var(--dd-border);
+				box-shadow: var(--dd-shadow);
+
+				.hero-avatar-wrap {
 					position: relative;
-					margin-top: 35px;
-					width: 100%;
-					height: auto;
-					display: flex;
-					flex-direction: row;
-					flex-wrap: wrap;
-					.wrap-main {
-						margin-right: 0px;
-						margin-left: 5px;
-						display: flex;
-						flex-direction: row;
-						flex-wrap: wrap;
-					}
-					.agent-card {
-						position: relative;
-						margin-right: 27px;
-						margin-bottom: 34px;
-						display: flex;
-						flex-direction: column;
-						.agent-img {
-							border-radius: 12px;
-							width: 233px;
-							height: 273px;
-							background-size: cover;
-							cursor: pointer;
-							div {
-								position: absolute;
-								padding: 12px;
-								top: 12px;
-								left: 12px;
-								border-radius: 6px;
-								background: #eb6753;
-								color: #fff;
-								font-family: $font;
-								font-size: 12px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-							}
-						}
-						.agent-info {
-							margin-top: 23px;
-							display: flex;
-							flex-direction: column;
-							strong {
-								color: #181a20;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-								cursor: pointer;
-							}
-							span {
-								color: #181a20;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 400;
-								line-height: 28px;
-							}
+					flex-shrink: 0;
+
+					img {
+						width: 176px;
+						height: 176px;
+						border-radius: 50%;
+						object-fit: cover;
+						border: 4px solid var(--dd-soft);
+						cursor: pointer;
+						transition: border-color 0.22s;
+						display: block;
+
+						&:hover {
+							border-color: rgba(55, 85, 195, 0.36);
 						}
 					}
-				}
-				.pagination {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					span {
-						margin-top: 20px;
-						color: #181a20;
+
+					.verified-badge {
+						position: absolute;
+						bottom: 6px;
+						left: 50%;
+						transform: translateX(-50%);
+						display: flex;
+						align-items: center;
+						gap: 4px;
+						padding: 5px 14px;
+						background: var(--dd-secondary);
+						color: #ffffff;
+						border-radius: 999px;
 						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 400;
-						line-height: 26px;
+						font-size: 11px;
+						font-weight: 700;
+						letter-spacing: 0.04em;
+						white-space: nowrap;
+						box-shadow: 0 4px 16px rgba(55, 85, 195, 0.32);
+
+						svg {
+							width: 12px;
+							height: 12px;
+							flex-shrink: 0;
+						}
 					}
 				}
-			}
-			.review-box {
-				position: relative;
-				margin-top: 75px;
-				padding: 58px 19px;
-				width: 95%;
-				height: auto;
-				border-radius: 24px;
-				background: #f6f6f6;
-				.main-intro {
+
+				.hero-info {
+					flex: 1;
 					display: flex;
 					flex-direction: column;
-					span {
-						color: #181a20;
+					gap: 14px;
+					min-width: 0;
+
+					h1 {
 						font-family: $font;
 						font-size: 30px;
-						font-style: normal;
-						font-weight: 600;
-						line-height: normal;
-						letter-spacing: 0.6px;
-						text-transform: capitalize;
+						font-weight: 700;
+						color: var(--dd-primary);
+						letter-spacing: -0.02em;
+						line-height: 1.2;
+						cursor: pointer;
+						margin: 0;
+						transition: color 0.2s;
+
+						&:hover {
+							color: var(--dd-secondary);
+						}
 					}
-					p {
-						color: #181a20;
+
+					.hero-contact {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+						font-family: $font;
+						font-size: 15px;
+						font-weight: 500;
+						color: var(--dd-muted);
+
+						img {
+							width: 16px;
+							height: 16px;
+							flex-shrink: 0;
+						}
+					}
+
+					.hero-location {
+						display: flex;
+						align-items: center;
+						gap: 6px;
+						font-family: $font;
+						font-size: 13px;
+						font-weight: 500;
+						color: var(--dd-muted);
+
+						svg {
+							width: 14px;
+							height: 14px;
+							flex-shrink: 0;
+						}
+					}
+
+					.hero-desc {
 						font-family: $font;
 						font-size: 14px;
-						font-style: normal;
-						font-weight: 400;
-						line-height: 26px;
+						line-height: 1.65;
+						color: var(--dd-muted);
+						max-width: 580px;
+						margin: 0;
+					}
+
+					.hero-stats {
+						display: flex;
+						gap: 36px;
+						flex-wrap: wrap;
+						margin-top: 8px;
+						padding-top: 24px;
+						border-top: 1px solid var(--dd-border);
+
+						.stat {
+							display: flex;
+							flex-direction: column;
+							gap: 4px;
+
+							strong {
+								font-family: $font;
+								font-size: 26px;
+								font-weight: 700;
+								color: var(--dd-primary);
+								line-height: 1;
+								letter-spacing: -0.02em;
+							}
+
+							span {
+								font-family: $font;
+								font-size: 11px;
+								font-weight: 700;
+								color: var(--dd-muted);
+								text-transform: uppercase;
+								letter-spacing: 0.07em;
+							}
+						}
 					}
 				}
-				.review-wrap {
-					padding: 29px 25px;
-					margin-top: 57px;
+			}
+		}
+
+		/* ─── DEALER INVENTORY ─── */
+		.dealer-inventory {
+			.section-header {
+				display: flex;
+				align-items: baseline;
+				gap: 12px;
+				margin-bottom: 28px;
+
+				h2 {
+					font-family: $font;
+					font-size: 22px;
+					font-weight: 700;
+					color: var(--dd-primary);
+					letter-spacing: -0.01em;
+					margin: 0;
+				}
+
+				span {
+					font-family: $font;
+					font-size: 14px;
+					font-weight: 500;
+					color: var(--dd-muted);
+				}
+			}
+
+			.vehicle-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 24px;
+			}
+
+			.empty-inventory {
+				padding: 72px 32px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 16px;
+				background: var(--dd-surface);
+				border-radius: 24px;
+				border: 1px solid var(--dd-border);
+				text-align: center;
+
+				img {
+					width: 44px;
+					height: 44px;
+					opacity: 0.4;
+				}
+
+				h3 {
+					font-family: $font;
+					font-size: 18px;
+					font-weight: 700;
+					color: var(--dd-primary);
+					margin: 0;
+				}
+
+				p {
+					font-family: $font;
+					font-size: 14px;
+					color: var(--dd-muted);
+					max-width: 320px;
+					margin: 0;
+				}
+			}
+
+			.vehicle-pagination {
+				margin-top: 40px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 12px;
+
+				span {
+					font-family: $font;
+					font-size: 13px;
+					font-weight: 500;
+					color: var(--dd-muted);
+				}
+			}
+		}
+
+		/* ─── REVIEWS SECTION ─── */
+		.dealer-reviews {
+			padding: 48px;
+			background: var(--dd-surface);
+			border-radius: 32px;
+			border: 1px solid var(--dd-border);
+			box-shadow: var(--dd-shadow-soft);
+
+			.reviews-header {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				margin-bottom: 32px;
+
+				h2 {
+					font-family: $font;
+					font-size: 22px;
+					font-weight: 700;
+					color: var(--dd-primary);
+					letter-spacing: -0.01em;
+					margin: 0;
+				}
+
+				.review-count-badge {
+					padding: 4px 12px;
+					background: var(--dd-soft);
+					color: var(--dd-secondary);
+					border-radius: 999px;
+					font-family: $font;
+					font-size: 12px;
+					font-weight: 700;
+				}
+			}
+
+			.reviews-list {
+				display: flex;
+				flex-direction: column;
+
+				.review-pagination {
 					display: flex;
-					flex-direction: column;
-					border-radius: 12px;
-					background: #fff;
-					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
-					.title-box {
-						svg {
-							width: 10px;
-							height: 10px;
-						}
-						span {
-							margin-left: 8px;
-							color: #181a20;
-							font-family: $font;
-							font-size: 17px;
-							font-style: normal;
-							font-weight: 600;
-							line-height: normal;
-						}
+					justify-content: center;
+					padding-top: 24px;
+				}
+			}
+
+			.empty-reviews {
+				padding: 40px 24px;
+				text-align: center;
+				background: var(--dd-soft);
+				border-radius: 20px;
+				margin-bottom: 36px;
+
+				p {
+					font-family: $font;
+					font-size: 14px;
+					font-weight: 500;
+					color: var(--dd-muted);
+					line-height: 1.6;
+					margin: 0;
+				}
+			}
+
+			.reviews-divider {
+				height: 1px;
+				background: var(--dd-border);
+				margin: 40px 0;
+			}
+
+			.review-card {
+				padding: 22px 0;
+				border-bottom: 1px solid var(--dd-border);
+
+				&:last-of-type {
+					border-bottom: none;
+				}
+
+				.review-author {
+					display: flex;
+					align-items: center;
+					gap: 12px;
+					margin-bottom: 12px;
+
+					img {
+						width: 42px;
+						height: 42px;
+						border-radius: 50%;
+						object-fit: cover;
+						border: 2px solid var(--dd-soft);
+						flex-shrink: 0;
 					}
-					.review-card {
-						margin-top: 20px;
+
+					.author-info {
 						display: flex;
 						flex-direction: column;
-						padding-bottom: 10px;
-						border-bottom: 1px solid #c4c4c4;
-						.info {
-							display: flex;
-							flex-direction: row;
-							justify-content: space-between;
-							.left {
-								display: flex;
-								flex-direction: row;
-								img {
-									width: 55px;
-									height: 59px;
-									border-radius: 50%;
-									object-fit: cover;
-								}
-								div {
-									margin-left: 8px;
-									display: flex;
-									flex-direction: column;
-									strong {
-										color: #181a20;
-										font-family: $font;
-										font-size: 15px;
-										font-style: normal;
-										font-weight: 600;
-										line-height: normal;
-									}
-									span {
-										margin-top: 4px;
-										color: #181a20;
-										font-family: $font;
-										font-size: 13px;
-										font-style: normal;
-										font-weight: 400;
-										line-height: normal;
-									}
-								}
-							}
-							.right {
-								display: flex;
-								flex-direction: row;
-								svg {
-									color: #edf023;
-								}
-							}
-						}
-						p {
-							margin-top: 10px;
-							color: #181a20;
+						gap: 2px;
+
+						strong {
 							font-family: $font;
 							font-size: 14px;
-							font-style: normal;
+							font-weight: 700;
+							color: var(--dd-primary);
+						}
+
+						time {
+							font-family: $font;
+							font-size: 12px;
 							font-weight: 400;
-							line-height: 26px;
+							color: var(--dd-muted);
 						}
 					}
-					.pagination-box {
-						margin-top: 15px;
-						width: 100%;
-						height: auto;
-						display: flex;
-						justify-content: center;
+				}
+
+				.review-content {
+					font-family: $font;
+					font-size: 14px;
+					color: var(--dd-text);
+					line-height: 1.65;
+					padding-left: 54px;
+					margin: 0;
+				}
+			}
+
+			.review-form {
+				h3 {
+					font-family: $font;
+					font-size: 18px;
+					font-weight: 700;
+					color: var(--dd-primary);
+					letter-spacing: -0.01em;
+					margin: 0 0 20px;
+				}
+
+				textarea {
+					width: 100%;
+					height: 126px;
+					padding: 16px 20px;
+					border-radius: 16px;
+					border: 1.5px solid var(--dd-border);
+					background: #f8faff;
+					color: var(--dd-text);
+					font-family: $font;
+					font-size: 14px;
+					font-weight: 400;
+					line-height: 1.65;
+					resize: vertical;
+					box-sizing: border-box;
+					transition: border-color 0.22s;
+
+					&:focus {
+						outline: none;
+						border-color: var(--dd-secondary);
+						background: #ffffff;
+					}
+
+					&::placeholder {
+						color: var(--dd-muted);
 					}
 				}
-				.leave-review-config {
-					margin-top: 15px;
-					border-radius: 12px;
-					background: #fff;
-					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
-					padding: 30px 38px;
-					.main-title {
-						color: #181a20;
-						font-family: $font;
-						font-size: 17px;
-						font-style: normal;
-						font-weight: 600;
-						line-height: normal;
-					}
-					.review-title {
-						margin-top: 20px;
-						color: #181a20;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 600;
-						line-height: normal;
-					}
-					textarea {
-						width: 100%;
-						height: 120px;
-						margin-top: 8px;
-						padding: 20px;
-						border-radius: 8px;
-						border: 1px solid #ddd;
-						color: #717171;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 400;
-						line-height: 26px;
-					}
+
+				.submit-row {
+					display: flex;
+					justify-content: flex-end;
+					margin-top: 16px;
+
 					.submit-btn {
-						width: 100%;
-						display: flex;
-						justify-content: flex-end;
-						button:disabled {
-							background: #dfdfdf;
+						padding: 13px 32px;
+						background: var(--dd-primary);
+						color: #ffffff;
+						border-radius: 14px;
+						font-family: $font;
+						font-size: 14px;
+						font-weight: 700;
+						letter-spacing: 0.01em;
+						text-transform: none;
+						transition: background 0.22s ease, transform 0.18s ease;
+
+						&:hover {
+							background: var(--dd-secondary);
+							transform: translateY(-1px);
 						}
-						.submit-review {
-							display: flex;
-							width: 256px;
-							margin-top: 30px;
-							padding: 16px 30px;
-							justify-content: center;
-							align-items: center;
-							gap: 10px;
-							border-radius: 12px;
-							border: 1px solid #c4c4c4;
-							cursor: pointer;
-							.title {
-								color: #181a20;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-							}
+
+						&.Mui-disabled {
+							background: #d0d8e8;
+							color: #8a96ac;
+							transform: none;
 						}
 					}
 				}
+			}
+		}
+	}
+}
+
+/* ─── MOBILE OVERRIDES ─── */
+#mobile-wrap {
+	.agent-detail-page {
+		padding: 24px 0 64px;
+
+		.container {
+			gap: 28px;
+		}
+
+		.dealer-hero .hero-card {
+			flex-direction: column;
+			padding: 28px 20px;
+			gap: 24px;
+			border-radius: 20px;
+
+			.hero-avatar-wrap img {
+				width: 120px;
+				height: 120px;
+			}
+
+			.hero-info {
+				h1 {
+					font-size: 22px;
+				}
+
+				.hero-stats {
+					gap: 20px;
+
+					.stat strong {
+						font-size: 20px;
+					}
+				}
+			}
+		}
+
+		.dealer-inventory {
+			.vehicle-grid {
+				grid-template-columns: 1fr;
+				gap: 16px;
+			}
+		}
+
+		.dealer-reviews {
+			padding: 28px 20px;
+			border-radius: 20px;
+
+			.review-card .review-content {
+				padding-left: 0;
+				margin-top: 10px;
 			}
 		}
 	}

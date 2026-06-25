@@ -16,7 +16,7 @@ const trustItems: TrustItem[] = [
 	{
 		icon: <VerifiedIcon />,
 		title: 'Verified Inventory',
-		description: 'Every vehicle listing is reviewed before it appears on VMotors, keeping the shopping experience cleaner and more trustworthy.',
+		description: 'Every vehicle listing is reviewed before it appears on Santa, keeping the shopping experience cleaner and more trustworthy.',
 	},
 	{
 		icon: <DirectionsCarIcon />,

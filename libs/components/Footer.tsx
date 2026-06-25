@@ -15,19 +15,19 @@ const Footer = () => {
 				<Stack className={'main'}>
 					<Stack className={'left'}>
 						<Box component={'div'} className={'footer-box'}>
-							<img src="/img/logo/logoWhite.svg" alt="" className={'logo'} />
+							<img src="/img/logo/logo-white.svg" alt="Santa" className={'logo'} />
 						</Box>
 						<Box component={'div'} className={'footer-box'}>
-							<span>total free customer care</span>
+							<span>Santa client support</span>
 							<p>+82 10 4867 2909</p>
 						</Box>
 						<Box component={'div'} className={'footer-box'}>
-							<span>nee live</span>
+							<span>Dealer onboarding</span>
 							<p>+82 10 4867 2909</p>
-							<span>Support?</span>
+							<span>Mon-Fri · Korea hours</span>
 						</Box>
 						<Box component={'div'} className={'footer-box'}>
-							<p>follow us on social media</p>
+							<p>Follow Santa</p>
 							<div className={'media-box'}>
 								<FacebookOutlinedIcon />
 								<TelegramIcon />
@@ -63,7 +63,7 @@ const Footer = () => {
 					</Stack>
 				</Stack>
 				<Stack className={'second'}>
-					<span>© VMotors - All rights reserved. VMotors {moment().year()}</span>
+					<span>© {moment().year()} Santa. Premium Hyundai & Kia marketplace in Korea.</span>
 				</Stack>
 			</Stack>
 		);
@@ -73,19 +73,19 @@ const Footer = () => {
 				<Stack className={'main'}>
 					<Stack className={'left'}>
 						<Box component={'div'} className={'footer-box'}>
-							<img src="/img/logo/logoWhite.svg" alt="" className={'logo'} />
+							<img src="/img/logo/logo-white.svg" alt="Santa" className={'logo'} />
 						</Box>
 						<Box component={'div'} className={'footer-box'}>
-							<span>total free customer care</span>
+							<span>Santa client support</span>
 							<p>+82 10 4867 2909</p>
 						</Box>
 						<Box component={'div'} className={'footer-box'}>
-							<span>nee live</span>
+							<span>Dealer onboarding</span>
 							<p>+82 10 4867 2909</p>
-							<span>Support?</span>
+							<span>Mon-Fri · Korea hours</span>
 						</Box>
 						<Box component={'div'} className={'footer-box'}>
-							<p>follow us on social media</p>
+							<p>Follow Santa</p>
 							<div className={'media-box'}>
 								<FacebookOutlinedIcon />
 								<TelegramIcon />
@@ -96,9 +96,9 @@ const Footer = () => {
 					</Stack>
 					<Stack className={'right'}>
 						<Box component={'div'} className={'top'}>
-							<strong>keep yourself up to date</strong>
+							<strong>Stay close to the market</strong>
 							<div>
-								<input type="text" placeholder={'Your Email'} />
+								<input type="text" placeholder={'Email address'} />
 								<span>Subscribe</span>
 							</div>
 						</Box>
@@ -128,7 +128,7 @@ const Footer = () => {
 					</Stack>
 				</Stack>
 				<Stack className={'second'}>
-					<span>© VMotors - All rights reserved. VMotors {moment().year()}</span>
+					<span>© {moment().year()} Santa. Premium Hyundai & Kia marketplace in Korea.</span>
 					<span>Privacy · Terms · Sitemap</span>
 				</Stack>
 			</Stack>

@@ -16,8 +16,6 @@ import { T } from '../../types/common';
 import { LIKE_TARGET_VEHICLE } from '../../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
-// Message icon import removed; using string constant for auth error
-
 interface TopPropertiesProps {
 	initialInput: PropertiesInquiry;
 }
@@ -33,12 +31,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 	/** APOLLO REQUESTS **/
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
-	const {
-		loading: getVehiclesLoading,
-		data: getVehiclesData,
-		error: getVehiclesError,
-		refetch: getVehiclesRefetch,
-	} = useQuery(GET_VEHICLES, {
+	const { refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: initialInput,
@@ -185,7 +178,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 							<Stack className={'info-box'}>
 								<Box component={'div'} className={'left'}>
 									<span>Buyer Favorites</span>
-									<p>The most liked Hyundai and Kia listings chosen by VMotors buyers.</p>
+									<p>The most liked Hyundai and Kia listings saved by Santa buyers.</p>
 								</Box>
 								<Box component={'div'} className={'right'}>
 									<div className={'more-box'}>

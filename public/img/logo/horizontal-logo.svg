@@ -1,0 +1,17 @@
+<svg width="432" height="88" viewBox="0 0 432 88" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="santaHorizontalLogoTitle">
+  <title id="santaHorizontalLogoTitle">Santa</title>
+  <g transform="translate(51 8) scale(1.18)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      d="M44 17C38.4 12.8 31.8 10.6 23.8 10.6C14 10.6 7.4 15.5 7.4 23.2C7.4 30 12.3 34.4 22.2 36.8L29.7 38.6C37 40.3 40 43 40 47.8C40 54.1 34.2 59.1 25.6 59.1C18 59.1 11.5 56.5 5.8 51.7"
+      stroke="#081C3F"
+      stroke-width="7.75"
+    />
+    <path d="M70 60L86 12L102 60" stroke="#E92C28" stroke-width="7.75" />
+    <path d="M76.4 42.5H95.6" stroke="#E92C28" stroke-width="7.75" />
+    <path d="M127 60V12L159 60V12" stroke="#081C3F" stroke-width="7.75" />
+    <path d="M183 12H225" stroke="#081C3F" stroke-width="7.75" />
+    <path d="M204 12V60" stroke="#081C3F" stroke-width="7.75" />
+    <path d="M251 60L267 12L283 60" stroke="#E92C28" stroke-width="7.75" />
+    <path d="M257.4 42.5H276.6" stroke="#E92C28" stroke-width="7.75" />
+  </g>
+</svg>

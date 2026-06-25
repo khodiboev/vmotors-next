@@ -31,8 +31,8 @@ const withLayoutFull = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>VMotors</title>
-						<meta name={'title'} content={`VMotors`} />
+						<title>Santa | Premium Hyundai & Kia Marketplace</title>
+						<meta name={'title'} content={`Santa | Premium Hyundai & Kia Marketplace`} />
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
@@ -53,8 +53,8 @@ const withLayoutFull = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>VMotors</title>
-						<meta name={'title'} content={`VMotors`} />
+						<title>Santa | Premium Hyundai & Kia Marketplace</title>
+						<meta name={'title'} content={`Santa | Premium Hyundai & Kia Marketplace`} />
 					</Head>
 					<Stack id="pc-wrap">
 						<Stack id={'top'}>

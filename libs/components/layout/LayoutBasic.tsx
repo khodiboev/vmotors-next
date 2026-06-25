@@ -31,17 +31,15 @@ const withLayoutBasic = (Component: any) => {
 				case '/vehicle':
 					title = 'Vehicle Search';
 					desc = 'New Hyundai and Kia inventory';
-					bgImage = '/img/banner/properties.png';
 					break;
 				case '/agent':
 					title = 'Dealers';
 					desc = 'Home / Vehicles';
-					bgImage = '/img/banner/agents.webp';
 					break;
 				case '/agent/detail':
 					title = 'Dealer Page';
 					desc = 'Home / Vehicles';
-					bgImage = '/img/banner/header2.svg';
+					bgImage = '/img/banner/header2.avif';
 					break;
 				case '/mypage':
 					title = 'my page';
@@ -93,8 +91,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>VMotors</title>
-						<meta name={'title'} content={`VMotors`} />
+						<title>Santa | Premium Hyundai & Kia Marketplace</title>
+						<meta name={'title'} content={`Santa | Premium Hyundai & Kia Marketplace`} />
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
@@ -115,8 +113,8 @@ const withLayoutBasic = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>VMotors</title>
-						<meta name={'title'} content={`VMotors`} />
+						<title>Santa | Premium Hyundai & Kia Marketplace</title>
+						<meta name={'title'} content={`Santa | Premium Hyundai & Kia Marketplace`} />
 					</Head>
 					<Stack id="pc-wrap">
 						<Stack id={'top'}>
@@ -125,11 +123,15 @@ const withLayoutBasic = (Component: any) => {
 
 						<Stack
 							className={`header-basic ${authHeader && 'auth'}`}
-							style={{
-								backgroundImage: `url(${memoizedValues.bgImage})`,
-								backgroundSize: 'cover',
-								boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
-							}}
+							style={
+							memoizedValues.bgImage
+								? {
+									backgroundImage: `url(${memoizedValues.bgImage})`,
+									backgroundSize: 'cover',
+									boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
+								}
+								: undefined
+						}
 						>
 							<Stack className={'container'}>
 								<strong>{t(memoizedValues.title)}</strong>

@@ -1,6 +1,6 @@
-# VMotors Backend Skills
+# Santa Frontend Skills
 
-Use these Codex skills for repeatable VMotors frontend workflows.
+Use these Codex skills for repeatable Santa frontend workflows.
 
 | Skill | Purpose |
 |---|---|

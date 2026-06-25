@@ -101,14 +101,14 @@ const VehicleListCard = ({ vehicle, likeVehicleHandler }: VehicleListCardProps) 
 								<img src={dealerImage} alt={dealerName} />
 								<div>
 									<strong>{dealerName}</strong>
-									<span>{vehicle.memberData?.memberAddress || 'Trusted VMotors dealer'}</span>
+									<span>{vehicle.memberData?.memberAddress || 'Santa verified dealer'}</span>
 								</div>
 							</div>
 						</Link>
 					) : (
 						<div className={'dealer-box placeholder'}>
 							<div>
-								<strong>VMotors listing</strong>
+								<strong>Santa market listing</strong>
 								<span>Curated new-car inventory</span>
 							</div>
 						</div>

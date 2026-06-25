@@ -110,14 +110,14 @@ const DashboardVehicleCard = ({ vehicle, contextLabel, likeVehicleHandler }: Das
 								<img src={dealerImage} alt={dealerName} />
 								<div>
 									<strong>{dealerName}</strong>
-									<span>{vehicle?.memberData?.memberAddress || 'Trusted VMotors dealer'}</span>
+									<span>{vehicle?.memberData?.memberAddress || 'Santa verified dealer'}</span>
 								</div>
 							</div>
 						</Link>
 					) : (
 						<div className={'dealer-box placeholder'}>
 							<div>
-								<strong>VMotors listing</strong>
+								<strong>Santa market listing</strong>
 								<span>Curated Hyundai and Kia inventory</span>
 							</div>
 						</div>

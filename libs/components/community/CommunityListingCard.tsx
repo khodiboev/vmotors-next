@@ -31,10 +31,10 @@ const categoryLabelMap: Record<string, string> = {
 const CommunityListingCard = ({ article, likeArticleHandler }: CommunityListingCardProps) => {
 	const user = useReactiveVar(userVar);
 	const imagePath = article?.articleImage ? `${REACT_APP_API_URL}/${article.articleImage}` : '/img/community/communityImg.png';
-	const articleAuthor = article?.memberData?.memberFullName ?? article?.memberData?.memberNick ?? 'VMotors';
+	const articleAuthor = article?.memberData?.memberFullName ?? article?.memberData?.memberNick ?? 'Santa';
 	const articleSummary = stripHtml(article?.articleContent);
 	const summary =
-		articleSummary.length > 140 ? `${articleSummary.slice(0, 137).trimEnd()}...` : articleSummary || 'Explore discussion, dealer insight, and Hyundai or Kia buying context from the VMotors community.';
+		articleSummary.length > 140 ? `${articleSummary.slice(0, 137).trimEnd()}...` : articleSummary || 'Explore discussion, dealer insight, and Hyundai or Kia buying context from the Santa community.';
 
 	return (
 		<article className={'community-listing-card'}>

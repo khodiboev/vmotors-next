@@ -133,7 +133,7 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 				<Stack className={'dealers-page-header'}>
 					<div className={'header-shell'}>
 						<div className={'copy-column'}>
-							<div className={'eyebrow'}>VMotors dealer network</div>
+							<div className={'eyebrow'}>Santa verified dealer network</div>
 							<div className={'copy'}>
 								<h1>Meet the dealer side of Korea&apos;s premium Hyundai and Kia marketplace.</h1>
 								<p>
@@ -151,7 +151,7 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 							<div className={'count-card'}>
 								<span className={'card-label'}>Directory snapshot</span>
 								<strong>{total}</strong>
-								<span className={'card-copy'}>Dealer partners currently visible on VMotors</span>
+								<span className={'card-copy'}>Verified dealer partners currently visible on Santa</span>
 							</div>
 							<div className={'info-card'}>
 								<span className={'info-label'}>Verification first</span>
@@ -190,7 +190,7 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
 									{filterSortName}
 								</Button>
-								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
+								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} disableScrollLock sx={{ paddingTop: '5px' }}>
 									<MenuItem onClick={sortingHandler} id={'recent'} disableRipple>
 										Recent
 									</MenuItem>
@@ -218,7 +218,7 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
 							<h3>No dealers matched your search.</h3>
-							<p>Try a broader search term or check back later as more trusted VMotors dealers join the network.</p>
+							<p>Try a broader search term or check back later as more trusted Santa dealers join the network.</p>
 						</div>
 					) : (
 						agents.map((agent: Member) => {

@@ -1,8 +1,8 @@
-Go outside of this project and read VMotors/docs/ai first!
+Go outside of this project and read the Santa backend docs in `../vmotors/docs/ai` first!
 
-# VMotors Frontend Modification Instructions
+# Santa Frontend Modification Instructions
 
-This client project is being migrated/adapted from nestar-next to VMotors-next.
+This client project is being migrated/adapted from nestar-next to Santa.
 
 ## Rules
 
@@ -25,7 +25,7 @@ Before making any changes, read:
 - docs/ai/DECISIONS.md
 - docs/ai/FRONTEND_MIGRATION.md
 - docs/ai/COMPLETED_TASKS.md
-- and other files inside VMotors/docs/ai
+- and other files inside `../vmotors/docs/ai`
 
 ## Workflow
 
@@ -34,7 +34,7 @@ Before making any changes, read:
 3. Make small incremental changes.
 4. Run typecheck after each phase.
 5. Do not remove working logic unless replaced safely.
-6. Update VMotors/docs/ai/COMPLETED_TASKS.md after major changes.
+6. Update `../vmotors/docs/ai/COMPLETED_TASKS.md` after major changes.
 
 ## Package Manager
 

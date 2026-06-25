@@ -14,7 +14,7 @@ import { sweetConfirmAlert, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } fr
 import { useRouter } from 'next/router';
 import { BoardArticleStatus } from '../../enums/board-article.enum';
 
-const EDIT_DRAFT_STORAGE_KEY = 'vmotors-community-edit-draft';
+const EDIT_DRAFT_STORAGE_KEY = 'santa-community-edit-draft';
 
 const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	const device = useDeviceDetect();

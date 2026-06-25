@@ -10,7 +10,7 @@ interface VehicleDetailCommentCardProps {
 }
 
 const VehicleDetailCommentCard = ({ comment }: VehicleDetailCommentCardProps) => {
-	const commenterName = comment?.memberData?.memberFullName ?? comment?.memberData?.memberNick ?? 'VMotors member';
+	const commenterName = comment?.memberData?.memberFullName ?? comment?.memberData?.memberNick ?? 'Santa member';
 	const commenterImage = comment?.memberData?.memberImage
 		? `${REACT_APP_API_URL}/${comment.memberData.memberImage}`
 		: '/img/profile/defaultUser.svg';

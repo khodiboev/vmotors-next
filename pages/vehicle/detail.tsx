@@ -197,7 +197,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 			<div id={'property-detail-page'}>
 				<div className={'container'}>
 					<div className={'detail-empty-state'}>
-						<span className={'eyebrow'}>VMotors detail</span>
+						<span className={'eyebrow'}>Santa vehicle search</span>
 						<h1>We couldn&apos;t find that vehicle.</h1>
 						<p>The listing may have been removed, reserved, or moved. Explore the latest Hyundai and Kia inventory instead.</p>
 						<Link href={'/vehicle'} className={'primary-action'}>
@@ -219,7 +219,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 				<Stack className={'property-detail-config'}>
 					<section className={'detail-hero-section'}>
 						<div className={'hero-copy'}>
-							<span className={'eyebrow'}>VMotors premium detail</span>
+							<span className={'eyebrow'}>Santa verified listing</span>
 							<h1>{vehicleTitle(vehicle)}</h1>
 							<p>
 								A cleaner way to review Hyundai and Kia inventory across Korea, with premium presentation,
@@ -380,10 +380,10 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 
 							<div className={'summary-card dealer-card'}>
 								<div className={'dealer-top'}>
-									<img src={dealerImage} alt={dealerName || 'VMotors dealer'} />
+									<img src={dealerImage} alt={dealerName || 'Santa dealer'} />
 									<div>
 										<span className={'label'}>Trusted dealer</span>
-										<strong>{dealerName || 'VMotors dealer partner'}</strong>
+										<strong>{dealerName || 'Santa verified dealer'}</strong>
 										<p>{vehicle?.memberData?.memberAddress || 'Supporting Hyundai and Kia buyers across Korea.'}</p>
 									</div>
 								</div>
@@ -486,7 +486,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 								placeholder={'Share a useful note or question about this vehicle'}
 							/>
 							<div className={'comment-compose-footer'}>
-								<span>{user?._id ? 'Your comment will appear with your VMotors profile.' : 'Sign in to join the conversation.'}</span>
+								<span>{user?._id ? 'Your comment will appear with your Santa profile.' : 'Sign in to join the conversation.'}</span>
 								<Button
 									disabled={!insertCommentData.commentContent || !user?._id}
 									onClick={createCommentHandler}

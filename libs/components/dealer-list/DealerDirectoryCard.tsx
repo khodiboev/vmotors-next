@@ -40,7 +40,7 @@ const DealerDirectoryCard = ({ agent, likeMemberHandler }: DealerDirectoryCardPr
 					<div className={'dealer-badges'}>
 						<span className={'badge verified'}>
 							<WorkspacePremiumOutlinedIcon />
-							VMotors partner
+							Santa verified partner
 						</span>
 						<span className={'badge inventory'}>
 							<DirectionsCarFilledOutlinedIcon />

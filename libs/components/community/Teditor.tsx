@@ -32,7 +32,7 @@ const CONTENT_MAX_LENGTH = 1000;
 const MAX_IMAGE_SIZE_BYTES = 15_000_000;
 const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp'];
 const ALLOWED_IMAGE_ACCEPT = 'image/jpg,image/jpeg,image/png,image/webp';
-const EDIT_DRAFT_STORAGE_KEY = 'vmotors-community-edit-draft';
+const EDIT_DRAFT_STORAGE_KEY = 'santa-community-edit-draft';
 const UPLOAD_FAILED_MESSAGE = 'Upload failed!';
 
 const getEditorContentMeta = (value = '') => {

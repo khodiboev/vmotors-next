@@ -48,7 +48,10 @@ hr {
 }
 
 img[src*='/img/logo/logoWhite.svg'],
-img[src*='/img/logo/logoText.svg'] {
+img[src*='/img/logo/logoText.svg'],
+img[src*='/img/logo/logo-white.svg'],
+img[src*='/img/logo/logo.svg'],
+img[src*='/img/logo/app-icon.svg'] {
 	transform-origin: center;
 	transition:
 		transform 260ms ease,
@@ -57,13 +60,16 @@ img[src*='/img/logo/logoText.svg'] {
 }
 
 img[src*='/img/logo/logoWhite.svg']:hover,
-img[src*='/img/logo/logoText.svg']:hover {
-	animation: vmotorsLogoPulse 760ms ease both;
+img[src*='/img/logo/logoText.svg']:hover,
+img[src*='/img/logo/logo-white.svg']:hover,
+img[src*='/img/logo/logo.svg']:hover,
+img[src*='/img/logo/app-icon.svg']:hover {
+	animation: santaLogoPulse 760ms ease both;
 	filter: drop-shadow(0 8px 18px rgba(235, 103, 83, 0.36));
 	transform: translateY(-2px) scale(1.045);
 }
 
-@keyframes vmotorsLogoPulse {
+@keyframes santaLogoPulse {
 	0% {
 		transform: translateY(0) scale(1);
 		filter: drop-shadow(0 0 0 rgba(235, 103, 83, 0));
@@ -80,13 +86,19 @@ img[src*='/img/logo/logoText.svg']:hover {
 
 @media (prefers-reduced-motion: reduce) {
 	img[src*='/img/logo/logoWhite.svg'],
-	img[src*='/img/logo/logoText.svg'] {
+	img[src*='/img/logo/logoText.svg'],
+	img[src*='/img/logo/logo-white.svg'],
+	img[src*='/img/logo/logo.svg'],
+	img[src*='/img/logo/app-icon.svg'] {
 		transition: none;
 		will-change: auto;
 	}
 
 	img[src*='/img/logo/logoWhite.svg']:hover,
-	img[src*='/img/logo/logoText.svg']:hover {
+	img[src*='/img/logo/logoText.svg']:hover,
+	img[src*='/img/logo/logo-white.svg']:hover,
+	img[src*='/img/logo/logo.svg']:hover,
+	img[src*='/img/logo/app-icon.svg']:hover {
 		animation: none;
 		filter: none;
 		transform: none;

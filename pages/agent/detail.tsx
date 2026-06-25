@@ -1,11 +1,9 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import PropertyBigCard from '../../libs/components/common/PropertyBigCard';
 import ReviewCard from '../../libs/components/agent/ReviewCard';
-import { Box, Button, Pagination, Stack, Typography } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
+import { Button, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { Vehicle } from '../../libs/types/vehicle/vehicle';
 import { Member } from '../../libs/types/member/member';
@@ -29,7 +27,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [agentId, setAgentId] = useState<string | null>(null);
@@ -46,7 +43,6 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		commentRefId: '',
 	});
 
-	/** APOLLO REQUESTS **/
 	/** APOLLO REQUESTS **/
 	const [createComment] = useMutation(CREATE_COMMENT);
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
@@ -190,124 +186,170 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>DEALER DETAIL PAGE MOBILE</div>;
-	} else {
-		return (
-			<Stack className={'agent-detail-page'}>
-				<Stack className={'container'}>
-					<Stack className={'agent-info'}>
-						<img
-							src={agent?.memberImage ? `${REACT_APP_API_URL}/${agent?.memberImage}` : '/img/profile/defaultUser.svg'}
-							alt=""
-						/>
-						<Box component={'div'} className={'info'} onClick={() => redirectToMemberPageHandler(agent?._id as string)}>
-							<strong>{agent?.memberFullName ?? agent?.memberNick}</strong>
-							<div>
+	return (
+		<div className="agent-detail-page">
+			<div className="container">
+
+				{/* ── DEALER HERO ── */}
+				<section className="dealer-hero">
+					<div className="hero-card">
+						<div className="hero-avatar-wrap">
+							<img
+								src={agent?.memberImage ? `${REACT_APP_API_URL}/${agent.memberImage}` : '/img/profile/defaultUser.svg'}
+								alt={agent?.memberFullName ?? agent?.memberNick ?? ''}
+								onClick={() => redirectToMemberPageHandler(agent?._id as string)}
+							/>
+							<span className="verified-badge">
+								<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M8 1L10.09 5.26L14.8 5.97L11.4 9.28L12.18 14L8 11.77L3.82 14L4.6 9.28L1.2 5.97L5.91 5.26L8 1Z"
+										fill="currentColor"
+									/>
+								</svg>
+								Santa Verified
+							</span>
+						</div>
+						<div className="hero-info">
+							<h1 onClick={() => redirectToMemberPageHandler(agent?._id as string)}>
+								{agent?.memberFullName ?? agent?.memberNick}
+							</h1>
+							<div className="hero-contact">
 								<img src="/img/icons/call.svg" alt="" />
 								<span>{agent?.memberPhone}</span>
 							</div>
-						</Box>
-					</Stack>
-					<Stack className={'agent-home-list'}>
-						<Stack className={'card-wrap'}>
-							{agentProperties.map((property: Vehicle) => {
-								return (
-									<div className={'wrap-main'} key={property?._id}>
-										<PropertyBigCard property={property} key={property?._id} likePropertyHandler={likePropertyHandler} />
-									</div>
-								);
-							})}
-						</Stack>
-						<Stack className={'pagination'}>
-							{propertyTotal ? (
-								<>
-									<Stack className="pagination-box">
-										<Pagination
-											page={searchFilter.page}
-											count={Math.ceil(propertyTotal / searchFilter.limit) || 1}
-											onChange={propertyPaginationChangeHandler}
-											shape="circular"
-											color="primary"
+							{(agent as any)?.memberAddress && (
+								<div className="hero-location">
+									<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M8 1C5.79 1 4 2.79 4 5C4 8 8 13 8 13C8 13 12 8 12 5C12 2.79 10.21 1 8 1ZM8 6.5C7.17 6.5 6.5 5.83 6.5 5C6.5 4.17 7.17 3.5 8 3.5C8.83 3.5 9.5 4.17 9.5 5C9.5 5.83 8.83 6.5 8 6.5Z"
+											fill="currentColor"
 										/>
-									</Stack>
-									<span>
-										Total {propertyTotal} vehicle{propertyTotal > 1 ? 's' : ''} available
-									</span>
-								</>
-							) : (
-								<div className={'no-data'}>
-									<img src="/img/icons/icoAlert.svg" alt="" />
-									<p>No vehicles found!</p>
+									</svg>
+									<span>{(agent as any).memberAddress}</span>
 								</div>
 							)}
-						</Stack>
-					</Stack>
-					<Stack className={'review-box'}>
-						<Stack className={'main-intro'}>
-							<span>Reviews</span>
-							<p>we are glad to see you again</p>
-						</Stack>
-						{commentTotal !== 0 && (
-							<Stack className={'review-wrap'}>
-								<Box component={'div'} className={'title-box'}>
-									<StarIcon />
-									<span>
-										{commentTotal} review{commentTotal > 1 ? 's' : ''}
-									</span>
-								</Box>
-								{agentComments?.map((comment: Comment) => {
-									return <ReviewCard comment={comment} key={comment?._id} />;
-								})}
-								<Box component={'div'} className={'pagination-box'}>
-									<Pagination
-										page={commentInquiry.page}
-										count={Math.ceil(commentTotal / commentInquiry.limit) || 1}
-										onChange={commentPaginationChangeHandler}
-										shape="circular"
-										color="primary"
-									/>
-								</Box>
-							</Stack>
-						)}
+							{(agent as any)?.memberDesc && (
+								<p className="hero-desc">{(agent as any).memberDesc}</p>
+							)}
+							<div className="hero-stats">
+								<div className="stat">
+									<strong>{propertyTotal}</strong>
+									<span>Vehicles</span>
+								</div>
+								<div className="stat">
+									<strong>{(agent as any)?.memberViews ?? 0}</strong>
+									<span>Views</span>
+								</div>
+								<div className="stat">
+									<strong>{(agent as any)?.memberLikes ?? 0}</strong>
+									<span>Likes</span>
+								</div>
+								<div className="stat">
+									<strong>{(agent as any)?.memberRank ?? 0}</strong>
+									<span>Rank</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-						<Stack className={'leave-review-config'}>
-							<Typography className={'main-title'}>Leave A Review</Typography>
-							<Typography className={'review-title'}>Review</Typography>
-							<textarea
-								onChange={({ target: { value } }: any) => {
-									setInsertCommentData({ ...insertCommentData, commentContent: value });
-								}}
-								value={insertCommentData.commentContent}
-							></textarea>
-							<Box className={'submit-btn'} component={'div'}>
-								<Button
-									className={'submit-review'}
-									disabled={insertCommentData.commentContent === '' || user?._id === ''}
-									onClick={createCommentHandler}
-								>
-									<Typography className={'title'}>Submit Review</Typography>
-									<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
-										<g clipPath="url(#clip0_6975_3642)">
-											<path
-												d="M16.1571 0.5H6.37936C6.1337 0.5 5.93491 0.698792 5.93491 0.944458C5.93491 1.19012 6.1337 1.38892 6.37936 1.38892H15.0842L0.731781 15.7413C0.558156 15.915 0.558156 16.1962 0.731781 16.3698C0.818573 16.4566 0.932323 16.5 1.04603 16.5C1.15974 16.5 1.27345 16.4566 1.36028 16.3698L15.7127 2.01737V10.7222C15.7127 10.9679 15.9115 11.1667 16.1572 11.1667C16.4028 11.1667 16.6016 10.9679 16.6016 10.7222V0.944458C16.6016 0.698792 16.4028 0.5 16.1571 0.5Z"
-												fill="#181A20"
-											/>
-										</g>
-										<defs>
-											<clipPath id="clip0_6975_3642">
-												<rect width="16" height="16" fill="white" transform="translate(0.601562 0.5)" />
-											</clipPath>
-										</defs>
-									</svg>
-								</Button>
-							</Box>
-						</Stack>
-					</Stack>
-				</Stack>
-			</Stack>
-		);
-	}
+				{/* ── VEHICLE INVENTORY ── */}
+				<section className="dealer-inventory">
+					<div className="section-header">
+						<h2>Vehicle Inventory</h2>
+						{propertyTotal > 0 && (
+							<span>{propertyTotal} vehicle{propertyTotal > 1 ? 's' : ''}</span>
+						)}
+					</div>
+					{agentProperties.length > 0 ? (
+						<>
+							<div className="vehicle-grid">
+								{agentProperties.map((property: Vehicle) => (
+									<PropertyBigCard
+										property={property}
+										key={property._id}
+										likePropertyHandler={likePropertyHandler}
+									/>
+								))}
+							</div>
+							<div className="vehicle-pagination">
+								<Pagination
+									page={searchFilter.page}
+									count={Math.ceil(propertyTotal / searchFilter.limit) || 1}
+									onChange={propertyPaginationChangeHandler}
+									shape="circular"
+									color="primary"
+								/>
+								<span>Total {propertyTotal} vehicle{propertyTotal > 1 ? 's' : ''} available</span>
+							</div>
+						</>
+					) : (
+						<div className="empty-inventory">
+							<img src="/img/icons/icoAlert.svg" alt="" />
+							<h3>No vehicles available yet</h3>
+							<p>This dealer hasn&apos;t listed any vehicles on Santa yet.</p>
+						</div>
+					)}
+				</section>
+
+				{/* ── REVIEWS ── */}
+				<section className="dealer-reviews">
+					<div className="reviews-header">
+						<h2>Reviews</h2>
+						{commentTotal > 0 && (
+							<span className="review-count-badge">
+								{commentTotal} review{commentTotal > 1 ? 's' : ''}
+							</span>
+						)}
+					</div>
+
+					{commentTotal > 0 ? (
+						<div className="reviews-list">
+							{agentComments?.map((comment: Comment) => (
+								<ReviewCard comment={comment} key={comment?._id} />
+							))}
+							<div className="review-pagination">
+								<Pagination
+									page={commentInquiry.page}
+									count={Math.ceil(commentTotal / commentInquiry.limit) || 1}
+									onChange={commentPaginationChangeHandler}
+									shape="circular"
+									color="primary"
+								/>
+							</div>
+						</div>
+					) : (
+						<div className="empty-reviews">
+							<p>No reviews yet. Be the first to share your experience with this dealer.</p>
+						</div>
+					)}
+
+					<div className="reviews-divider" />
+
+					<div className="review-form">
+						<h3>Write a Review</h3>
+						<textarea
+							placeholder="Share your experience with this dealer..."
+							value={insertCommentData.commentContent}
+							onChange={({ target: { value } }: any) =>
+								setInsertCommentData({ ...insertCommentData, commentContent: value })
+							}
+						/>
+						<div className="submit-row">
+							<Button
+								className="submit-btn"
+								disabled={insertCommentData.commentContent === '' || user?._id === ''}
+								onClick={createCommentHandler}
+							>
+								Submit Review
+							</Button>
+						</div>
+					</div>
+				</section>
+
+			</div>
+		</div>
+	);
 };
 
 AgentDetail.defaultProps = {

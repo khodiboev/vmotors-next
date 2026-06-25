@@ -83,7 +83,7 @@ const RecentlyVisited: NextPage = () => {
 								<HistoryRoundedIcon />
 							</div>
 							<strong>No recently viewed vehicles yet</strong>
-							<p>Your browsing history will appear here after you explore more VMotors inventory.</p>
+							<p>Your browsing history will appear here after you explore more Santa vehicle listings.</p>
 						</div>
 					) : null}
 				</Stack>

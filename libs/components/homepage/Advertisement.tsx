@@ -9,7 +9,7 @@ const Advertisement = () => {
 			<div className={'video-overlay'}>
 				<span className={'video-eyebrow'}>Cinematic brand moment</span>
 				<h3>Premium presentation, real vehicle discovery.</h3>
-				<p>VMotors keeps the browsing experience elegant while your next shortlist takes shape.</p>
+				<p>Santa keeps vehicle discovery elegant while your next shortlist takes shape.</p>
 				<button onClick={() => router.push('/vehicle')}>Explore inventory</button>
 			</div>
 			<video

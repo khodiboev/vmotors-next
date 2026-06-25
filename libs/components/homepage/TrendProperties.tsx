@@ -32,12 +32,7 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 	/** APOLLO REQUESTS **/
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
-	const {
-		loading: getVehiclesLoading,
-		data: getVehiclesData,
-		error: getVehiclesError,
-		refetch: getVehiclesRefetch,
-	} = useQuery(GET_VEHICLES, {
+	const { refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: initialInput,
@@ -195,7 +190,7 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 							<Stack className={'info-box'}>
 								<Box component={'div'} className={'left'}>
 									<span>New Arrivals</span>
-									<p>The latest Hyundai and Kia listings just added to VMotors.</p>
+									<p>The latest Hyundai and Kia listings just added to the Santa marketplace.</p>
 								</Box>
 								<Box component={'div'} className={'right'}>
 									<div className={'more-box'}>

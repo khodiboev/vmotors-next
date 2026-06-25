@@ -58,7 +58,7 @@ const faqCategoryMeta: Record<FaqCategoryKey, { label: string; description: stri
 	},
 	other: {
 		label: 'Other',
-		description: 'General VMotors help and policy questions.',
+		description: 'General Santa help and policy questions.',
 	},
 };
 
@@ -66,7 +66,7 @@ const faqData: Record<FaqCategoryKey, Array<{ id: string; subject: string; conte
 	inventory: [
 		{
 			id: 'inventory-01',
-			subject: 'Are the vehicles on VMotors verified before they are listed?',
+			subject: 'Are the vehicles on Santa verified before they are listed?',
 			content: 'Listings are intended to reflect active Hyundai and Kia inventory from registered dealers, but you should still confirm trim, delivery timing, and final pricing with the dealer before purchase.',
 		},
 		{
@@ -81,15 +81,15 @@ const faqData: Record<FaqCategoryKey, Array<{ id: string; subject: string; conte
 		},
 		{
 			id: 'inventory-04',
-			subject: 'Can I compare multiple Hyundai or Kia models on VMotors?',
+			subject: 'Can I compare multiple Hyundai or Kia models on Santa?',
 			content: 'You can shortlist and browse multiple listings across the marketplace, then review each vehicle detail page to compare trim, fuel, transmission, and pricing context.',
 		},
 	],
 	payment: [
 		{
 			id: 'payment-01',
-			subject: 'Does VMotors process vehicle payments directly?',
-			content: 'Final vehicle payment handling depends on the dealer process. VMotors helps you discover inventory and connect with trusted dealers, but you should confirm payment steps with the listing dealer.',
+			subject: 'Does Santa process vehicle payments directly?',
+			content: 'Final vehicle payment handling depends on the dealer process. Santa helps you discover inventory and connect with trusted dealers, but you should confirm payment steps with the listing dealer.',
 		},
 		{
 			id: 'payment-02',
@@ -120,14 +120,14 @@ const faqData: Record<FaqCategoryKey, Array<{ id: string; subject: string; conte
 		},
 		{
 			id: 'buyers-04',
-			subject: 'What if I am buying my first Hyundai or Kia through VMotors?',
+			subject: 'What if I am buying my first Hyundai or Kia through Santa?',
 			content: 'Take time to compare a few listings, review the FAQ, and use dealer profile pages to understand who you are speaking with before making a decision.',
 		},
 	],
 	dealers: [
 		{
 			id: 'dealers-01',
-			subject: 'How do dealers participate on VMotors?',
+			subject: 'How do dealers participate on Santa?',
 			content: 'Dealers use registered agent accounts to manage inventory visibility on the platform and present live Hyundai and Kia listings through their dealer profile.',
 		},
 		{
@@ -154,14 +154,14 @@ const faqData: Record<FaqCategoryKey, Array<{ id: string; subject: string; conte
 		},
 		{
 			id: 'account-03',
-			subject: 'Can I manage my activity and saved items from VMotors?',
+			subject: 'Can I manage my activity and saved items from Santa?',
 			content: 'Yes. Signed-in users can manage relevant personal activity through their account and use the platform’s saved or engagement features where available.',
 		},
 	],
 	community: [
 		{
 			id: 'community-01',
-			subject: 'How should I use the VMotors community responsibly?',
+			subject: 'How should I use the Santa community responsibly?',
 			content: 'Keep discussions relevant to Hyundai, Kia, buying, ownership, dealer experience, or platform usage, and avoid abusive or misleading posts.',
 		},
 		{
@@ -183,13 +183,13 @@ const faqData: Record<FaqCategoryKey, Array<{ id: string; subject: string; conte
 		},
 		{
 			id: 'other-02',
-			subject: 'Does VMotors publish support updates anywhere else?',
+			subject: 'Does Santa publish support updates anywhere else?',
 			content: 'Important platform guidance should appear in the notices section first, with broader context available through related FAQ topics and community updates.',
 		},
 		{
 			id: 'other-03',
-			subject: 'Can VMotors help me understand the platform before I buy?',
-			content: 'Yes. The support center is intended to help you understand how VMotors works before you move from browsing into active dealer conversations.',
+			subject: 'Can Santa help me understand the platform before I buy?',
+			content: 'Yes. The support center is intended to help you understand how Santa works before you move from browsing into active dealer conversations.',
 		},
 	],
 };
@@ -214,7 +214,7 @@ const Faq = () => {
 			<div className={'section-heading'}>
 				<span className={'label'}>Automotive FAQ</span>
 				<strong>Answers for inventory, buyers, dealers, and platform support</strong>
-				<p>Browse practical guidance built for the VMotors marketplace so you can move from questions to confident decisions faster.</p>
+				<p>Browse practical guidance built for the Santa marketplace so you can move from questions to confident decisions faster.</p>
 			</div>
 
 			<div className={'faq-shell'}>

@@ -26,7 +26,7 @@ const supportHighlights = [
 	},
 	{
 		label: 'Dealer support',
-		description: 'Guidance for dealer accounts, listings, and trusted marketplace participation on VMotors.',
+		description: 'Guidance for dealer accounts, listings, and verified marketplace participation on Santa.',
 		icon: <WorkspacePremiumOutlinedIcon />,
 	},
 	{
@@ -57,7 +57,7 @@ const CS: NextPage = () => {
 			<Stack className={'container'}>
 				<section className={'support-hero'}>
 					<div className={'hero-copy'}>
-						<span className={'eyebrow'}>VMotors support center</span>
+						<span className={'eyebrow'}>Santa support desk</span>
 						<h1>Clear support for buyers, members, and dealers.</h1>
 						<p>
 							Find platform notices, automotive-focused FAQ guidance, and the fastest path to answers for Hyundai
@@ -66,7 +66,7 @@ const CS: NextPage = () => {
 						<div className={'hero-trust-row'}>
 							<span>Clean support experience</span>
 							<span>Buyer and dealer guidance</span>
-							<span>Trusted VMotors policies</span>
+							<span>Trusted platform policies</span>
 						</div>
 					</div>
 
@@ -98,7 +98,7 @@ const CS: NextPage = () => {
 				<Box component={'div'} className={'cs-main-info'}>
 					<Box component={'div'} className={'info'}>
 						<span>Support center</span>
-						<p>Guidance for VMotors buyers, members, and dealers without the noise of a generic help page.</p>
+						<p>Guidance for buyers, members, and dealers on Santa without the noise of a generic help page.</p>
 					</Box>
 					<Box component={'div'} className={'btns'}>
 						<button

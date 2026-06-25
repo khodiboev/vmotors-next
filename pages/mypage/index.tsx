@@ -39,7 +39,7 @@ const MyPage: NextPage = () => {
 		() => ({
 			myProfile: {
 				eyebrow: 'Account overview',
-				title: 'Your VMotors dashboard',
+				title: 'Your Santa account hub',
 				description: 'Manage your buyer profile, saved Hyundai and Kia vehicles, and marketplace activity in one premium workspace.',
 			},
 			myFavorites: {
@@ -60,7 +60,7 @@ const MyPage: NextPage = () => {
 			addVehicle: {
 				eyebrow: 'Add inventory',
 				title: 'Publish a new vehicle',
-				description: 'Create a clean, buyer-ready listing that fits the premium VMotors marketplace experience.',
+				description: 'Create a clean, buyer-ready listing that fits the premium Santa marketplace experience.',
 			},
 			myArticles: {
 				eyebrow: 'Community activity',
@@ -70,7 +70,7 @@ const MyPage: NextPage = () => {
 			writeArticle: {
 				eyebrow: 'Community publishing',
 				title: 'Share insight with the community',
-				description: 'Create thoughtful articles for buyers, owners, and dealers in the VMotors community.',
+				description: 'Create thoughtful articles for buyers, owners, and dealers in the Santa community.',
 			},
 			followers: {
 				eyebrow: 'Dealer network',
@@ -198,17 +198,17 @@ const MyPage: NextPage = () => {
 							<div className={'hero-trust-row'}>
 								<span>Buyer and dealer ready</span>
 								<span>Live marketplace activity</span>
-								<span>Premium VMotors workspace</span>
+								<span>Santa account center</span>
 							</div>
 						</div>
 
 						<div className={'hero-sidecard'}>
 							<div className={'member-highlight'}>
 								<div className={'member-avatar'}>
-									<img src={memberImage} alt={user?.memberNick || 'VMotors member'} />
+									<img src={memberImage} alt={user?.memberNick || 'Santa member'} />
 								</div>
 								<div className={'member-copy'}>
-									<strong>{user?.memberNick || 'VMotors member'}</strong>
+									<strong>{user?.memberNick || 'Santa member'}</strong>
 									<span>{user?.memberType === 'AGENT' ? 'Trusted dealer dashboard' : 'Buyer account dashboard'}</span>
 									<p>{user?.memberAddress || 'Support your Hyundai and Kia journey from one calm account center.'}</p>
 								</div>

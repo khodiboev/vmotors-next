@@ -210,7 +210,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		? `${REACT_APP_API_URL}/${featuredArticle.articleImage}`
 		: '/img/community/communityImg.png';
 	const featuredAuthor =
-		featuredArticle?.memberData?.memberFullName ?? featuredArticle?.memberData?.memberNick ?? 'VMotors community';
+		featuredArticle?.memberData?.memberFullName ?? featuredArticle?.memberData?.memberNick ?? 'Santa community';
 	const featuredSummary =
 		getArticleSummary(featuredArticle?.articleContent, 210) ||
 		'Start the conversation in this board with a clear perspective, useful owner context, and a headline other members will want to open.';
@@ -221,7 +221,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 				<section className="community-hero">
 					<div className="hero-grid">
 						<div className="hero-intro">
-							<span className="eyebrow">VMotors journal & community</span>
+							<span className="eyebrow">Santa Journal</span>
 							<h1>Stories, advice, and real Hyundai-Kia conversation from across Korea.</h1>
 							<p>
 								Read owner notes, dealer experiences, model recommendations, and market updates in a community
@@ -329,7 +329,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 							{recentActivityItems.length ? (
 								recentActivityItems.map((article) => {
 									const articleAuthor =
-										article?.memberData?.memberFullName ?? article?.memberData?.memberNick ?? 'VMotors community';
+										article?.memberData?.memberFullName ?? article?.memberData?.memberNick ?? 'Santa community';
 
 									return (
 										<Link href={getArticleHref(article)} className="activity-item" key={`recent-${article?._id}`}>
@@ -413,7 +413,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 								<div className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
 									<h3>No automotive stories in this board yet.</h3>
-									<p>Check another board or come back soon as the VMotors community adds more Hyundai and Kia discussion.</p>
+									<p>Check another board or come back soon as the Santa community adds more Hyundai and Kia discussion.</p>
 								</div>
 							)}
 						</div>

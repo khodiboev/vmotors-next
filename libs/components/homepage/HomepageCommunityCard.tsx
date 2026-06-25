@@ -28,7 +28,7 @@ const HomepageCommunityCard = ({ article }: HomepageCommunityCardProps) => {
 
 				<div className={'article-body'}>
 					<div className={'article-topline'}>
-						<span className={'author'}>{article?.memberData?.memberNick ?? 'VMotors'}</span>
+						<span className={'author'}>{article?.memberData?.memberNick ?? 'Santa'}</span>
 						<span className={'date'}>
 							<Moment format={'MMM DD'}>{article?.createdAt}</Moment>
 						</span>

@@ -110,7 +110,7 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 				<Stack className="dashboard-shell-header">
 					<div className={'copy'}>
 						<span className={'section-kicker'}>Profile settings</span>
-						<Typography className="main-title">Your VMotors account profile</Typography>
+						<Typography className="main-title">Your Santa profile</Typography>
 						<Typography className="sub-title">Keep your contact details, location, and profile image ready for buyers, dealers, and community activity.</Typography>
 					</div>
 					<div className={'shell-badge'}>
@@ -125,7 +125,7 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 							<BadgeOutlinedIcon />
 						</div>
 						<div>
-							<strong>{user?.memberNick || 'VMotors member'}</strong>
+							<strong>{user?.memberNick || 'Santa member'}</strong>
 							<span>Display name</span>
 						</div>
 					</article>
@@ -153,11 +153,11 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 					<Stack className="photo-box">
 						<div className={'section-title-row'}>
 							<Typography className="title">Profile image</Typography>
-							<Typography className="helper-copy">Use a clean photo to strengthen trust across VMotors.</Typography>
+							<Typography className="helper-copy">Use a clean photo to strengthen trust across the Santa marketplace.</Typography>
 						</div>
 						<Stack className="image-big-box">
 							<Stack className="image-box">
-								<img src={profileImage} alt={user?.memberNick || 'VMotors member'} />
+								<img src={profileImage} alt={user?.memberNick || 'Santa member'} />
 							</Stack>
 							<Stack className="upload-big-box">
 								<input type="file" hidden id="hidden-input" onChange={uploadImage} accept="image/jpg, image/jpeg, image/png" />

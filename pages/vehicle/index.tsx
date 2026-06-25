@@ -107,7 +107,7 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 			<div className="container">
 				<Stack className={'vehicles-page-shell'}>
 					<Stack className={'vehicles-page-header'}>
-						<div className={'eyebrow'}>VMotors inventory</div>
+						<div className={'eyebrow'}>Santa curated inventory</div>
 						<div className={'heading-row'}>
 							<div className={'copy'}>
 								<h1>Discover Hyundai and Kia vehicles across Korea</h1>
@@ -146,6 +146,7 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 											anchorEl={anchorEl}
 											open={sortingOpen}
 											onClose={() => setSortingOpen(false)}
+											disableScrollLock
 											sx={{ paddingTop: '5px' }}
 										>
 											<MenuItem onClick={sortingHandler} id={'new'} disableRipple>
@@ -181,7 +182,7 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 								<div className={'no-data'}>
 									<img src="/img/icons/icoAlert.svg" alt="" />
 									<h3>No vehicles matched your search.</h3>
-									<p>Try broadening the filters or reset the search to explore the full VMotors inventory.</p>
+									<p>Try broadening the filters or reset the search to explore the full Santa inventory.</p>
 									<Button
 										className={'reset-empty-state'}
 										onClick={() =>

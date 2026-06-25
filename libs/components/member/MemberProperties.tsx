@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
-import { Pagination, Stack, Typography } from '@mui/material';
+import { Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
-import VehicleCard from '../property/PropertyCard';
+import PropertyBigCard from '../common/PropertyBigCard';
 import { Vehicle } from '../../types/vehicle/vehicle';
 import { VehiclesInquiry } from '../../types/vehicle/vehicle.input';
 import { T } from '../../types/common';
 import { GET_VEHICLES } from '../../../apollo/user/query';
 
 const MemberProperties: NextPage = ({ initialInput }: any) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { memberId } = router.query;
 	const [searchFilter, setSearchFilter] = useState<VehiclesInquiry>({ ...initialInput });
@@ -39,43 +37,38 @@ const MemberProperties: NextPage = ({ initialInput }: any) => {
 
 	const paginationHandler = (e: T, value: number) => setSearchFilter({ ...searchFilter, page: value });
 
-	if (device === 'mobile') return <div>VMOTORS VEHICLES MOBILE</div>;
-
 	return (
 		<div id="member-properties-page">
-			<Stack className="main-title-box">
-				<Stack className="right-box">
-					<Typography className="main-title">Vehicles</Typography>
-				</Stack>
-			</Stack>
-			<Stack className="properties-list-box">
-				<Stack className="list-box">
-					{dealerVehicles.length === 0 ? (
-						<div className={'no-data'}>
-							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No vehicle found!</p>
-						</div>
-					) : (
-						dealerVehicles.map((vehicle) => <VehicleCard property={vehicle} key={vehicle._id} recentlyVisited />)
-					)}
-					{dealerVehicles.length !== 0 && (
-						<Stack className="pagination-config">
-							<Stack className="pagination-box">
-								<Pagination
-									count={Math.ceil(total / searchFilter.limit)}
-									page={searchFilter.page}
-									shape="circular"
-									color="primary"
-									onChange={paginationHandler}
-								/>
-							</Stack>
-							<Stack className="total-result">
-								<Typography>{total} vehicle{total > 1 ? 's' : ''} available</Typography>
-							</Stack>
-						</Stack>
-					)}
-				</Stack>
-			</Stack>
+			<div className="section-header">
+				<h2>Vehicles</h2>
+				{total > 0 && <span>{total} vehicle{total > 1 ? 's' : ''}</span>}
+			</div>
+
+			{dealerVehicles.length === 0 ? (
+				<div className="empty-state">
+					<img src="/img/icons/icoAlert.svg" alt="" />
+					<h3>No vehicles listed yet</h3>
+					<p>This dealer hasn&apos;t added any inventory to their Santa profile.</p>
+				</div>
+			) : (
+				<>
+					<div className="vehicle-grid">
+						{dealerVehicles.map((vehicle) => (
+							<PropertyBigCard property={vehicle} key={vehicle._id} />
+						))}
+					</div>
+					<div className="pagination-config">
+						<Pagination
+							count={Math.ceil(total / searchFilter.limit)}
+							page={searchFilter.page}
+							shape="circular"
+							color="primary"
+							onChange={paginationHandler}
+						/>
+						<span>{total} vehicle{total > 1 ? 's' : ''} available</span>
+					</div>
+				</>
+			)}
 		</div>
 	);
 };
@@ -83,7 +76,7 @@ const MemberProperties: NextPage = ({ initialInput }: any) => {
 MemberProperties.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 5,
+		limit: 9,
 		sort: 'createdAt',
 		search: {
 			memberId: '',

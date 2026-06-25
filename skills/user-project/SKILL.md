@@ -1,6 +1,6 @@
 ---
 name: user-project
-description: Improve VMotors vehicle marketplace frontend UI/UX and responsive design.
+description: Improve Santa vehicle marketplace frontend UI/UX and responsive design.
 ---
 
 Focus on:

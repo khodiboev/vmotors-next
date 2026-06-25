@@ -1,38 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Santa Frontend
+
+Santa is the Next.js frontend for a Hyundai and Kia vehicle marketplace in South Korea. It uses Apollo Client to communicate with the GraphQL API running on `http://localhost:3007/graphql`.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and start the development server:
 
 ```bash
-npm run dev
-# or
+yarn install
 yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Core Stack
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- Next.js `pages/` router
+- Apollo Client for GraphQL queries, mutations, uploads, and websocket chat connectivity
+- MUI and Sass for UI styling
+- `next-i18next` for localized labels and copy
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Main Areas
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Homepage and brand discovery
+- Vehicle browse and vehicle detail
+- Dealer directory and dealer detail
+- Community articles and discussion
+- Account, my page, and admin tools
 
-## Learn More
+## Validation
 
-To learn more about Next.js, take a look at the following resources:
+Run these checks after major changes:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+yarn -s tsc --noEmit --incremental false
+yarn build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
+- Preserve the existing routing and Apollo/GraphQL integration.
+- Keep vehicle-marketplace business logic intact while improving branding and UI incrementally.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## AI / Handoff Documentation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Project history, migration guide, and architectural decisions live in [`docs/ai/`](./docs/ai/):
+
+- [`PROJECT_OVERVIEW.md`](./docs/ai/PROJECT_OVERVIEW.md) — Full project context, tech stack, page status
+- [`COMPLETED_TASKS.md`](./docs/ai/COMPLETED_TASKS.md) — Chronological record of all completed work
+- [`FRONTEND_MIGRATION.md`](./docs/ai/FRONTEND_MIGRATION.md) — Nestar → VMotors → Santa migration history and legacy code guide
+- [`DECISIONS.md`](./docs/ai/DECISIONS.md) — Key architectural and naming decisions with rationale

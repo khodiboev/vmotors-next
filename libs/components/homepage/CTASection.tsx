@@ -15,7 +15,7 @@ const CTASection = () => {
 		return (
 			<Stack className={'cta-section'}>
 				<Stack className={'container'}>
-					<span className={'cta-tag'}>VMotors Premium Search</span>
+					<span className={'cta-tag'}>Santa Verified Search</span>
 					<h2 className={'cta-headline'}>Your next Hyundai or Kia starts here.</h2>
 					<p className={'cta-sub'}>
 						Compare live listings, review premium details, and connect with a trusted dealer in a few taps.
@@ -36,7 +36,7 @@ const CTASection = () => {
 	return (
 		<Stack className={'cta-section'}>
 			<Stack className={'container'}>
-				<span className={'cta-tag'}>VMotors Premium Search</span>
+				<span className={'cta-tag'}>Santa Verified Search</span>
 				<h2 className={'cta-headline'}>Your next Hyundai or Kia starts here.</h2>
 				<p className={'cta-sub'}>
 					Compare live listings, review premium details, and connect with a trusted dealer without the noise of a generic marketplace.

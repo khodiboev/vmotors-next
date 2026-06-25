@@ -1,5 +1,4 @@
 import { NextPage } from 'next';
-import useDeviceDetect from '../libs/hooks/useDeviceDetect';
 import withLayoutMain from '../libs/components/layout/LayoutHome';
 import CommunityBoards from '../libs/components/homepage/CommunityBoards';
 import TopAgents from '../libs/components/homepage/TopAgents';
@@ -19,35 +18,18 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const Home: NextPage = () => {
-	const device = useDeviceDetect();
-
-	if (device === 'mobile') {
-		return (
-			<Stack className={'home-page'}>
-				<BrandSection />
-				<TrendProperties />
-				<TopProperties />
-				<TopAgents />
-				<Advertisement />
-				<TrustSection />
-				<CommunityBoards />
-				<CTASection />
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'home-page'}>
-				<BrandSection />
-				<TrendProperties />
-				<TopProperties />
-				<TopAgents />
-				<Advertisement />
-				<TrustSection />
-				<CommunityBoards />
-				<CTASection />
-			</Stack>
-		);
-	}
+	return (
+		<Stack className={'home-page'}>
+			<BrandSection />
+			<TrendProperties />
+			<TopProperties />
+			<TopAgents />
+			<Advertisement />
+			<TrustSection />
+			<CommunityBoards />
+			<CTASection />
+		</Stack>
+	);
 };
 
 export default withLayoutMain(Home);

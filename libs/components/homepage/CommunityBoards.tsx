@@ -57,7 +57,7 @@ const CommunityBoards = () => {
 					<Stack className={'info-box'}>
 						<Box component={'div'} className={'left'}>
 							<span>Community Highlights</span>
-							<p>News, owner stories, and updates from the VMotors community.</p>
+							<p>News, owner stories, and updates from the Santa community.</p>
 						</Box>
 					</Stack>
 
@@ -105,7 +105,7 @@ const CommunityBoards = () => {
 				<Stack className={'info-box'}>
 					<Box component={'div'} className={'left'}>
 						<span>Community Highlights</span>
-						<p>News, owner stories, and updates from the broader VMotors automotive conversation.</p>
+						<p>News, owner stories, and updates from the broader Santa automotive conversation.</p>
 					</Box>
 				</Stack>
 				<Stack className={'community-main'}>

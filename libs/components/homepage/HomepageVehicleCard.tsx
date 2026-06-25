@@ -78,7 +78,7 @@ const HomepageVehicleCard = ({ property, likePropertyHandler }: HomepageVehicleC
 				<div className={'card-footer'}>
 					<div className={'inventory-meta'}>
 						<span className={'stock-copy'}>{vehicleStockLabel(property)}</span>
-						<span className={'dealer-copy'}>Certified VMotors listing</span>
+						<span className={'dealer-copy'}>Santa verified listing</span>
 					</div>
 
 					<div className={'engagement'}>

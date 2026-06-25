@@ -5,8 +5,6 @@ import Top from '../Top';
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import HeaderFilter from '../homepage/HeaderFilter';
-import { userVar } from '../../../apollo/store';
-import { useReactiveVar } from '@apollo/client';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import 'swiper/css';
@@ -16,7 +14,6 @@ import 'swiper/css/navigation';
 const withLayoutMain = (Component: any) => {
 	return (props: any) => {
 		const device = useDeviceDetect();
-		const user = useReactiveVar(userVar);
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -30,8 +27,8 @@ const withLayoutMain = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>VMotors</title>
-						<meta name={'title'} content={`VMotors`} />
+						<title>Santa | Premium Hyundai & Kia Marketplace</title>
+						<meta name={'title'} content={`Santa | Premium Hyundai & Kia Marketplace`} />
 					</Head>
 					<Stack id="mobile-wrap">
 						<Stack id={'top'}>
@@ -42,15 +39,15 @@ const withLayoutMain = (Component: any) => {
 							<div className={'hero-gradient'} />
 							<div className={'hero-grid'} />
 							<div className={'hero-content'}>
-								<span className={'hero-pill'}>VMotors Curated Marketplace</span>
+								<span className={'hero-pill'}>Santa Verified Marketplace</span>
 								<h1 className={'hero-headline'}>Find the Hyundai or Kia that fits your next move.</h1>
 								<p className={'hero-sub'}>
 									Certified dealers, cleaner filters, and a modern car-buying journey built for Korea.
 								</p>
 								<div className={'hero-trust-row'}>
-									<span>Trusted dealers</span>
-									<span>Real inventory</span>
-									<span>Fast search</span>
+									<span>Verified dealers</span>
+									<span>Live inventory</span>
+									<span>Hyundai & Kia focus</span>
 								</div>
 							</div>
 							<Stack className={'container'}>
@@ -72,8 +69,8 @@ const withLayoutMain = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>VMotors</title>
-						<meta name={'title'} content={`VMotors`} />
+						<title>Santa | Premium Hyundai & Kia Marketplace</title>
+						<meta name={'title'} content={`Santa | Premium Hyundai & Kia Marketplace`} />
 					</Head>
 					<Stack id="pc-wrap">
 						<Stack id={'top'}>
@@ -87,21 +84,21 @@ const withLayoutMain = (Component: any) => {
 							<div className={'hero-radial hero-radial-right'} />
 							<div className={'hero-content'}>
 								<div className={'hero-copy'}>
-									<span className={'hero-pill'}>VMotors Intelligence</span>
+									<span className={'hero-pill'}>Santa Verified Marketplace</span>
 									<h1 className={'hero-headline'}>Modern car discovery for Hyundai and Kia buyers in Korea.</h1>
 									<p className={'hero-sub'}>
 										Search curated inventory, compare premium listings, and connect with trusted dealers through
 										a cleaner automotive marketplace experience.
 									</p>
 									<div className={'hero-trust-row'}>
-										<span>Certified dealer network</span>
-										<span>Live vehicle inventory</span>
+										<span>Verified dealer network</span>
+										<span>Live Korea inventory</span>
 										<span>Premium buying journey</span>
 									</div>
 								</div>
 								<div className={'hero-side-panel'}>
 									<div className={'side-eyebrow'}>Why buyers start here</div>
-									<div className={'side-title'}>Greatness in simplicity</div>
+									<div className={'side-title'}>Confidence, engineered.</div>
 									<p>
 										Focused filters, premium presentation, and trustworthy dealer inventory designed for
 										high-intent car shoppers.
