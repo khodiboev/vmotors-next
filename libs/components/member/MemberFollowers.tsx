@@ -8,6 +8,7 @@ import { Follower } from '../../types/follow/follow';
 import { REACT_APP_API_URL } from '../../config';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import { userVar } from '../../../apollo/store';
 import { T } from '../../types/common';
 
@@ -65,9 +66,11 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 
 			{memberFollowers?.length === 0 ? (
 				<div className="empty-state">
-					<img src="/img/icons/icoAlert.svg" alt="" />
+					<div className="empty-icon-wrap">
+						<PeopleOutlineIcon className="empty-icon" />
+					</div>
 					<h3>No followers yet</h3>
-					<p>This member doesn&apos;t have any followers on Santa yet.</p>
+					<p>Share valuable articles and interact with the community to grow your audience.</p>
 				</div>
 			) : (
 				<div className="people-list">

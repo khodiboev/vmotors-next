@@ -1442,5 +1442,225 @@
 				}
 			}
 		}
+
+		// ═══════════════════════════════════════════════════════════════
+		//  ORBITAL CAROUSEL  (experimental — New Arrivals)
+		// ═══════════════════════════════════════════════════════════════
+
+		.new-arrivals-orbital,
+		.buyer-favorites-orbital {
+			position: relative;
+			padding: 116px 0 0;
+			background: transparent;
+			border: 0;
+			box-shadow: none;
+			overflow-x: clip; // prevent 3D cards from expanding document scroll width
+
+			.container {
+				display: flex;
+				flex-direction: column;
+				gap: 38px;
+			}
+
+			.section-motion-shell {
+				display: flex;
+				flex-direction: column;
+				gap: 38px;
+				width: 100%;
+				background: transparent;
+				border: 0;
+				box-shadow: none;
+				backdrop-filter: none;
+			}
+
+			.section-motion-header,
+			.section-motion-empty,
+			.section-motion-card {
+				width: 100%;
+				will-change: transform, opacity;
+			}
+
+			// Reuse global .info-box/.left/.right/.more-box rules from .home-page —
+			// override only what differs for the orbital layout
+			.info-box {
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				gap: 16px;
+
+				.left {
+					align-items: center;
+
+					p {
+						margin-left: auto;
+						margin-right: auto;
+					}
+				}
+
+				.right {
+					justify-content: center;
+				}
+			}
+
+			// ── Orbital navigation ──────────────────────────────────────────
+			.orbital-nav {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+
+			.orbital-btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 42px;
+				height: 42px;
+				border-radius: 50%;
+				border: 1px solid var(--home-border);
+				background: var(--home-surface);
+				box-shadow: var(--home-shadow-soft);
+				cursor: pointer;
+				flex-shrink: 0;
+				transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+
+				&:hover:not(:disabled) {
+					transform: translateY(-2px);
+					box-shadow: var(--home-shadow);
+					background: #fff;
+				}
+
+				&:disabled {
+					opacity: 0.34;
+					cursor: default;
+				}
+
+				svg {
+					font-size: 18px;
+					color: var(--home-primary);
+				}
+			}
+
+			.orbital-dots {
+				display: flex;
+				align-items: center;
+				gap: 5px;
+				max-width: 160px;
+				overflow: hidden;
+
+				.dot {
+					flex-shrink: 0;
+					width: 7px;
+					height: 7px;
+					padding: 0;
+					border-radius: 50%;
+					background: var(--home-border-strong);
+					border: none;
+					cursor: pointer;
+					transition: width 0.32s ease, border-radius 0.32s ease, background 0.32s ease;
+
+					&.active {
+						width: 22px;
+						border-radius: 4px;
+						background: var(--home-secondary);
+					}
+				}
+			}
+
+			// ── Premium showcase container ──────────────────────────────────────────────
+			.orbital-showcase-shell {
+				position: relative;
+				border-radius: 36px;
+				border: 1px solid var(--home-border);
+				background:
+					radial-gradient(ellipse at 50% -10%, rgba(55, 85, 195, 0.05) 0%, transparent 56%),
+					linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(237, 243, 255, 0.88) 100%);
+				box-shadow:
+					0 24px 70px rgba(10, 31, 68, 0.07),
+					inset 0 1px 0 rgba(255, 255, 255, 0.95);
+				overflow: hidden; // clips cards at rounded corners — 3D safe in modern browsers
+				padding: 24px 0;
+			}
+
+			// ── 3D viewport + stage ─────────────────────────────────────────
+			.orbital-viewport {
+				position: relative;
+				width: 100%;
+				height: 560px;
+				outline: none;
+				overflow-x: clip; // secondary clip safety inside the shell
+
+				// Gradient masks — fade cards into the shell background, not the page
+				&::before,
+				&::after {
+					content: '';
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					width: 200px;
+					z-index: 30;
+					pointer-events: none;
+				}
+
+				&::before {
+					left: 0;
+					background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, transparent 100%);
+				}
+
+				&::after {
+					right: 0;
+					background: linear-gradient(-90deg, rgba(255, 255, 255, 0.96) 0%, transparent 100%);
+				}
+			}
+
+			.orbital-stage {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				perspective: 1400px;
+				perspective-origin: 50% 50%;
+				overflow: visible;
+			}
+
+			.orbital-card {
+				position: absolute;
+				width: 320px;
+				will-change: transform, opacity;
+				cursor: pointer;
+
+				// Active card: glow ring + deeper shadow
+				&.is-active .homepage-vehicle-card {
+					box-shadow:
+						0 40px 100px rgba(10, 31, 68, 0.18),
+						0 0 0 2px rgba(55, 85, 195, 0.22);
+					border-color: rgba(55, 85, 195, 0.22);
+				}
+
+				// Suppress hover-lift on flanking cards — 3D depth provides the effect
+				&:not(.is-active) .homepage-vehicle-card:hover {
+					transform: none;
+					box-shadow: var(--home-shadow-soft);
+				}
+			}
+
+			.empty-list {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				min-height: 360px;
+				border-radius: 28px;
+				border: 1px dashed var(--home-border-strong);
+				color: var(--home-muted);
+				background: rgba(255, 255, 255, 0.52);
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				.orbital-card      { will-change: auto; }
+				.orbital-btn       { transition: none; }
+				.orbital-dots .dot { transition: none; }
+			}
+		}
 	}
 }

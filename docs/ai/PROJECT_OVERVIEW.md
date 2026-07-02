@@ -35,7 +35,7 @@ All visible branding now says Santa. Internal code names (file paths, TypeScript
 | Auth | JWT stored in cookie, read via `getJwtToken()` in `libs/auth.ts` |
 | Internationalization | `next-i18next` |
 | Rich text | TUI Editor (`@toast-ui/react-editor`) |
-| Animation | Framer Motion (navbar only) |
+| Animation | Framer Motion (navbar, homepage sections, orbital carousel) |
 | Upload | Apollo `createUploadLink` |
 | Chat | Apollo WebSocket subscription |
 | Icons | MUI Icons + Phosphor React |
@@ -170,16 +170,16 @@ The `.dealer-vehicle-card` component (defined in `scss/pc/agent/detail.scss`) is
 
 | Page | Route | Status |
 |---|---|---|
-| Homepage | `/` | ✅ Redesigned (Santa brand, new sections) |
+| Homepage | `/` | ✅ Redesigned — New Arrivals + Buyer Favorites now use 3D Orbital Carousel (experimental; rollback-ready) |
 | Vehicle list | `/vehicle` | ✅ Cleaned up (Nestar imagery removed) |
 | Vehicle detail | `/vehicle/detail` | ⬜ Not yet redesigned |
 | Dealer list | `/agent` | ⬜ Partially cleaned (cards/sort fixed) |
 | Dealer detail | `/agent/detail` | ✅ Fully redesigned (Santa premium UI) |
 | Member/Profile page | `/member` | ✅ Fully redesigned (Santa premium UI) |
-| My Page | `/mypage` | ⬜ Not yet redesigned |
-| Community list | `/community` | ✅ Redesigned |
-| Community detail | `/community/detail` | ✅ Redesigned |
-| CS (FAQ/Notice) | `/cs` | ⬜ Not yet redesigned |
+| My Page | `/mypage` | 🔧 Partially polished (Followers, Following, My Articles, Write Article improved; not a full redesign) |
+| Community list | `/community` | ✅ Redesigned — auth guard fixed, Featured Discussion overflow fixed |
+| Community detail | `/community/detail` | ✅ Redesigned and polished (Article Detail redesigned into Santa style, duplicate image fixed) |
+| CS (FAQ/Notice) | `/cs` | 🔧 Polished (hero bug fixed, cards/notice/FAQ improved; not a full redesign) |
 | Account/Join | `/account/join` | ⬜ Not yet redesigned |
 | About | `/about` | ⬜ Not yet redesigned |
 

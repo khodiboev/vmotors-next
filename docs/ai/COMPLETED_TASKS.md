@@ -7,6 +7,102 @@ This file records all significant completed work on the Santa frontend, in rever
 
 ---
 
+## Phase 4: Page Polish — Community, MyPage, CS, Homepage (July 2026)
+
+### 4.5 — Homepage: Buyer Favorites Orbital Carousel
+
+**What changed:** The "Buyer Favorites" section (previously `TopProperties`) was given the same experimental 3D Orbital Carousel treatment as New Arrivals. A new `BuyerFavoritesOrbital.tsx` component was created. The original `TopProperties.tsx` was not modified and remains available for rollback.
+
+**Key differences from New Arrivals orbital:**
+- Default sort: `vehicleLikes DESC`, limit 8 (most-liked listings)
+- Stack class: `buyer-favorites-orbital`
+- CTA text: "See premium inventory"
+- Mobile fallback uses `top-vehicles` / `top-property-swiper` CSS classes (matching original `TopProperties` mobile)
+
+**SCSS:** The orbital CSS block in `homepage.scss` was updated to a grouped selector (`.new-arrivals-orbital, .buyer-favorites-orbital`) so both sections share all orbital styles without duplication.
+
+**Rollback:** To revert to `TopProperties`, uncomment its import and replace `<BuyerFavoritesOrbital />` in `pages/index.tsx`.
+
+**Files changed:** `libs/components/homepage/BuyerFavoritesOrbital.tsx` (new), `pages/index.tsx`, `scss/pc/homepage/homepage.scss`
+
+---
+
+### 4.4 — Homepage: New Arrivals 3D Orbital Carousel
+
+**What changed:** The New Arrivals section's standard Swiper slider (`TrendProperties`) was experimentally replaced with a 3D orbital carousel. `TrendProperties.tsx` was not modified; the new component is a separate presentation layer using the same GraphQL data and `HomepageVehicleCard`.
+
+**Technical details:**
+- Cards are positioned on a cylindrical arc using Framer Motion `rotateY`, `x` (horizontal offset), and `z` (depth) transforms. `perspective: 1400px` is set on `.orbital-stage`.
+- Navigation: mouse wheel (via non-passive DOM listener to allow `e.preventDefault()`), touch swipe, keyboard arrows, prev/next buttons, dot indicators, and click-to-focus.
+- Stale closure in wheel handler is avoided using a "ref refresh" pattern: `wheelHandlerRef.current` is reassigned each render; the DOM listener calls `wheelHandlerRef.current?.(e)`.
+- Horizontal overflow from large `x` values is clipped with `overflow-x: clip` (does not create a scroll container, preserves 3D transforms).
+- Cards are wrapped in a `.orbital-showcase-shell` with `overflow: hidden` + `border-radius: 36px` for the premium panel look and edge masking.
+- `useReducedMotion` respected: 3D transforms disabled, spring duration set to `0.01`.
+
+**Files changed:** `libs/components/homepage/NewArrivalsOrbital.tsx` (new), `pages/index.tsx`, `scss/pc/homepage/homepage.scss`
+
+---
+
+### 4.3 — Homepage: Header Filter Dropdown Scroll-Lock Fix
+
+**Problem:** Opening any Brand/Fuel/Transmission filter dropdown caused a visible page-width jump. The body has a hidden scrollbar (`overflow-y: scroll; scrollbar-width: none`), but MUI's `Select` was adding `padding-right` to body to compensate for the scrollbar when its menu opened, causing a layout shift.
+
+**Fix:** Added `MenuProps={{ disableScrollLock: true }}` to all three `Select` components in `HeaderFilter.tsx`. This prevents MUI from mutating the body's padding when the dropdown opens.
+
+**Files changed:** `libs/components/homepage/HeaderFilter.tsx`
+
+---
+
+### 4.2 — CS Page Polish
+
+**What changed:** The Customer Support page was polished to better match the Santa premium design language. Areas improved:
+- Hero right-side visual: white text was invisible due to inherited white background from a group CSS rule. Fixed by explicitly setting the correct background on the hero side card.
+- Support highlight cards: hover animation, icon sizing, card height.
+- `cs-main-info` section: flex-row layout, tab styling.
+- Notice section: table spacing, badges, hover, typography.
+- FAQ section: accordion styling, category sidebar.
+
+This was a CSS-only polish pass; no component logic, routing, or data was changed. The page was not fully redesigned — it retained the existing JSX structure and MUI components.
+
+**Files changed:** `scss/pc/cs/cs.scss`
+
+---
+
+### 4.1 — MyPage Section Improvements
+
+**What changed:** Several MyPage sub-sections were audited and polished for VMotors/Santa consistency:
+- **Write Article editor:** Investigated and fixed a default text bug in `Teditor.tsx`. Editor default content and styling corrected.
+- **Followers empty state:** Redesigned the empty state in `MemberFollowers.tsx` to match Santa premium style.
+- **Following section:** UI improved in `MemberFollowings.tsx`.
+- **My Articles section:** Title, card layout, and pagination styling improved in `MyArticles.tsx` and `myArticles.scss`.
+- **My Properties:** Minor style adjustments in `MyProperties.tsx` and `addNewProperty.scss`.
+
+GraphQL queries, mutations, pagination logic, and authentication checks were not touched.
+
+**Files changed:** `libs/components/community/Teditor.tsx`, `libs/components/member/MemberFollowers.tsx`, `libs/components/member/MemberFollowings.tsx`, `libs/components/mypage/MyArticles.tsx`, `libs/components/mypage/MyProperties.tsx`, `scss/pc/member/memberFollows.scss`, `scss/pc/mypage/myArticles.scss`, `scss/pc/mypage/addNewProperty.scss`, `scss/pc/mypage/writeArticle.scss`
+
+---
+
+### 4.0 — Community Page: Auth Guard and Article Detail Polish
+
+**Auth guard fix:** Previously, clicking "Write Article" as a guest redirected to the homepage. Changed so guests see an inline warning instead of being silently redirected.
+
+**Article Detail page redesign** (`pages/community/detail.tsx`, `libs/components/community/TViewer.tsx`):
+- Page redesigned into Santa premium style (was still using Nestar-era layout)
+- Duplicate image issue fixed (article thumbnail was appearing twice)
+- Article typography, spacing, image rendering, comments section, and like section polished
+- `TViewer.tsx` updated for proper content rendering inside the new layout
+- All `GET_BOARD_ARTICLE`, `CREATE_COMMENT`, `LIKE_TARGET_BOARD_ARTICLE` logic preserved unchanged
+
+**Featured Discussion card fix** (`scss/pc/community/community.scss`):
+- Text overflow fixed: added `min-width: 0; overflow: hidden` to flex children
+- Description text now shows 5-line preview with `-webkit-line-clamp: 5` and ellipsis
+- Typography: `font-size: 15px`, `line-height: 1.8`, color `#64748b`
+
+**Files changed:** `pages/community/detail.tsx`, `pages/community/index.tsx`, `libs/components/community/TViewer.tsx`, `libs/components/layout/LayoutBasic.tsx`, `scss/pc/community/community.scss`, `scss/pc/community/detail.scss`
+
+---
+
 ## Phase 3: Member Page Redesign (June 2026)
 
 ### 3.4 — Member Page Articles Section Bug Fix

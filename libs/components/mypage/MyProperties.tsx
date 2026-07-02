@@ -83,7 +83,11 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 							<VerifiedOutlinedIcon />
 						</div>
 						<div>
-							<strong>{searchFilter.search.vehicleStatus}</strong>
+							<strong>
+								{searchFilter.search?.vehicleStatus
+									? searchFilter.search.vehicleStatus.charAt(0) + searchFilter.search.vehicleStatus.slice(1).toLowerCase()
+									: 'All'}
+							</strong>
 							<span>Current status filter</span>
 						</div>
 					</article>

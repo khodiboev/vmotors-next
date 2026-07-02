@@ -3,46 +3,132 @@
 	#member-follows-page {
 		width: 100%;
 
+		// ─── Section header ───────────────────────────────────────
+		.section-header {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			padding-bottom: 24px;
+			margin-bottom: 20px;
+			border-bottom: 1px solid rgba(118, 135, 178, 0.12);
+
+			h2 {
+				margin: 0;
+				font-family: $font;
+				font-size: 22px;
+				font-weight: 700;
+				color: #0a1f44;
+				letter-spacing: -0.02em;
+			}
+
+			> span {
+				padding: 5px 12px;
+				border-radius: 999px;
+				background: rgba(55, 85, 195, 0.1);
+				color: #3755c3;
+				font-family: $font;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+			}
+		}
+
+		// ─── Premium empty state ──────────────────────────────────
+		.empty-state {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 72px 40px 80px;
+			text-align: center;
+
+			.empty-icon-wrap {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 96px;
+				height: 96px;
+				border-radius: 32px;
+				background: rgba(55, 85, 195, 0.07);
+				border: 1px solid rgba(55, 85, 195, 0.12);
+				margin-bottom: 28px;
+
+				.empty-icon {
+					font-size: 48px;
+					color: rgba(55, 85, 195, 0.4);
+				}
+			}
+
+			h3 {
+				margin: 0 0 12px;
+				font-family: $font;
+				font-size: 21px;
+				font-weight: 700;
+				color: #0a1f44;
+				letter-spacing: -0.02em;
+			}
+
+			p {
+				margin: 0;
+				font-family: $font;
+				font-size: 14px;
+				font-weight: 400;
+				color: #5a667d;
+				line-height: 1.75;
+				max-width: 360px;
+			}
+		}
+
+		// ─── People list ──────────────────────────────────────────
 		.people-list {
 			display: flex;
 			flex-direction: column;
-			gap: 2px;
+			gap: 8px;
 
 			.person-card {
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				padding: 18px 22px;
+				padding: 20px 24px;
 				background: #ffffff;
-				border-radius: 18px;
-				border: 1px solid rgba(118, 135, 178, 0.16);
-				transition: box-shadow 0.2s;
+				border-radius: 20px;
+				border: 1px solid rgba(118, 135, 178, 0.14);
+				box-shadow: 0 4px 18px rgba(10, 31, 68, 0.04);
+				transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 
 				&:hover {
-					box-shadow: 0 8px 24px rgba(10, 31, 68, 0.07);
+					transform: translateY(-2px);
+					box-shadow: 0 12px 32px rgba(10, 31, 68, 0.09);
+					border-color: rgba(55, 85, 195, 0.16);
 				}
 
 				.person-left {
 					display: flex;
 					align-items: center;
-					gap: 14px;
+					gap: 16px;
 					cursor: pointer;
 					flex: 1;
 					min-width: 0;
 
 					img {
-						width: 52px;
-						height: 52px;
-						border-radius: 50%;
+						width: 56px;
+						height: 56px;
+						border-radius: 20px;
 						object-fit: cover;
-						border: 2px solid #edf3ff;
+						border: 1px solid rgba(118, 135, 178, 0.16);
 						flex-shrink: 0;
+						transition: transform 0.22s ease;
+					}
+
+					&:hover img {
+						transform: scale(1.04);
 					}
 
 					.person-info {
 						display: flex;
 						flex-direction: column;
-						gap: 4px;
+						gap: 6px;
 						min-width: 0;
 
 						strong {
@@ -56,7 +142,7 @@
 						}
 
 						.person-meta {
-							display: flex;
+							display: inline-flex;
 							align-items: center;
 							gap: 6px;
 							font-family: $font;
@@ -65,7 +151,23 @@
 							color: #5a667d;
 
 							.dot {
-								opacity: 0.5;
+								opacity: 0.4;
+							}
+
+							span {
+								padding: 3px 8px;
+								border-radius: 999px;
+								background: rgba(55, 85, 195, 0.07);
+								color: #3755c3;
+								font-size: 11px;
+								font-weight: 700;
+								letter-spacing: 0.04em;
+
+								&.dot {
+									padding: 0;
+									background: none;
+									color: #5a667d;
+								}
 							}
 						}
 					}
@@ -78,19 +180,19 @@
 					flex-shrink: 0;
 
 					.like-btn {
-						display: flex;
+						display: inline-flex;
 						align-items: center;
-						gap: 4px;
-						background: none;
-						border: none;
+						gap: 5px;
+						background: rgba(246, 249, 255, 0.92);
+						border: 1px solid rgba(118, 135, 178, 0.16);
+						border-radius: 14px;
 						cursor: pointer;
-						padding: 6px 10px;
-						border-radius: 10px;
+						padding: 7px 12px;
 						font-family: $font;
-						font-size: 13px;
-						font-weight: 600;
+						font-size: 12px;
+						font-weight: 700;
 						color: #5a667d;
-						transition: background 0.2s, color 0.2s;
+						transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
 
 						svg {
 							width: 16px;
@@ -98,48 +200,76 @@
 						}
 
 						&:hover {
-							background: rgba(233, 44, 40, 0.07);
+							background: rgba(233, 44, 40, 0.06);
 							color: #e92c28;
+							border-color: rgba(233, 44, 40, 0.18);
+							transform: translateY(-1px);
 						}
 
 						&.liked {
+							background: rgba(233, 44, 40, 0.07);
 							color: #e92c28;
+							border-color: rgba(233, 44, 40, 0.18);
 						}
 					}
 
 					.follow-btn {
-						padding: 8px 20px;
-						background: #0a1f44;
+						padding: 9px 22px;
+						background: linear-gradient(135deg, #0a1f44 0%, #3755c3 100%);
 						color: #ffffff;
-						border-radius: 12px;
+						border-radius: 14px;
 						font-family: $font;
-						font-size: 13px;
+						font-size: 12px;
 						font-weight: 700;
+						letter-spacing: 0.04em;
 						text-transform: none;
-						transition: background 0.22s ease;
+						box-shadow: 0 8px 20px rgba(55, 85, 195, 0.22);
+						transition: transform 0.22s ease, box-shadow 0.22s ease;
 
 						&:hover {
-							background: #3755c3;
+							transform: translateY(-1px);
+							box-shadow: 0 14px 28px rgba(55, 85, 195, 0.3);
 						}
 					}
 
 					.unfollow-btn {
-						padding: 8px 20px;
+						padding: 9px 22px;
 						background: transparent;
 						color: #3755c3;
-						border: 1.5px solid #3755c3;
-						border-radius: 12px;
+						border: 1.5px solid rgba(55, 85, 195, 0.4);
+						border-radius: 14px;
 						font-family: $font;
-						font-size: 13px;
+						font-size: 12px;
 						font-weight: 700;
+						letter-spacing: 0.04em;
 						text-transform: none;
-						transition: all 0.22s ease;
+						transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
 
 						&:hover {
 							background: rgba(55, 85, 195, 0.06);
+							border-color: rgba(55, 85, 195, 0.6);
+							transform: translateY(-1px);
 						}
 					}
 				}
+			}
+		}
+
+		// ─── Pagination ───────────────────────────────────────────
+		.pagination-config {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			margin-top: 32px;
+			padding-top: 24px;
+			border-top: 1px solid rgba(118, 135, 178, 0.1);
+
+			> span {
+				color: #5a667d;
+				font-family: $font;
+				font-size: 13px;
+				font-weight: 500;
 			}
 		}
 	}
@@ -150,16 +280,34 @@
 		.people-list .person-card {
 			padding: 14px 16px;
 
-			.person-left img {
-				width: 44px;
-				height: 44px;
+			.person-left {
+				gap: 12px;
+
+				img {
+					width: 48px;
+					height: 48px;
+					border-radius: 16px;
+				}
 			}
 
 			.person-actions {
 				.follow-btn,
 				.unfollow-btn {
-					padding: 6px 14px;
+					padding: 7px 14px;
 					font-size: 12px;
+				}
+			}
+		}
+
+		.empty-state {
+			padding: 48px 24px 56px;
+
+			.empty-icon-wrap {
+				width: 80px;
+				height: 80px;
+
+				.empty-icon {
+					font-size: 38px;
 				}
 			}
 		}

@@ -206,9 +206,11 @@
 		.hero-featured-card {
 			display: flex;
 			flex-direction: column;
+			min-width: 0;
 			height: 100%;
 			padding: 18px;
 			border-radius: 34px;
+			overflow: hidden;
 			box-shadow: 0 20px 46px rgba(19, 31, 59, 0.08);
 
 			&.empty {
@@ -268,8 +270,10 @@
 		}
 
 		.featured-content {
-			gap: 18px;
-			padding: 22px 6px 8px;
+			gap: 20px;
+			padding: 22px 16px 10px;
+			min-width: 0;
+			overflow: hidden;
 		}
 
 		.featured-empty {
@@ -365,7 +369,10 @@
 		.featured-copy {
 			display: flex;
 			flex-direction: column;
-			gap: 12px;
+			gap: 16px;
+			min-width: 0;
+			width: 100%;
+			overflow: hidden;
 
 			strong {
 				color: var(--community-text);
@@ -375,13 +382,22 @@
 				line-height: 1.04;
 				letter-spacing: -0.065em;
 				text-wrap: balance;
+				overflow-wrap: break-word;
+				word-break: break-word;
 			}
 
 			p {
-				color: var(--community-muted);
+				margin: 0;
+				color: #64748b;
 				font-family: $font;
 				font-size: 15px;
-				line-height: 1.78;
+				line-height: 1.8;
+				overflow-wrap: break-word;
+				word-break: break-word;
+				display: -webkit-box;
+				-webkit-line-clamp: 5;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
 			}
 		}
 

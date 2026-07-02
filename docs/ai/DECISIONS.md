@@ -115,6 +115,24 @@ return <Content />; // CSS handles layout at different breakpoints
 
 ---
 
+## D-11: Experimental UI Components Are Isolated and Rollback-Ready
+
+**Decision:** When replacing a working section with an experimental alternative, the original component is preserved unchanged and the swap is limited to two lines in `pages/index.tsx` (one import, one JSX element).
+
+**Pattern used for both orbital carousels:**
+```tsx
+// import TrendProperties from '...';  // preserved — uncomment to revert
+import NewArrivalsOrbital from '...';
+// ...
+<NewArrivalsOrbital />  {/* revert: restore TrendProperties import and this line */}
+```
+
+**Why:** Experimental UI (e.g., a 3D carousel replacing a Swiper) may need to be reverted quickly if it causes issues in production or on specific devices. Keeping the original component intact and the swap to exactly two lines means rollback takes under 30 seconds with no risk of breaking data logic.
+
+**Rule:** Any component that replaces an existing working section should follow this pattern. Never delete the original component during the experimental phase. Document the rollback path in a comment next to the swap.
+
+---
+
 ## D-10: All Pages Preserve Their Existing Routing Structure
 
 **Decision:** URL routes were not changed. `/agent` still goes to the Dealers list. `/vehicle` still goes to the Vehicle list. `/member` still goes to the Member profile page with `?memberId=` query param.

@@ -166,14 +166,23 @@ For clarity: here is how the major rebranded components relate to their Nestar-e
 
 ## Recommended Next Steps for Redesign
 
-Pages not yet redesigned (in suggested priority order):
+Pages not yet fully redesigned (in suggested priority order):
 
 1. **Vehicle Detail** (`/vehicle/detail`) — High traffic. Needs Santa card treatment for related vehicles, spec display, image gallery, comments.
-2. **My Page** (`/mypage`) — Authenticated user dashboard. Has many sub-sections (profile, my vehicles, my articles, favorites, recently visited).
-3. **CS Page** (`/cs`) — FAQ and Notice sections. Lower complexity.
-4. **Account/Join** (`/account/join`) — Login and signup forms.
-5. **Dealer List** (`/agent`) — List page has cards and sort/filter; dealer cards need the Santa treatment.
-6. **About** (`/about`) — Static page.
+2. **Account/Join** (`/account/join`) — Login and signup forms. Still on Nestar layout.
+3. **Dealer List** (`/agent`) — Cards and sort/filter partially fixed. Full Santa card treatment still pending.
+4. **About** (`/about`) — Static page.
+
+Pages partially polished but not yet fully redesigned (structure still Nestar-era, JSX/MUI unchanged):
+
+- **My Page** (`/mypage`) — Followers, Following, My Articles, and Write Article sections were improved (July 2026). Full redesign (remove MUI layout, useDeviceDetect, full CSS rewrite) still pending.
+- **CS** (`/cs`) — Hero, support cards, Notice, and FAQ were polished (July 2026). Full structural redesign still pending.
+
+Additional housekeeping pending:
+- Confirm responsive/mobile behavior after orbital carousel additions
+- Run a production build (`yarn build`) after final UI polish
+- Review remaining "SANTA" branding text vs any lingering "VMotors" copy
+- Consider whether to clean up `pages/property/` (old real-estate routes, still harmless but unused)
 
 When redesigning any of these, follow the established Santa pattern:
 - Define `--page-*` CSS custom properties on the page root selector

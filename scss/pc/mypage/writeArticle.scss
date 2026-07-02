@@ -2,6 +2,7 @@
 	#write-article-page {
 		width: 100%;
 		height: auto;
+
 		.main-title-box {
 			width: auto;
 			height: auto;
@@ -10,7 +11,7 @@
 			.right-box {
 				width: 315px;
 				.main-title {
-					color: #181a20;
+					color: var(--dashboard-text, #10192c);
 					font-family: $font;
 					font-size: 30px;
 					font-style: normal;
@@ -20,7 +21,7 @@
 					text-transform: capitalize;
 				}
 				.sub-title {
-					color: #181a20;
+					color: var(--dashboard-muted, #5b6780);
 					font-family: $font;
 					font-size: 14px;
 					font-style: normal;
@@ -29,53 +30,141 @@
 				}
 			}
 		}
-		
-		.right-wrap {
+
+		// Fields row — category + title side by side
+		.editor-fields-row {
+			display: flex;
+			flex-direction: row;
+			gap: 28px;
+			padding: 32px 32px 24px;
+			background: rgba(246, 249, 255, 0.96);
+			border: 1px solid rgba(118, 135, 178, 0.14);
+			border-radius: 20px 20px 0 0;
+			border-bottom: none;
+		}
+
+		.form-field {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 0;
+		}
+
+		.field-label {
+			display: block;
+			margin-bottom: 8px;
+			color: var(--dashboard-muted, #5b6780);
+			font-family: $font;
+			font-size: 11px;
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+		}
+
+		// Give form fields a white background matching the card surface
+		.form-field .MuiOutlinedInput-root,
+		.form-field .MuiInputBase-root {
+			background: #ffffff;
+			border-radius: 12px;
+		}
+
+		.field-input {
 			width: 100%;
-			height: auto;
-			.cont_bd {
-				padding: 30px 0px;
-				.form_hd > div {
-					margin-bottom: 16px;
-				}
-			}
-			.flex-space {
-				.btn-next {
-					background: #87cdf9;
-					color: #000000;
-				}
-			}
-			.select {
-				width: 214px;
-				height: 40px;
-				font-size: 14px;
-			}
-			.input-tit {
-				font-size: 14px;
-				padding: 0 16px;
-				margin-top: 16px;
-				border: 1px solid #eee;
-				border-radius: 4px;
-			}
-			.btn-flex { margin-top: 40px; }
-		}
-		.css-guvl2y-MuiButtonBase-root-MuiButton-root {
-			background: #87cdf9;
-			svg {
-				fill: #000000;
+
+			.MuiInputBase-root {
+				background: #ffffff;
+				border-radius: 12px;
 			}
 		}
+
+		// Editor canvas — seamlessly joined to the fields row above
+		.toastui-editor-defaultUI {
+			border-radius: 0 0 20px 20px;
+			border: 1px solid rgba(118, 135, 178, 0.14);
+			border-top: none;
+			overflow: hidden;
+		}
+
+		// Submit button
+		.editor-submit-btn {
+			margin: 28px auto;
+			width: 260px;
+			height: 48px;
+			border-radius: 14px;
+			background: linear-gradient(135deg, #0a1f44 0%, #3755c3 100%);
+			box-shadow: 0 16px 32px rgba(55, 85, 195, 0.24);
+			color: #ffffff;
+			font-family: $font;
+			font-size: 14px;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: none;
+			transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 24px 48px rgba(55, 85, 195, 0.32);
+				background: linear-gradient(135deg, #0a1f44 0%, #3755c3 100%);
+			}
+
+			&:disabled {
+				opacity: 0.5;
+				transform: none;
+				cursor: not-allowed;
+			}
+		}
+
+		// Toast-UI editor canvas border — joins seamlessly to the fields row
+		.toastui-editor-defaultUI {
+			border-radius: 0 0 20px 20px;
+			border: 1px solid rgba(118, 135, 178, 0.14);
+			border-top: none;
+			overflow: hidden;
+
+			// Toolbar
+			.toastui-editor-toolbar {
+				border-bottom: 1px solid rgba(118, 135, 178, 0.12);
+				background: rgba(246, 249, 255, 0.9);
+			}
+
+			// Write / Preview tab bar — keep, just style cleanly
+			.toastui-editor-tabs {
+				border-bottom: 1px solid rgba(118, 135, 178, 0.12);
+				background: #f5f8ff;
+
+				.tab-item {
+					font-family: $font;
+					font-size: 12px;
+					font-weight: 700;
+					letter-spacing: 0.04em;
+					color: #5b6780;
+
+					&.active {
+						color: #0a1f44;
+						border-bottom-color: #3755c3;
+					}
+				}
+			}
+
+			// Hide the Markdown / WYSIWYG mode-switch button
+			// Users stay in WYSIWYG; switching modes would expose raw markdown syntax
+			.toastui-editor-mode-switch {
+				display: none;
+			}
+
+			button { padding: 4px; }
+		}
+
+		// Popup (image / link / etc.)
 		.toastui-editor-popup-body { padding: 20px; }
 		.youtube-input {
 			padding: 8px 16px;
-			border: 1px solid #ddd;
+			border: 1px solid rgba(118, 135, 178, 0.2);
+			border-radius: 8px;
 		}
 		.youtube-div {
-			display:flex;
+			display: flex;
 			flex-direction: column;
-		}
-		.toastui-editor-defaultUI button {
-			padding: 4px;
 		}
 	}
 }

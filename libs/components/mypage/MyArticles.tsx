@@ -132,32 +132,29 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 			<div id="my-articles-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">Article</Typography>
-						<Typography className="sub-title">We are glad to see you again!</Typography>
+						<Typography className="main-title">My Articles</Typography>
+						<Typography className="sub-title">Manage and track your published community articles.</Typography>
 					</Stack>
 				</Stack>
 				<Stack className="article-list-box">
 					{boardArticles?.length > 0 ? (
 						boardArticles?.map((boardArticle: BoardArticle) => {
 							return (
-								<Stack key={boardArticle?._id} sx={{ width: '285px', gap: 1.5 }}>
+								<Stack key={boardArticle?._id} className="article-item">
 									<CommunityCard
 										boardArticle={boardArticle}
 										size={'small'}
 										likeArticleHandler={likeBoArticleHandler}
 									/>
-									<Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ px: 0.5 }}>
+									<Stack direction="row" className="article-actions">
 										<Button
-											size="small"
-											variant="outlined"
+											className="edit-btn"
 											onClick={(e) => editArticleHandler(e, boardArticle)}
 										>
 											Edit
 										</Button>
 										<Button
-											size="small"
-											variant="outlined"
-											color="error"
+											className="delete-btn"
 											onClick={(e) => deleteArticleHandler(e, boardArticle._id)}
 										>
 											Delete
@@ -167,9 +164,15 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 							);
 						})
 					) : (
-						<div className={'no-data'}>
-							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Articles found!</p>
+						<div className="no-data">
+							<div className="no-data-icon-wrap">
+								<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<rect x="8" y="10" width="48" height="44" rx="6" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round"/>
+									<path d="M20 22h24M20 30h24M20 38h16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+								</svg>
+							</div>
+							<h3>No articles yet</h3>
+							<p>Your published community articles will appear here. Write your first article to get started.</p>
 						</div>
 					)}
 				</Stack>

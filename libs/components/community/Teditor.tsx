@@ -326,12 +326,12 @@ const TuiEditor = () => {
 
 	return (
 		<Stack>
-			<Stack direction="row" style={{ margin: '40px' }} justifyContent="space-evenly">
-				<Box component={'div'} className={'form_row'} style={{ width: '300px' }}>
-					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
+			<Stack direction="row" className="editor-fields-row">
+				<Box component={'div'} className={'form_row form-field'}>
+					<Typography className="field-label" variant="h3">
 						Category
 					</Typography>
-					<FormControl sx={{ width: '100%', background: 'white' }}>
+					<FormControl sx={{ width: '100%' }}>
 						<Select
 							value={articleCategory}
 							onChange={changeCategoryHandler}
@@ -347,8 +347,8 @@ const TuiEditor = () => {
 						</Select>
 					</FormControl>
 				</Box>
-				<Box component={'div'} style={{ width: '300px', flexDirection: 'column' }}>
-					<Typography style={{ color: '#7f838d', margin: '10px' }} variant="h3">
+				<Box component={'div'} className="form-field">
+					<Typography className="field-label" variant="h3">
 						Title
 					</Typography>
 					<TextField
@@ -356,7 +356,7 @@ const TuiEditor = () => {
 						value={articleTitle}
 						id="filled-basic"
 						label="Type Title"
-						style={{ width: '300px', background: 'white' }}
+						className="field-input"
 						inputProps={{ maxLength: TITLE_MAX_LENGTH }}
 					/>
 				</Box>
@@ -373,7 +373,7 @@ const TuiEditor = () => {
 						key={`${articleId || 'new'}-${editorRenderKey}`}
 						initialValue={editorInitialValue}
 						placeholder={'Type here'}
-						previewStyle={'vertical'}
+						previewStyle={'tab'}
 						height={'640px'}
 						initialEditType={'wysiwyg'}
 						toolbarItems={[
@@ -405,8 +405,7 @@ const TuiEditor = () => {
 			<Stack direction="row" justifyContent="center">
 				<Button
 					variant="contained"
-					color="primary"
-					style={{ margin: '30px', width: '250px', height: '45px' }}
+					className="editor-submit-btn"
 					onClick={handleSubmitButton}
 					disabled={isArticleLoading}
 				>

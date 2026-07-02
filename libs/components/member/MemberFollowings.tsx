@@ -7,6 +7,7 @@ import { Following } from '../../types/follow/follow';
 import { REACT_APP_API_URL } from '../../config';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
 import { userVar } from '../../../apollo/store';
 import { T } from '../../types/common';
 import { GET_MEMBER_FOLLOWINGS } from '../../../apollo/user/query';
@@ -65,9 +66,11 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 
 			{memberFollowings?.length === 0 ? (
 				<div className="empty-state">
-					<img src="/img/icons/icoAlert.svg" alt="" />
+					<div className="empty-icon-wrap">
+						<PersonSearchOutlinedIcon className="empty-icon" />
+					</div>
 					<h3>Not following anyone yet</h3>
-					<p>This member hasn&apos;t followed anyone on Santa yet.</p>
+					<p>Discover dealers and members to follow and stay updated on their latest listings and articles.</p>
 				</div>
 			) : (
 				<div className="people-list">

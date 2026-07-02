@@ -72,6 +72,7 @@ const HeaderFilter = () => {
 							className={'glass-select'}
 							displayEmpty
 							inputProps={{ 'aria-label': t('Brand') }}
+							MenuProps={{ disableScrollLock: true }}
 							value={searchFilter.search.brandList?.[0] ?? ''}
 							onChange={(e) =>
 								setSearchFilter({
@@ -99,6 +100,7 @@ const HeaderFilter = () => {
 							className={'glass-select'}
 							displayEmpty
 							inputProps={{ 'aria-label': t('Fuel') }}
+							MenuProps={{ disableScrollLock: true }}
 							value={searchFilter.search.fuelList?.[0] ?? ''}
 							onChange={(e) =>
 								setSearchFilter({
@@ -126,6 +128,7 @@ const HeaderFilter = () => {
 							className={'glass-select'}
 							displayEmpty
 							inputProps={{ 'aria-label': t('Transmission') }}
+							MenuProps={{ disableScrollLock: true }}
 							value={searchFilter.search.transmissionList?.[0] ?? ''}
 							onChange={(e) =>
 								setSearchFilter({

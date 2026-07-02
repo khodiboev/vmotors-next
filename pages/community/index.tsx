@@ -18,11 +18,12 @@ import { T } from '../../libs/types/common';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { BoardArticlesInquiry } from '../../libs/types/board-article/board-article.input';
 import { BoardArticleCategory } from '../../libs/enums/board-article.enum';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_BOARD_ARTICLES } from '../../apollo/user/query';
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetLoginConfirmAlert, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
+import { userVar } from '../../apollo/store';
 import CommunityListingCard from '../../libs/components/community/CommunityListingCard';
 import CommunityListingSkeleton from '../../libs/components/community/CommunityListingSkeleton';
 
@@ -104,6 +105,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
 
+	const user = useReactiveVar(userVar);
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
 
 	const { loading: boardArticlesLoading, refetch: boardArticlesRefetch } = useQuery(GET_BOARD_ARTICLES, {
@@ -161,6 +163,15 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 
 	const paginationHandler = (e: T, value: number) => {
 		setSearchCommunity((prev) => ({ ...prev, page: value }));
+	};
+
+	const writeArticleHandler = async () => {
+		if (!user._id) {
+			const confirmed = await sweetLoginConfirmAlert('Please log in to write an article.');
+			if (confirmed) await router.push('/account/join');
+			return;
+		}
+		await router.push({ pathname: '/mypage', query: { category: 'writeArticle' } });
 	};
 
 	const likeArticleHandler = async (e: any, user: any, id: string) => {
@@ -297,16 +308,10 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 										There is no live article to spotlight yet, so this space is ready for a thoughtful owner note,
 										recommendation, market reaction, or dealer experience.
 									</p>
-									<Link
-										href={{
-											pathname: '/mypage',
-											query: { category: 'writeArticle' },
-										}}
-										className="write-link"
-									>
+									<button onClick={writeArticleHandler} className="write-link">
 										<span>Write article</span>
 										<KeyboardArrowRightRoundedIcon />
-									</Link>
+									</button>
 								</div>
 							)}
 						</article>
@@ -386,16 +391,10 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 								<p>{currentCategoryMeta.description}</p>
 							</div>
 
-							<Link
-								href={{
-									pathname: '/mypage',
-									query: { category: 'writeArticle' },
-								}}
-								className="write-link"
-							>
+							<button onClick={writeArticleHandler} className="write-link">
 								<span>Write article</span>
 								<KeyboardArrowRightRoundedIcon />
-							</Link>
+							</button>
 						</div>
 
 						<div className={`community-grid ${boardArticlesLoading ? 'loading' : ''}`}>
