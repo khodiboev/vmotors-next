@@ -3,6 +3,8 @@ import { NextPage } from 'next';
 import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useMutation, useQuery } from '@apollo/client';
@@ -38,6 +40,7 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 	const [sortingOpen, setSortingOpen] = useState(false);
 	const [filterSortName, setFilterSortName] = useState('Newest');
 	const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+	const [viewMode, setViewMode] = useState<'comfort' | 'compact'>(searchFilter.limit === 9 ? 'compact' : 'comfort');
 
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
@@ -77,6 +80,16 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 		setSearchFilter(next);
 		await router.push(`/vehicle?input=${JSON.stringify(next)}`, `/vehicle?input=${JSON.stringify(next)}`, { scroll: false });
 		setCurrentPage(value);
+	};
+
+	const viewModeChangeHandler = (mode: 'comfort' | 'compact') => {
+		if (mode === viewMode) return;
+		setViewMode(mode);
+		// Compact fills 3 columns evenly (3×3); Comfort keeps the original 8 (2×4)
+		const next = { ...searchFilter, page: 1, limit: mode === 'compact' ? 9 : 8 };
+		setSearchFilter(next);
+		setCurrentPage(1);
+		router.push(`/vehicle?input=${JSON.stringify(next)}`, `/vehicle?input=${JSON.stringify(next)}`, { scroll: false }).then();
 	};
 
 	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
@@ -136,6 +149,28 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 										{mobileFilterOpen ? 'Hide Filters' : 'Show Filters'}
 									</Button>
 								)}
+								{device !== 'mobile' && (
+									<div className={'view-toggle'} role={'group'} aria-label={'Card layout'}>
+										<button
+											type={'button'}
+											className={viewMode === 'comfort' ? 'active' : ''}
+											onClick={() => viewModeChangeHandler('comfort')}
+											aria-label={'Comfort view (2 columns)'}
+											aria-pressed={viewMode === 'comfort'}
+										>
+											<GridViewRoundedIcon />
+										</button>
+										<button
+											type={'button'}
+											className={viewMode === 'compact' ? 'active' : ''}
+											onClick={() => viewModeChangeHandler('compact')}
+											aria-label={'Compact view (3 columns)'}
+											aria-pressed={viewMode === 'compact'}
+										>
+											<ViewModuleRoundedIcon />
+										</button>
+									</div>
+								)}
 								<Box component={'div'} className={'sort-box'}>
 									<span>Sort by</span>
 									<div>
@@ -173,7 +208,7 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 						<Filter searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
 					</Stack>
 					<Stack className="main-config" mb={'76px'}>
-						<Stack className={`list-config ${loading ? 'loading' : ''}`}>
+						<Stack className={`list-config ${viewMode === 'compact' ? 'compact' : ''} ${loading ? 'loading' : ''}`}>
 							{loading && vehicles.length === 0 ? (
 								Array.from({ length: device === 'mobile' ? 4 : searchFilter.limit }).map((_, index) => (
 									<VehicleListSkeleton key={`vehicle-skeleton-${index}`} />

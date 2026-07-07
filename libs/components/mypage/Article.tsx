@@ -16,6 +16,7 @@ const Article = () => {
 						<Typography>July 28</Typography>
 					</Box>
 				</Stack>
+				
 				<Stack className="bottom">
 					<Stack className="name-address">
 						<Stack className="name">

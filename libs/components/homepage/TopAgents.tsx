@@ -82,26 +82,28 @@ const TopAgents = (props: TopAgentsProps) => {
 						</Box>
 					</Stack>
 					<Stack className={'wrapper'}>
-						<Box component={'div'} className={'card-wrapper'}>
-							<Swiper
-								className={'top-agents-swiper'}
-								slidesPerView={4}
-								spaceBetween={24}
-								watchOverflow={true}
-								modules={[Autoplay, Navigation, Pagination]}
-								navigation={{
-									nextEl: '.swiper-agents-next',
-									prevEl: '.swiper-agents-prev',
-								}}
-							>
-								{topAgents.map((agent: Member) => {
-									return (
-										<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-											<TopAgentCard agent={agent} key={agent?.memberNick} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
+						<Box component={'div'} className={'dealers-showcase-shell'}>
+							<Box component={'div'} className={'card-wrapper'}>
+								<Swiper
+									className={'top-agents-swiper'}
+									slidesPerView={4}
+									spaceBetween={24}
+									watchOverflow={true}
+									modules={[Autoplay, Navigation, Pagination]}
+									navigation={{
+										nextEl: '.swiper-agents-next',
+										prevEl: '.swiper-agents-prev',
+									}}
+								>
+									{topAgents.map((agent: Member) => {
+										return (
+											<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
+												<TopAgentCard agent={agent} key={agent?.memberNick} />
+											</SwiperSlide>
+										);
+									})}
+								</Swiper>
+							</Box>
 						</Box>
 						<Box component={'div'} className={'switch-buttons'}>
 							<Box

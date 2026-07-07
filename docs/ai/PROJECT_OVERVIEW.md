@@ -47,7 +47,7 @@ All visible branding now says Santa. Internal code names (file paths, TypeScript
 - GraphQL API: `http://localhost:3007/graphql` (local dev)
 - Configured via `NEXT_PUBLIC_API_URL` environment variable
 - Image uploads served from the same origin: `${REACT_APP_API_URL}/<path>`
-- The backend was **not** modified as part of the Santa frontend work
+- The backend was **not** modified as part of the Santa frontend work (a `vehicleHighlights` field was briefly prototyped on 2026-07-08 and fully reverted the same day — backend remains unchanged)
 
 ---
 
@@ -170,9 +170,9 @@ The `.dealer-vehicle-card` component (defined in `scss/pc/agent/detail.scss`) is
 
 | Page | Route | Status |
 |---|---|---|
-| Homepage | `/` | ✅ Redesigned — New Arrivals + Buyer Favorites now use 3D Orbital Carousel (experimental; rollback-ready) |
-| Vehicle list | `/vehicle` | ✅ Cleaned up (Nestar imagery removed) |
-| Vehicle detail | `/vehicle/detail` | ⬜ Not yet redesigned |
+| Homepage | `/` | ✅ Redesigned — orbital carousels (experimental; rollback-ready) + Trusted Dealers premium frame (July 2026) |
+| Vehicle list | `/vehicle` | ✅ Cleaned up + Comfort/Compact view toggle (2-col ×8 / 3-col ×9, desktop-only, July 2026) |
+| Vehicle detail | `/vehicle/detail` | ⬜ Not yet redesigned — July 2026 redesign experiments were **rejected and fully rolled back**; page is at original stable state |
 | Dealer list | `/agent` | ⬜ Partially cleaned (cards/sort fixed) |
 | Dealer detail | `/agent/detail` | ✅ Fully redesigned (Santa premium UI) |
 | Member/Profile page | `/member` | ✅ Fully redesigned (Santa premium UI) |
@@ -182,6 +182,8 @@ The `.dealer-vehicle-card` component (defined in `scss/pc/agent/detail.scss`) is
 | CS (FAQ/Notice) | `/cs` | 🔧 Polished (hero bug fixed, cards/notice/FAQ improved; not a full redesign) |
 | Account/Join | `/account/join` | ⬜ Not yet redesigned |
 | About | `/about` | ⬜ Not yet redesigned |
+
+Cross-page updates (July 2026): all `withLayoutBasic` inner-page hero banners use a CSS-only abstract premium design with per-page gradient variants (no photography); the global footer's links and social icons are functional (vehicle filter presets, CS routes, homepage fallback for socials).
 
 ---
 

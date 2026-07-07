@@ -168,7 +168,7 @@ For clarity: here is how the major rebranded components relate to their Nestar-e
 
 Pages not yet fully redesigned (in suggested priority order):
 
-1. **Vehicle Detail** (`/vehicle/detail`) — High traffic. Needs Santa card treatment for related vehicles, spec display, image gallery, comments.
+1. **Vehicle Detail** (`/vehicle/detail`) — High traffic. Needs Santa card treatment for related vehicles, spec display, image gallery, comments. ⚠️ July 2026 redesign experiments were rejected and fully rolled back — the page is at its original stable state. **Recommended before the next attempt: commit the current working tree first** so rollbacks stay clean, then agree on a target layout up front (the rejected attempts churned on scale/alignment). Ideas that were prototyped and worked end-to-end if wanted later: 3-column related grid, merged spec card, per-vehicle highlights (needs a backend field).
 2. **Account/Join** (`/account/join`) — Login and signup forms. Still on Nestar layout.
 3. **Dealer List** (`/agent`) — Cards and sort/filter partially fixed. Full Santa card treatment still pending.
 4. **About** (`/about`) — Static page.

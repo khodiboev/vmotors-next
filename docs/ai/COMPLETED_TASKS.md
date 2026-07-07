@@ -7,6 +7,64 @@ This file records all significant completed work on the Santa frontend, in rever
 
 ---
 
+## Phase 5: Footer, Toggles, Hero Backgrounds — and a Vehicle Detail Rollback (July 2026)
+
+### 5.5 — Vehicle Detail: Redesign Experiments Rejected and Fully Rolled Back (2026-07-08)
+
+**What happened:** A series of Vehicle Detail (`/vehicle/detail`) redesign experiments were attempted and rejected: desktop scale reduction, gallery/sidebar height alignment, a 3-column related-inventory grid, merging the two specification cards, repositioning the Trusted Dealer card, a bookmark save icon, and a new backend-supported "Vehicle Highlights" feature (schema field + create/edit form UI + detail-page card).
+
+**Outcome:** Everything was reverted via `git checkout` to the last committed state. `pages/vehicle/detail.tsx`, `scss/pc/property/detail.scss`, `apollo/user/query.ts`, all three `libs/types/vehicle/` files, `libs/components/mypage/AddNewProperty.tsx`, and `scss/pc/mypage/addNewProperty.scss` are byte-identical to the pre-experiment state. The backend repo (`vmotors`) had the `vehicleHighlights` field added to its Mongoose schema and GraphQL DTOs during the experiment and was also fully reverted — **the backend ends the day unchanged**. No vehicle data was ever written with highlights, so no data cleanup was needed.
+
+**Why documented:** So future work knows the Vehicle Detail page is still the original Nestar-era-derived design and remains the top redesign priority — and that a highlights-style feature was prototyped end-to-end and works, if it's ever wanted again.
+
+---
+
+### 5.4 — Vehicles Page: Comfort / Compact View Toggle (2026-07-07/08)
+
+**What changed:** A presentation-only view toggle was added beside the "Sort by" control on `/vehicle` (desktop only). **Comfort** (default) keeps the original 2-column card grid at `limit: 8`; **Compact** switches to a 3-column grid of proportionally smaller cards at `limit: 9` (3×3). Switching pushes the standard `/vehicle?input=<JSON>` URL (same contract as sorting/pagination) with `page` reset to 1, and the view mode is re-derived from `limit` on reload so shared URLs stay consistent.
+
+**Implementation notes:**
+- `viewMode` local state + `viewModeChangeHandler` in `pages/vehicle/index.tsx`, mirroring the existing `sortingHandler` pattern
+- `.view-toggle` glass-pill control styled to match `.sort-box`; `.list-config.compact` modifier scales the cards via parent CSS only — `VehicleListCard.tsx` untouched
+- View transition is a CSS-only fade (two identical keyframes with alternating names)
+- Mobile unchanged (toggle not rendered, limit stays 8)
+
+**Files changed:** `pages/vehicle/index.tsx`, `scss/pc/property/property.scss`
+
+---
+
+### 5.3 — Footer: Links Made Functional (2026-07-07)
+
+**What changed:** All footer text links and social icons were inert `<span>`s; they now navigate:
+- **Popular Search:** Hyundai / Kia → `/vehicle?input=<JSON>` with `brandList` preset (mirrors the vehicles page's default input shape)
+- **Discover:** Seoul / Gyeongido / Busan / Jejudo → `/vehicle` with `locationList` preset. Location matching is exact and case-sensitive (`"Seoul"` matches, `"SEOUL"` doesn't); the footer label strings are used verbatim. Only Seoul has data currently — other regions correctly show a filtered empty list.
+- **Quick Links:** FAQs → `/cs?tab=faq`; Contact Support, Terms, Privacy, Pricing, Services → `/cs` (no dedicated legal/pricing/services pages exist)
+- **Social icons:** wrapped in links to `/` — no real social URLs exist in the project
+
+**CSS-parity shims** (required for link behavior, zero visual change): `.bottom div a { display: contents }` keeps the spans as flex children so `margin-top: 25px` spacing survives; `.media-box a { color: inherit; display: inline-flex }` keeps icon color. Added to both `scss/pc/main.scss` and `scss/mobile/main.scss` footer blocks.
+
+**Files changed:** `libs/components/Footer.tsx`, `scss/pc/main.scss`, `scss/mobile/main.scss`
+
+---
+
+### 5.2 — Inner-Page Hero Backgrounds: Abstract Premium Redesign (2026-07-07)
+
+**What changed:** The shared `withLayoutBasic` hero banner (flat dark rectangle + per-page banner images) was replaced with a CSS-only abstract design — no photography, no SVG artwork. `LayoutBasic.tsx` no longer sets `bgImage`; each route maps to a variant class (`hero-vehicles`, `hero-dealers`, `hero-community`, `hero-cs`, `hero-mypage`) and renders decorative layers (`hero-mesh`, two blurred orbs, two gradient streaks, vignette) inside an `aria-hidden` group.
+
+**SCSS (`.header-basic` in `scss/pc/main.scss`):** layered navy gradient base matching the homepage hero language; per-page palettes via CSS custom-property overrides only (dealers = cyan, community = purple, CS = calm blue, mypage = deep navy + spotlight); improved title/subtitle hierarchy (title 700-weight with gradient accent bar, subtitle 16px muted); subtle CSS-keyframe entrance animations (title/subtitle rise, layers fade) with `prefers-reduced-motion` support. No Framer Motion, no loops, no parallax.
+
+**Files changed:** `libs/components/layout/LayoutBasic.tsx`, `scss/pc/main.scss`
+
+---
+
+### 5.1 — Homepage: Trusted Dealers Premium Frame (2026-07-07)
+
+**What changed:** The Trusted Dealers carousel (`TopAgents.tsx`, desktop branch only) was wrapped in a new `.dealers-showcase-shell` container using the same border-radius/border/gradient/shadow formula as the orbital sections' `.orbital-showcase-shell`, with all-sides 32px padding. The class is defined inside the existing `.top-agents` block — deliberately decoupled from the orbital selector so no 3D rules leak in. Dealer cards, Swiper config, and mobile layout unchanged.
+
+**Files changed:** `libs/components/homepage/TopAgents.tsx`, `scss/pc/homepage/homepage.scss`
+
+---
+
 ## Phase 4: Page Polish — Community, MyPage, CS, Homepage (July 2026)
 
 ### 4.5 — Homepage: Buyer Favorites Orbital Carousel

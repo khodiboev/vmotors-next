@@ -902,36 +902,215 @@ body::-webkit-scrollbar {
 	// }
 
 	.header-basic {
+		// Abstract premium hero — per-page palettes override these custom props only
+		--hero-accent-a: rgba(59, 130, 246, 0.3); // primary glow orb
+		--hero-accent-b: rgba(96, 165, 250, 0.2); // secondary glow orb
+		--hero-streak: rgba(147, 197, 253, 0.16); // elongated light streaks
+		--hero-base-mid: #0a1f44;
+		--hero-base-end: #0e2750;
 		position: relative;
 		width: 100%;
 		height: 557px;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
-		background: #0d1828;
+		overflow: hidden;
+		background:
+			radial-gradient(circle at 82% 10%, var(--hero-accent-b), transparent 34%),
+			radial-gradient(circle at 10% 88%, var(--hero-accent-a), transparent 40%),
+			linear-gradient(180deg, #050e20 0%, var(--hero-base-mid) 62%, var(--hero-base-end) 100%);
+
 		&.auth {
 			height: 300px;
 		}
+
+		// ── Per-page gradient compositions ──────────────────────────────
+		// hero-vehicles / hero-default use the base cool-blue palette above
+		&.hero-dealers {
+			--hero-accent-a: rgba(34, 211, 238, 0.2);
+			--hero-accent-b: rgba(103, 232, 249, 0.13);
+			--hero-streak: rgba(165, 243, 252, 0.13);
+		}
+
+		&.hero-community {
+			--hero-accent-a: rgba(139, 92, 246, 0.22);
+			--hero-accent-b: rgba(167, 139, 250, 0.15);
+			--hero-streak: rgba(196, 181, 253, 0.13);
+		}
+
+		&.hero-cs {
+			--hero-accent-a: rgba(59, 130, 246, 0.17);
+			--hero-accent-b: rgba(147, 197, 253, 0.11);
+			--hero-streak: rgba(191, 219, 254, 0.09);
+		}
+
+		&.hero-mypage {
+			--hero-accent-a: rgba(59, 130, 246, 0.15);
+			--hero-accent-b: rgba(226, 236, 255, 0.09);
+			--hero-streak: rgba(191, 219, 254, 0.08);
+			--hero-base-mid: #081733;
+			--hero-base-end: #0a1f44;
+		}
+
+		// ── Decorative abstract layers (no images) ──────────────────────
+		.hero-abstract {
+			position: absolute;
+			inset: 0;
+			pointer-events: none;
+
+			span {
+				position: absolute;
+				display: block;
+			}
+		}
+
+		.hero-mesh {
+			inset: 0;
+			background:
+				radial-gradient(ellipse 42% 54% at 28% 18%, rgba(255, 255, 255, 0.05), transparent),
+				radial-gradient(ellipse 48% 62% at 74% 70%, var(--hero-accent-b), transparent),
+				radial-gradient(ellipse 30% 42% at 88% 22%, rgba(255, 255, 255, 0.04), transparent);
+			opacity: 0;
+			animation: heroBasicLayerIn 1.4s ease 0.1s forwards;
+		}
+
+		.hero-orb {
+			border-radius: 50%;
+			filter: blur(46px);
+			opacity: 0;
+			animation: heroBasicLayerIn 1.6s ease forwards;
+		}
+
+		.orb-one {
+			width: 460px;
+			height: 460px;
+			left: -140px;
+			top: 110px;
+			background: var(--hero-accent-a);
+			animation-delay: 0.2s;
+		}
+
+		.orb-two {
+			width: 380px;
+			height: 380px;
+			right: -90px;
+			top: -90px;
+			background: var(--hero-accent-b);
+			animation-delay: 0.35s;
+		}
+
+		.hero-streak {
+			border-radius: 50%;
+			filter: blur(30px);
+			opacity: 0;
+			animation: heroBasicLayerIn 1.8s ease forwards;
+		}
+
+		.streak-one {
+			width: 640px;
+			height: 130px;
+			left: 6%;
+			top: 32%;
+			background: linear-gradient(90deg, transparent, var(--hero-streak), transparent);
+			transform: rotate(-14deg);
+			animation-delay: 0.45s;
+		}
+
+		.streak-two {
+			width: 480px;
+			height: 90px;
+			right: 3%;
+			bottom: 10%;
+			background: linear-gradient(90deg, transparent, var(--hero-streak), transparent);
+			transform: rotate(12deg);
+			animation-delay: 0.6s;
+		}
+
+		// Spotlight variation: My Page gets a soft top-center light source
+		&.hero-mypage .hero-mesh {
+			background:
+				radial-gradient(ellipse 52% 72% at 50% 0%, rgba(226, 236, 255, 0.1), transparent 72%),
+				radial-gradient(ellipse 42% 56% at 76% 66%, var(--hero-accent-a), transparent);
+		}
+
+		.hero-vignette {
+			inset: 0;
+			background: radial-gradient(ellipse 120% 92% at 50% 42%, transparent 58%, rgba(2, 8, 20, 0.44) 100%);
+		}
+
+		// ── Title / breadcrumb ───────────────────────────────────────────
 		.container {
+			z-index: 2;
 			margin-top: 175px;
+
 			strong {
+				position: relative;
+				padding-top: 18px;
 				color: #fff;
 				font-family: $font;
 				font-size: 48px;
 				font-style: normal;
-				font-weight: 600;
+				font-weight: 700;
 				line-height: normal;
-				letter-spacing: 0.96px;
+				letter-spacing: -0.4px;
 				text-transform: capitalize;
+				text-shadow: 0 18px 44px rgba(2, 8, 20, 0.45);
+				opacity: 0;
+				animation: heroBasicRise 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s forwards;
+
+				// Premium accent bar above the title
+				&::before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 2px;
+					width: 46px;
+					height: 3px;
+					border-radius: 999px;
+					background: linear-gradient(90deg, #3b82f6, rgba(59, 130, 246, 0));
+				}
 			}
+
 			span {
-				color: #fff;
+				margin-top: 14px;
+				color: rgba(224, 233, 248, 0.72);
 				font-family: $font;
-				font-size: 24px;
+				font-size: 16px;
 				font-style: normal;
 				font-weight: 400;
-				line-height: 26px;
+				line-height: 1.5;
+				letter-spacing: 0.04em;
+				opacity: 0;
+				animation: heroBasicRise 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s forwards;
 			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			.hero-mesh,
+			.hero-orb,
+			.hero-streak,
+			.container strong,
+			.container span {
+				animation: none;
+				opacity: 1;
+			}
+		}
+	}
+
+	@keyframes heroBasicRise {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes heroBasicLayerIn {
+		to {
+			opacity: 1;
 		}
 	}
 
@@ -1193,6 +1372,10 @@ body::-webkit-scrollbar {
 						.media-box {
 							margin-top: 12px;
 							color: #929495;
+							a {
+								color: inherit;
+								display: inline-flex;
+							}
 							svg {
 								font-size: 32px;
 								margin-right: 22px;
@@ -1259,6 +1442,9 @@ body::-webkit-scrollbar {
 						div {
 							display: flex;
 							flex-direction: column;
+							a {
+								display: contents; // anchor generates no box — span stays the flex child
+							}
 							strong {
 								margin-bottom: 3px;
 								color: #fff;

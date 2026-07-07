@@ -5,6 +5,17 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import { Stack, Box } from '@mui/material';
 import moment from 'moment';
+import Link from 'next/link';
+import { VehicleBrand } from '../enums/vehicle.enum';
+
+const vehicleSearchUrl = (search: Record<string, unknown>) =>
+	`/vehicle?input=${JSON.stringify({
+		page: 1,
+		limit: 8,
+		sort: 'createdAt',
+		direction: 'DESC',
+		search: { pricesRange: { start: 0, end: 200000000 }, ...search },
+	})}`;
 
 const Footer = () => {
 	const device = useDeviceDetect();
@@ -29,10 +40,18 @@ const Footer = () => {
 						<Box component={'div'} className={'footer-box'}>
 							<p>Follow Santa</p>
 							<div className={'media-box'}>
-								<FacebookOutlinedIcon />
-								<TelegramIcon />
-								<InstagramIcon />
-								<TwitterIcon />
+								<Link href={'/'} aria-label={'Facebook'}>
+									<FacebookOutlinedIcon />
+								</Link>
+								<Link href={'/'} aria-label={'Telegram'}>
+									<TelegramIcon />
+								</Link>
+								<Link href={'/'} aria-label={'Instagram'}>
+									<InstagramIcon />
+								</Link>
+								<Link href={'/'} aria-label={'Twitter'}>
+									<TwitterIcon />
+								</Link>
 							</div>
 						</Box>
 					</Stack>
@@ -40,24 +59,48 @@ const Footer = () => {
 						<Box component={'div'} className={'bottom'}>
 							<div>
 								<strong>Popular Search</strong>
-								<span>Hyundai new cars</span>
-								<span>Kia new cars</span>
+								<Link href={vehicleSearchUrl({ brandList: [VehicleBrand.HYUNDAI] })}>
+									<span>Hyundai new cars</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ brandList: [VehicleBrand.KIA] })}>
+									<span>Kia new cars</span>
+								</Link>
 							</div>
 							<div>
 								<strong>Quick Links</strong>
-								<span>Terms of Use</span>
-								<span>Privacy Policy</span>
-								<span>Pricing Plans</span>
-								<span>Our Services</span>
-								<span>Contact Support</span>
-								<span>FAQs</span>
+								<Link href={'/cs'}>
+									<span>Terms of Use</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Privacy Policy</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Pricing Plans</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Our Services</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Contact Support</span>
+								</Link>
+								<Link href={'/cs?tab=faq'}>
+									<span>FAQs</span>
+								</Link>
 							</div>
 							<div>
 								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
+								<Link href={vehicleSearchUrl({ locationList: ['Seoul'] })}>
+									<span>Seoul</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ locationList: ['Gyeongido'] })}>
+									<span>Gyeongido</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ locationList: ['Busan'] })}>
+									<span>Busan</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ locationList: ['Jejudo'] })}>
+									<span>Jejudo</span>
+								</Link>
 							</div>
 						</Box>
 					</Stack>
@@ -87,10 +130,18 @@ const Footer = () => {
 						<Box component={'div'} className={'footer-box'}>
 							<p>Follow Santa</p>
 							<div className={'media-box'}>
-								<FacebookOutlinedIcon />
-								<TelegramIcon />
-								<InstagramIcon />
-								<TwitterIcon />
+								<Link href={'/'} aria-label={'Facebook'}>
+									<FacebookOutlinedIcon />
+								</Link>
+								<Link href={'/'} aria-label={'Telegram'}>
+									<TelegramIcon />
+								</Link>
+								<Link href={'/'} aria-label={'Instagram'}>
+									<InstagramIcon />
+								</Link>
+								<Link href={'/'} aria-label={'Twitter'}>
+									<TwitterIcon />
+								</Link>
 							</div>
 						</Box>
 					</Stack>
@@ -105,24 +156,48 @@ const Footer = () => {
 						<Box component={'div'} className={'bottom'}>
 							<div>
 								<strong>Popular Search</strong>
-								<span>Hyundai new cars</span>
-								<span>Kia new cars</span>
+								<Link href={vehicleSearchUrl({ brandList: [VehicleBrand.HYUNDAI] })}>
+									<span>Hyundai new cars</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ brandList: [VehicleBrand.KIA] })}>
+									<span>Kia new cars</span>
+								</Link>
 							</div>
 							<div>
 								<strong>Quick Links</strong>
-								<span>Terms of Use</span>
-								<span>Privacy Policy</span>
-								<span>Pricing Plans</span>
-								<span>Our Services</span>
-								<span>Contact Support</span>
-								<span>FAQs</span>
+								<Link href={'/cs'}>
+									<span>Terms of Use</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Privacy Policy</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Pricing Plans</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Our Services</span>
+								</Link>
+								<Link href={'/cs'}>
+									<span>Contact Support</span>
+								</Link>
+								<Link href={'/cs?tab=faq'}>
+									<span>FAQs</span>
+								</Link>
 							</div>
 							<div>
 								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
+								<Link href={vehicleSearchUrl({ locationList: ['Seoul'] })}>
+									<span>Seoul</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ locationList: ['Gyeongido'] })}>
+									<span>Gyeongido</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ locationList: ['Busan'] })}>
+									<span>Busan</span>
+								</Link>
+								<Link href={vehicleSearchUrl({ locationList: ['Jejudo'] })}>
+									<span>Jejudo</span>
+								</Link>
 							</div>
 						</Box>
 					</Stack>

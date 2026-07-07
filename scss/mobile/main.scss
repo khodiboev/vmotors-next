@@ -2892,6 +2892,10 @@
             .media-box {
               margin-top: 12px;
               color: #929495;
+              a {
+                color: inherit;
+                display: inline-flex;
+              }
               svg {
                 font-size: 32px;
                 margin-right: 22px;
@@ -2911,6 +2915,9 @@
             div {
               display: flex;
               flex-direction: column;
+              a {
+                display: contents; // anchor generates no box — span stays the flex child
+              }
               strong {
                 margin-bottom: 3px;
                 color: #fff;

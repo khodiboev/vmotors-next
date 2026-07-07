@@ -25,58 +25,60 @@ const withLayoutBasic = (Component: any) => {
 		const memoizedValues = useMemo(() => {
 			let title = '',
 				desc = '',
-				bgImage = '';
+				heroClass = 'hero-default';
 
 			switch (router.pathname) {
 				case '/vehicle':
 					title = 'Vehicle Search';
 					desc = 'New Hyundai and Kia inventory';
+					heroClass = 'hero-vehicles';
 					break;
 				case '/agent':
 					title = 'Dealers';
 					desc = 'Home / Vehicles';
+					heroClass = 'hero-dealers';
 					break;
 				case '/agent/detail':
 					title = 'Dealer Page';
 					desc = 'Home / Vehicles';
-					bgImage = '/img/banner/header2.avif';
+					heroClass = 'hero-dealers';
 					break;
 				case '/mypage':
 					title = 'my page';
 					desc = 'Home / Vehicles';
-					bgImage = '/img/banner/header1.svg';
+					heroClass = 'hero-mypage';
 					break;
 				case '/community':
 					title = 'Community';
 					desc = 'Home / Vehicles';
-					bgImage = '/img/banner/header2.svg';
+					heroClass = 'hero-community';
 					break;
 				case '/community/detail':
 					title = 'Community Detail';
 					desc = 'Community / Article Detail';
-					bgImage = '/img/banner/header2.svg';
+					heroClass = 'hero-community';
 					break;
 				case '/cs':
 					title = 'CS';
 					desc = 'We are glad to see you again!';
-					bgImage = '/img/banner/header2.svg';
+					heroClass = 'hero-cs';
 					break;
 				case '/account/join':
 					title = 'Login/Signup';
 					desc = 'Authentication Process';
-					bgImage = '/img/banner/header2.svg';
+					heroClass = 'hero-cs';
 					setAuthHeader(true);
 					break;
 				case '/member':
 					title = 'Member Page';
 					desc = 'Home / Vehicles';
-					bgImage = '/img/banner/header1.svg';
+					heroClass = 'hero-mypage';
 					break;
 				default:
 					break;
 			}
 
-			return { title, desc, bgImage };
+			return { title, desc, heroClass };
 		}, [router.pathname]);
 
 		/** LIFECYCLES **/
@@ -121,18 +123,15 @@ const withLayoutBasic = (Component: any) => {
 							<Top />
 						</Stack>
 
-						<Stack
-							className={`header-basic ${authHeader && 'auth'}`}
-							style={
-							memoizedValues.bgImage
-								? {
-									backgroundImage: `url(${memoizedValues.bgImage})`,
-									backgroundSize: 'cover',
-									boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
-								}
-								: undefined
-						}
-						>
+						<Stack className={`header-basic ${memoizedValues.heroClass} ${authHeader ? 'auth' : ''}`}>
+							<div className={'hero-abstract'} aria-hidden={'true'}>
+								<span className={'hero-mesh'} />
+								<span className={'hero-orb orb-one'} />
+								<span className={'hero-orb orb-two'} />
+								<span className={'hero-streak streak-one'} />
+								<span className={'hero-streak streak-two'} />
+								<span className={'hero-vignette'} />
+							</div>
 							<Stack className={'container'}>
 								<strong>{t(memoizedValues.title)}</strong>
 								<span>{t(memoizedValues.desc)}</span>
