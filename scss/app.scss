@@ -117,3 +117,26 @@ img[src*='/img/logo/app-icon.svg']:hover {
 		display: flex;
 	}
 }
+
+/** SANTA VEHICLE TOAST — SweetAlert2 mounts on <body>, outside #pc-wrap/#mobile-wrap.
+    Its stylesheet is injected at runtime after ours, so selectors must out-rank
+    .swal2-popup.swal2-toast (hence the triple class). **/
+.santa-toast-container.swal2-container {
+	padding-bottom: 34px;
+}
+.swal2-popup.swal2-toast.santa-toast {
+	background: #0a1f44;
+	border-radius: 18px;
+	box-shadow: 0 18px 44px rgba(10, 31, 68, 0.28);
+	padding: 14px 22px;
+}
+.swal2-popup.swal2-toast.santa-toast .santa-toast-title {
+	color: #ffffff;
+	font-family: $font;
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+.swal2-popup.swal2-toast.santa-toast .swal2-success-ring {
+	border-color: rgba(255, 255, 255, 0.35);
+}

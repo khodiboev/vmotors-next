@@ -33,6 +33,7 @@ const CommunityListingCard = ({ article, likeArticleHandler }: CommunityListingC
 	const imagePath = article?.articleImage ? `${REACT_APP_API_URL}/${article.articleImage}` : '/img/community/communityImg.png';
 	const articleAuthor = article?.memberData?.memberFullName ?? article?.memberData?.memberNick ?? 'Santa';
 	const articleSummary = stripHtml(article?.articleContent);
+	const isLiked = Boolean(article?.meLiked?.[0]?.myFavorite);
 	const summary =
 		articleSummary.length > 140 ? `${articleSummary.slice(0, 137).trimEnd()}...` : articleSummary || 'Explore discussion, dealer insight, and Hyundai or Kia buying context from the Santa community.';
 
@@ -61,10 +62,10 @@ const CommunityListingCard = ({ article, likeArticleHandler }: CommunityListingC
 					<button
 						type="button"
 						className={'like-button'}
-						onClick={(e) => likeArticleHandler?.(e, user, article?._id)}
+						onClick={(e) => likeArticleHandler?.(e, user, article?._id, isLiked)}
 						aria-label={'Like article'}
 					>
-						{article?.meLiked?.[0]?.myFavorite ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
+						{isLiked ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
 					</button>
 				</div>
 

@@ -107,6 +107,34 @@ export const sweetErrorHandlingForAdmin = async (err: any) => {
 	});
 };
 
+// Vehicle like/save confirmations only — bottom-center Santa-styled toast.
+// Other features keep sweetTopSmallSuccessAlert.
+export const sweetVehicleActionToast = (msg: string, duration: number = 2000) => {
+	const Toast = Swal.mixin({
+		toast: true,
+		position: 'bottom',
+		showConfirmButton: false,
+		timer: duration,
+		customClass: {
+			popup: 'santa-toast',
+			title: 'santa-toast-title',
+			container: 'santa-toast-container',
+		},
+		showClass: {
+			popup: 'animate__animated animate__fadeInUp animate__faster',
+		},
+		hideClass: {
+			popup: 'animate__animated animate__fadeOut animate__faster',
+		},
+	});
+
+	Toast.fire({
+		icon: 'success',
+		iconColor: '#ffffff',
+		title: msg,
+	}).then();
+};
+
 export const sweetTopSmallSuccessAlert = async (
 	msg: string,
 	duration: number = 2000,

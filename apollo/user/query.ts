@@ -98,6 +98,8 @@ export const GET_VEHICLE = gql`
 			vehicleStockQuantity
 			vehicleImages
 			vehicleDesc
+			vehicleBodyType
+			vehicleMileage
 			vehicleStatus
 			vehicleViews
 			vehicleLikes

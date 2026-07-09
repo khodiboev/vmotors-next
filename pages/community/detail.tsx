@@ -22,9 +22,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
 import { Messages } from '../../libs/config';
-import { sweetConfirmAlert, sweetLoginConfirmAlert, sweetMixinErrorAlert, sweetMixinSuccessAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetConfirmAlert, sweetLoginConfirmAlert, sweetMixinErrorAlert, sweetMixinSuccessAlert } from '../../libs/sweetAlert';
 import { CREATE_COMMENT, LIKE_TARGET_BOARD_ARTICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
 import { GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
+import ArticleLikeFeedback, {
+	ArticleLikeFeedbackState,
+	getArticleLikeFeedbackCopy,
+} from '../../libs/components/community/ArticleLikeFeedback';
 const ToastViewerComponent = dynamic(() => import('../../libs/components/community/TViewer'), { ssr: false });
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -56,6 +60,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
 	const [likeLoading, setLikeLoading] = useState<boolean>(false);
 	const [boardArticle, setBoardArticle] = useState<BoardArticle>();
+	const [articleFeedback, setArticleFeedback] = useState<ArticleLikeFeedbackState | null>(null);
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
@@ -99,6 +104,14 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	}, [articleId]);
 
 	/** HANDLERS **/
+	const showArticleFeedback = (wasLiked: boolean) => {
+		const feedbackCopy = getArticleLikeFeedbackCopy(wasLiked);
+		setArticleFeedback((prev) => ({
+			id: (prev?.id ?? 0) + 1,
+			...feedbackCopy,
+		}));
+	};
+
 	const tabChangeHandler = (event: React.SyntheticEvent, value: string) => {
 		router.replace(
 			{
@@ -117,6 +130,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
+			const wasLiked = Boolean(boardArticle?.meLiked?.[0]?.myFavorite);
 			setLikeLoading(true);
 
 			await likeTargetBoardArticle({
@@ -126,7 +140,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 			});
 
 			await boardArticleRefetch({ input: articleId });
-			await sweetTopSmallSuccessAlert('Success!', 800);
+			showArticleFeedback(wasLiked);
 		} catch (err: any) {
 			console.log('ERROR, likeBoArticleHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
@@ -447,6 +461,11 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 						</div>
 					</Backdrop>
 				</div>
+				<ArticleLikeFeedback
+					key={articleFeedback?.id ?? 'article-like-feedback'}
+					feedback={articleFeedback}
+					onDone={() => setArticleFeedback(null)}
+				/>
 			</div>
 		);
 	}

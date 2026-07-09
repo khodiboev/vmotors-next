@@ -203,3 +203,13 @@ yarn build                                  # Full Next.js build
 - [COMPLETED_TASKS.md](./COMPLETED_TASKS.md) — Chronological history of all completed work
 - [FRONTEND_MIGRATION.md](./FRONTEND_MIGRATION.md) — Nestar → VMotors → Santa migration guide
 - [DECISIONS.md](./DECISIONS.md) — Key architectural and naming decisions with rationale
+
+---
+
+## Latest Status Update (2026-07-10)
+
+The Community list page has a polished 3×2 desktop article grid with responsive fallback to 2 columns on tablet and 1 column on mobile. Article cards were tuned for the smaller column width, preserve equal-height alignment, keep titles clamped, and now clamp descriptions to 2 lines with ellipsis to prevent overflow.
+
+Board-article like/unlike success feedback now uses a local Santa-themed animated floating card instead of the shared top-right SweetAlert success toast. The feedback applies to Community listing cards, Community article detail, Member profile articles, and MyPage My Articles. It reuses one feedback instance during rapid clicks and shows **"Article liked"** / **"Article unliked"**.
+
+This update was UI-only. GraphQL, Apollo, routing, pagination, article fetching, backend APIs, and existing business logic were unchanged.

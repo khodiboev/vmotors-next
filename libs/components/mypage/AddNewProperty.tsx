@@ -47,6 +47,8 @@ const AddProperty = ({ initialValues }: any) => {
 			vehicleStockQuantity: vehicle.vehicleStockQuantity,
 			vehicleImages: vehicle.vehicleImages,
 			vehicleDesc: vehicle.vehicleDesc ?? '',
+			vehicleBodyType: vehicle.vehicleBodyType ?? undefined,
+			vehicleMileage: vehicle.vehicleMileage ?? undefined,
 		});
 	}, [getVehicleData]);
 
@@ -262,6 +264,31 @@ const AddProperty = ({ initialValues }: any) => {
 									value={insertVehicleData.vehicleStockQuantity}
 									onChange={({ target: { value } }) =>
 										setInsertVehicleData({ ...insertVehicleData, vehicleStockQuantity: Number(value) })
+									}
+								/>
+							</Stack>
+						</Stack>
+						<Stack className="config-row">
+							<Stack className="price-year-after-price">
+								<Typography className="title">Body Type (optional)</Typography>
+								<input
+									type="text"
+									className="description-input"
+									value={insertVehicleData.vehicleBodyType ?? ''}
+									onChange={({ target: { value } }) =>
+										setInsertVehicleData({ ...insertVehicleData, vehicleBodyType: value || undefined })
+									}
+								/>
+							</Stack>
+							<Stack className="price-year-after-price">
+								<Typography className="title">Mileage (km, optional)</Typography>
+								<input
+									type="number"
+									min={0}
+									className="description-input"
+									value={insertVehicleData.vehicleMileage ?? ''}
+									onChange={({ target: { value } }) =>
+										setInsertVehicleData({ ...insertVehicleData, vehicleMileage: value === '' ? undefined : Number(value) })
 									}
 								/>
 							</Stack>

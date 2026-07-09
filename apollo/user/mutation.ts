@@ -138,6 +138,8 @@ export const CREATE_VEHICLE = gql`
 			vehicleStockQuantity
 			vehicleImages
 			vehicleDesc
+			vehicleBodyType
+			vehicleMileage
 			vehicleStatus
 			vehicleViews
 			vehicleLikes
@@ -168,6 +170,8 @@ export const UPDATE_VEHICLE = gql`
 			vehicleStockQuantity
 			vehicleImages
 			vehicleDesc
+			vehicleBodyType
+			vehicleMileage
 			vehicleStatus
 			vehicleViews
 			vehicleLikes

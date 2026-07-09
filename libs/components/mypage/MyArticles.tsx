@@ -13,6 +13,10 @@ import { Messages } from '../../config';
 import { sweetConfirmAlert, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 import { useRouter } from 'next/router';
 import { BoardArticleStatus } from '../../enums/board-article.enum';
+import ArticleLikeFeedback, {
+	ArticleLikeFeedbackState,
+	getArticleLikeFeedbackCopy,
+} from '../community/ArticleLikeFeedback';
 
 const EDIT_DRAFT_STORAGE_KEY = 'santa-community-edit-draft';
 
@@ -26,6 +30,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	});
 	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
+	const [articleFeedback, setArticleFeedback] = useState<ArticleLikeFeedbackState | null>(null);
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
@@ -53,7 +58,15 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchCommunity({ ...searchCommunity, page: value });
 	};
 
-	const likeBoArticleHandler = async (e: any, user: any, id: string) => {
+	const showArticleFeedback = (wasLiked: boolean) => {
+		const feedbackCopy = getArticleLikeFeedbackCopy(wasLiked);
+		setArticleFeedback((prev) => ({
+			id: (prev?.id ?? 0) + 1,
+			...feedbackCopy,
+		}));
+	};
+
+	const likeBoArticleHandler = async (e: any, user: any, id: string, wasLiked = false) => {
 		try {
 			e.stopPropagation();
 			if (!id) return;
@@ -66,7 +79,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 			});
 
 			await boardArticlesRefetch({ input: searchCommunity });
-			await sweetTopSmallSuccessAlert('Success!', 750);
+			showArticleFeedback(wasLiked);
 		} catch (err: any) {
 			console.log('ERROR, likeBoArticleHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
@@ -193,6 +206,11 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 						</Stack>
 					</Stack>
 				)}
+				<ArticleLikeFeedback
+					key={articleFeedback?.id ?? 'article-like-feedback'}
+					feedback={articleFeedback}
+					onDone={() => setArticleFeedback(null)}
+				/>
 			</div>
 		);
 };

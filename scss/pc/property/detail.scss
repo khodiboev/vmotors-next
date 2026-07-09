@@ -255,6 +255,7 @@
 			display: flex;
 			flex-direction: column;
 			gap: 14px;
+			align-self: stretch;
 		}
 
 		.gallery-stage {
@@ -367,14 +368,16 @@
 		}
 
 		.thumbnail-row {
+			flex: 1;
 			display: grid;
-			grid-template-columns: repeat(5, minmax(0, 1fr));
+			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 			gap: 12px;
 		}
 
 		.thumbnail-button {
 			padding: 0;
-			height: 118px;
+			height: 100%;
+			min-height: 118px;
 			border-radius: 22px;
 			border: 1px solid transparent;
 			background: rgba(255, 255, 255, 0.88);
@@ -537,8 +540,7 @@
 		}
 
 		.spec-card,
-		.overview-card,
-		.spec-breakdown-card {
+		.overview-card {
 			.spec-grid,
 			.detail-grid {
 				display: grid;
@@ -681,7 +683,7 @@
 		.property-desc-config {
 			.left-config {
 				display: grid;
-				grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+				grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
 				gap: 24px;
 			}
 		}
@@ -863,7 +865,7 @@
 
 		.cards-box {
 			display: grid;
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 			gap: 18px;
 		}
 
@@ -951,13 +953,25 @@
 				padding: 20px;
 			}
 
+			.title-row {
+				align-items: flex-start;
+			}
+
 			.title-copy {
 				display: flex;
 				flex-direction: column;
 				gap: 10px;
+				flex: 1;
+				min-width: 0;
+			}
+
+			.status-pill {
+				flex-shrink: 0;
 			}
 
 			.vehicle-title {
+				display: block;
+				white-space: normal;
 				color: var(--detail-text);
 				font-family: $font;
 				font-size: 24px;

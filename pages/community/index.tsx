@@ -21,9 +21,13 @@ import { BoardArticleCategory } from '../../libs/enums/board-article.enum';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_BOARD_ARTICLES } from '../../apollo/user/query';
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
-import { sweetLoginConfirmAlert, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetLoginConfirmAlert, sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
 import { userVar } from '../../apollo/store';
+import ArticleLikeFeedback, {
+	ArticleLikeFeedbackState,
+	getArticleLikeFeedbackCopy,
+} from '../../libs/components/community/ArticleLikeFeedback';
 import CommunityListingCard from '../../libs/components/community/CommunityListingCard';
 import CommunityListingSkeleton from '../../libs/components/community/CommunityListingSkeleton';
 
@@ -104,6 +108,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	});
 	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
+	const [articleFeedback, setArticleFeedback] = useState<ArticleLikeFeedbackState | null>(null);
 
 	const user = useReactiveVar(userVar);
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
@@ -174,7 +179,15 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		await router.push({ pathname: '/mypage', query: { category: 'writeArticle' } });
 	};
 
-	const likeArticleHandler = async (e: any, user: any, id: string) => {
+	const showArticleFeedback = (wasLiked: boolean) => {
+		const feedbackCopy = getArticleLikeFeedbackCopy(wasLiked);
+		setArticleFeedback((prev) => ({
+			id: (prev?.id ?? 0) + 1,
+			...feedbackCopy,
+		}));
+	};
+
+	const likeArticleHandler = async (e: any, user: any, id: string, wasLiked = false) => {
 		try {
 			e.stopPropagation();
 			if (!id) return;
@@ -187,7 +200,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 			});
 
 			await boardArticlesRefetch({ input: searchCommunity });
-			await sweetTopSmallSuccessAlert('success', 800);
+			showArticleFeedback(wasLiked);
 		} catch (err: any) {
 			sweetMixinErrorAlert(err.message).then();
 		}
@@ -438,6 +451,11 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 					</Stack>
 				)}
 			</div>
+			<ArticleLikeFeedback
+				key={articleFeedback?.id ?? 'article-like-feedback'}
+				feedback={articleFeedback}
+				onDone={() => setArticleFeedback(null)}
+			/>
 		</div>
 	);
 };

@@ -17,7 +17,7 @@ import { Direction, Message } from '../../libs/enums/common.enum';
 import { GET_VEHICLES } from '../../apollo/user/query';
 import { LIKE_TARGET_VEHICLE } from '../../apollo/user/mutation';
 import { T } from '../../libs/types/common';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetMixinErrorAlert, sweetVehicleActionToast } from '../../libs/sweetAlert';
 import VehicleListCard from '../../libs/components/vehicle-list/VehicleListCard';
 import VehicleListSkeleton from '../../libs/components/vehicle-list/VehicleListSkeleton';
 
@@ -63,15 +63,17 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 		if (device !== 'mobile') setMobileFilterOpen(false);
 	}, [device]);
 
-	const likeVehicleHandler = async (user: T, id: string) => {
+	const likeVehicleHandler = async (user: T, id: string, message?: string) => {
 		try {
-			if (!id) return;
+			if (!id) return false;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 			await likeTargetVehicle({ variables: { input: id } });
 			await getVehiclesRefetch({ input: searchFilter });
-			await sweetTopSmallSuccessAlert('success', 800);
+			sweetVehicleActionToast(message ?? 'Vehicle liked');
+			return true;
 		} catch (err: any) {
 			sweetMixinErrorAlert(err.message).then();
+			return false;
 		}
 	};
 

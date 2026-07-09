@@ -138,3 +138,15 @@ import NewArrivalsOrbital from '...';
 **Decision:** URL routes were not changed. `/agent` still goes to the Dealers list. `/vehicle` still goes to the Vehicle list. `/member` still goes to the Member profile page with `?memberId=` query param.
 
 **Why:** Changing URLs would break bookmarks, internal links, and the backend's understanding of where to redirect after auth. The routing is an invisible contract between the frontend, backend, and any external links. It was out of scope for a UI redesign.
+
+---
+
+## D-12: Board-Article Like Feedback Is Local, Not a Global Alert Override
+
+**Decision:** Board-article like/unlike success feedback now uses a local `ArticleLikeFeedback` component instead of changing the shared SweetAlert utility or overriding global toast styles.
+
+**Why:** `sweetTopSmallSuccessAlert` is used across unrelated flows such as deletes, member follows, vehicle actions, and homepage interactions. Changing the global alert would create broad visual and behavioral risk outside the Community article scope. A local component lets article-like feedback match the Santa Community design while leaving unrelated success alerts unchanged.
+
+**Rule:** When improving feedback for a specific domain action, prefer a scoped component rendered by the owning page/component unless the product explicitly wants a site-wide alert redesign.
+
+**Preserved:** `LIKE_TARGET_BOARD_ARTICLE` variables, mutation calls, Apollo refetch/cache behavior, routing, pagination, article fetching, and backend APIs stayed unchanged.

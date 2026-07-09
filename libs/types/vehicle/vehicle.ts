@@ -25,6 +25,8 @@ export interface Vehicle {
 	vehicleStockQuantity: number;
 	vehicleImages: string[];
 	vehicleDesc?: string;
+	vehicleBodyType?: string;
+	vehicleMileage?: number;
 	vehicleStatus: VehicleStatus;
 	vehicleViews: number;
 	vehicleLikes: number;

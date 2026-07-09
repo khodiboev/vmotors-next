@@ -26,6 +26,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 	const user = useReactiveVar(userVar);
 	const hasImage = Boolean(boardArticle?.articleImage);
 	const imagePath: string = hasImage ? `${REACT_APP_API_URL}/${boardArticle?.articleImage}` : '';
+	const isLiked = Boolean(boardArticle?.meLiked?.[0]?.myFavorite);
 
 	/** HANDLERS **/
 	const chooseArticleHandler = (e: React.SyntheticEvent, boardArticle: BoardArticle) => {
@@ -80,12 +81,8 @@ const CommunityCard = (props: CommunityCardProps) => {
 							<RemoveRedEyeIcon />
 						</IconButton>
 						<Typography className="view-cnt">{boardArticle?.articleViews}</Typography>
-						<IconButton color={'default'} onClick={(e) => likeArticleHandler(e, user, boardArticle?._id)}>
-							{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
-								<FavoriteIcon color={'primary'} />
-							) : (
-								<FavoriteBorderIcon />
-							)}
+						<IconButton color={'default'} onClick={(e) => likeArticleHandler(e, user, boardArticle?._id, isLiked)}>
+							{isLiked ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
 						</IconButton>
 						<Typography className="view-cnt">{boardArticle?.articleLikes}</Typography>
 					</Stack>

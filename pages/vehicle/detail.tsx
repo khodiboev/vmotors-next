@@ -5,7 +5,8 @@ import {
 	Pagination as MuiPagination,
 	Stack,
 } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
@@ -34,7 +35,7 @@ import { REACT_APP_API_URL, topPropertyRank } from '../../libs/config';
 import { userVar } from '../../apollo/store';
 import { formatterStr } from '../../libs/utils';
 import { vehicleStockLabel, vehicleTitle } from '../../libs/vehicle';
-import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetErrorHandling, sweetMixinErrorAlert, sweetVehicleActionToast } from '../../libs/sweetAlert';
 import VehicleDetailCommentCard from '../../libs/components/vehicle-detail/VehicleDetailCommentCard';
 import VehicleDetailRelatedCard from '../../libs/components/vehicle-detail/VehicleDetailRelatedCard';
 
@@ -86,7 +87,8 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 		variables: {
 			input: {
 				page: 1,
-				limit: 4,
+				// one extra so six cards remain after the current vehicle is filtered out below
+				limit: 7,
 				sort: 'createdAt',
 				direction: Direction.DESC,
 				search: {
@@ -121,16 +123,18 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 		if (commentInquiry.search.commentRefId) getCommentsRefetch({ input: commentInquiry });
 	}, [commentInquiry, getCommentsRefetch]);
 
-	const likeVehicleHandler = async (targetUser: T, id: string) => {
+	const likeVehicleHandler = async (targetUser: T, id: string, message?: string) => {
 		try {
-			if (!id) return;
+			if (!id) return false;
 			if (!targetUser._id) throw new Error(Message.NOT_AUTHENTICATED);
 			await likeTargetVehicle({ variables: { input: id } });
 			await getVehicleRefetch({ input: vehicleId });
 			await getVehiclesRefetch();
-			await sweetTopSmallSuccessAlert('success', 800);
+			sweetVehicleActionToast(message ?? 'Vehicle liked');
+			return true;
 		} catch (err: any) {
 			sweetMixinErrorAlert(err.message).then();
+			return false;
 		}
 	};
 
@@ -156,7 +160,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 	const heroImage = slideImage ? `${REACT_APP_API_URL}/${slideImage}` : '/img/banner/header1.svg';
 	const activeImages = vehicle?.vehicleImages?.length ? vehicle.vehicleImages : [];
 	const relatedVehicles = useMemo(
-		() => similarVehicles.filter((item) => item?._id !== vehicle?._id).slice(0, 4),
+		() => similarVehicles.filter((item) => item?._id !== vehicle?._id).slice(0, 6),
 		[similarVehicles, vehicle?._id],
 	);
 	const detailStats = [
@@ -277,10 +281,16 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 									<button
 										type="button"
 										className={'hero-like-button'}
-										onClick={() => likeVehicleHandler(user, vehicle?._id)}
+										onClick={() =>
+											likeVehicleHandler(
+												user,
+												vehicle?._id,
+												vehicle?.meLiked?.[0]?.myFavorite ? 'Removed from favorites' : 'Added to favorites',
+											)
+										}
 										aria-label={'Save vehicle'}
 									>
-										{vehicle?.meLiked?.[0]?.myFavorite ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
+										{vehicle?.meLiked?.[0]?.myFavorite ? <BookmarkIcon color={'primary'} /> : <BookmarkBorderIcon />}
 										<span>Save vehicle</span>
 									</button>
 								</div>
@@ -329,9 +339,15 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 									<button
 										type="button"
 										className={'action-button primary'}
-										onClick={() => likeVehicleHandler(user, vehicle?._id)}
+										onClick={() =>
+											likeVehicleHandler(
+												user,
+												vehicle?._id,
+												vehicle?.meLiked?.[0]?.myFavorite ? 'Removed from favorites' : 'Added to favorites',
+											)
+										}
 									>
-										{vehicle?.meLiked?.[0]?.myFavorite ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
+										{vehicle?.meLiked?.[0]?.myFavorite ? <BookmarkIcon color={'primary'} /> : <BookmarkBorderIcon />}
 										<span>{vehicle?.meLiked?.[0]?.myFavorite ? 'Saved to favorites' : 'Save to favorites'}</span>
 									</button>
 									<Link
@@ -375,6 +391,43 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 											<strong>{item.value}</strong>
 										</div>
 									))}
+								</div>
+							</div>
+
+						</aside>
+					</section>
+
+					<section className={'property-desc-config'}>
+						<div className={'left-config'}>
+							<div className={'detail-card overview-card'}>
+								<div className={'section-heading'}>
+									<span className={'label'}>Vehicle overview</span>
+									<strong>Everything you need before contacting the dealer</strong>
+								</div>
+								<p>
+									{vehicle?.vehicleDesc ||
+										'No additional description was provided for this vehicle yet. You can still review the full specification set, dealer profile, and listing status above.'}
+								</p>
+
+								<div className={'detail-grid'}>
+									<div className={'detail-grid-item'}>
+										<span>Status</span>
+										<strong>{formatStatusLabel(vehicle?.vehicleStatus)}</strong>
+									</div>
+									<div className={'detail-grid-item'}>
+										<span>Listed</span>
+										<strong>{moment(vehicle?.createdAt).format('DD MMM YYYY')}</strong>
+									</div>
+									<div className={'detail-grid-item'}>
+										<span>Body type</span>
+										<strong>{vehicle?.vehicleBodyType || '—'}</strong>
+									</div>
+									<div className={'detail-grid-item'}>
+										<span>Mileage</span>
+										<strong>
+											{vehicle?.vehicleMileage != null ? `${vehicle.vehicleMileage.toLocaleString()} km` : '—'}
+										</strong>
+									</div>
 								</div>
 							</div>
 
@@ -427,45 +480,6 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 											<span>{vehicle.memberData.memberPhone}</span>
 										</a>
 									)}
-								</div>
-							</div>
-						</aside>
-					</section>
-
-					<section className={'property-desc-config'}>
-						<div className={'left-config'}>
-							<div className={'detail-card overview-card'}>
-								<div className={'section-heading'}>
-									<span className={'label'}>Vehicle overview</span>
-									<strong>Everything you need before contacting the dealer</strong>
-								</div>
-								<p>
-									{vehicle?.vehicleDesc ||
-										'No additional description was provided for this vehicle yet. You can still review the full specification set, dealer profile, and listing status above.'}
-								</p>
-							</div>
-
-							<div className={'detail-card spec-breakdown-card'}>
-								<div className={'section-heading'}>
-									<span className={'label'}>Specification breakdown</span>
-									<strong>Premium listing details</strong>
-								</div>
-
-								<div className={'detail-grid'}>
-									{detailStats.map((item) => (
-										<div className={'detail-grid-item'} key={`detail-${item.label}`}>
-											<span>{item.label}</span>
-											<strong>{item.value}</strong>
-										</div>
-									))}
-									<div className={'detail-grid-item'}>
-										<span>Status</span>
-										<strong>{formatStatusLabel(vehicle?.vehicleStatus)}</strong>
-									</div>
-									<div className={'detail-grid-item'}>
-										<span>Listed</span>
-										<strong>{moment(vehicle?.createdAt).format('DD MMM YYYY')}</strong>
-									</div>
 								</div>
 							</div>
 						</div>

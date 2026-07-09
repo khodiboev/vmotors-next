@@ -9,6 +9,30 @@ This file records all significant completed work on the Santa frontend, in rever
 
 ## Phase 5: Footer, Toggles, Hero Backgrounds — and a Vehicle Detail Rollback (July 2026)
 
+### 5.6 — Community Article Grid + Like Feedback Polish (2026-07-10)
+
+**What changed:** The bottom Community article grid and all board-article like success feedback were polished as UI-only improvements. GraphQL, Apollo, routing, pagination, article fetching, backend APIs, and like/unlike business logic were intentionally preserved.
+
+**Community article grid:**
+- Desktop grid changed from 2 columns to 3 columns so the six-article feed presents as a natural 3×2 layout.
+- Responsive behavior is now Desktop 3 columns / Tablet 2 columns / Mobile 1 column.
+- Article cards were tuned for the narrower layout: proportional media, slightly tighter card spacing/padding, readable typography, equal-height card behavior, and bottom-aligned metadata/footer actions.
+- Article titles remain clamped to 2 lines.
+- Article descriptions now use a 2-line `-webkit-line-clamp` with ellipsis so excerpts never overflow outside the card.
+
+**Community article feedback:**
+- Replaced board-article like/unlike success feedback that used the shared top-right `sweetTopSmallSuccessAlert` with a local Santa-themed floating feedback component.
+- Added `ArticleLikeFeedback`, a small bottom-center animated status card with heart icon, Santa blue accent, rounded border, soft shadow, fade/slide/scale animation, and `role="status"`.
+- Applied the feedback to Community listing article cards, Community article detail, Member profile articles, and MyPage My Articles — the board-article like surfaces using `LIKE_TARGET_BOARD_ARTICLE`.
+- Rapid repeated clicks reuse/update the same local feedback instance instead of stacking multiple SweetAlert toasts.
+- Final wording is **"Article liked"** when a heart action likes an article and **"Article unliked"** when it unlikes an article.
+
+**Files changed:** `libs/components/community/ArticleLikeFeedback.tsx`, `pages/community/index.tsx`, `pages/community/detail.tsx`, `libs/components/community/CommunityListingCard.tsx`, `libs/components/common/CommunityCard.tsx`, `libs/components/member/MemberArticles.tsx`, `libs/components/mypage/MyArticles.tsx`, `scss/pc/community/community.scss`, `scss/mobile/main.scss`
+
+**Validation:** `yarn -s tsc --noEmit --incremental false` passed. `/community?articleCategory=FREE` and Community article detail routes compile and return 200 after clearing stale `.next` dev artifacts and restarting the normal `yarn dev` command on the existing port behavior.
+
+---
+
 ### 5.5 — Vehicle Detail: Redesign Experiments Rejected and Fully Rolled Back (2026-07-08)
 
 **What happened:** A series of Vehicle Detail (`/vehicle/detail`) redesign experiments were attempted and rejected: desktop scale reduction, gallery/sidebar height alignment, a 3-column related-inventory grid, merging the two specification cards, repositioning the Trusted Dealer card, a bookmark save icon, and a new backend-supported "Vehicle Highlights" feature (schema field + create/edit form UI + detail-page card).

@@ -14,6 +14,8 @@ export interface VehicleInput {
 	vehicleStockQuantity: number;
 	vehicleImages: string[];
 	vehicleDesc?: string;
+	vehicleBodyType?: string;
+	vehicleMileage?: number;
 	memberId?: string;
 }
 

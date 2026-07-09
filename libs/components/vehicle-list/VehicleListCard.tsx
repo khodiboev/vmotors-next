@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -24,6 +24,25 @@ const formatStatusLabel = (status?: string) => {
 
 const VehicleListCard = ({ vehicle, likeVehicleHandler }: VehicleListCardProps) => {
 	const user = useReactiveVar(userVar);
+	const likedFromServer = !!vehicle?.meLiked?.[0]?.myFavorite;
+	const likesFromServer = vehicle?.vehicleLikes ?? 0;
+	// Optimistic like state: toggled immediately on click, cleared when fresh server data arrives
+	const [optimistic, setOptimistic] = useState<{ liked: boolean; likes: number } | null>(null);
+
+	useEffect(() => {
+		setOptimistic(null);
+	}, [likedFromServer, likesFromServer]);
+
+	const liked = optimistic?.liked ?? likedFromServer;
+	const likes = optimistic?.likes ?? likesFromServer;
+
+	const likeClickHandler = async () => {
+		if (!likeVehicleHandler) return;
+		setOptimistic({ liked: !liked, likes: Math.max(0, likes + (liked ? -1 : 1)) });
+		const ok = await likeVehicleHandler(user, vehicle?._id, liked ? 'Like removed' : 'Vehicle liked');
+		if (ok === false) setOptimistic(null);
+	};
+
 	const imagePath = vehicle?.vehicleImages?.[0]
 		? `${REACT_APP_API_URL}/${vehicle.vehicleImages[0]}`
 		: '/img/banner/header1.svg';
@@ -122,13 +141,13 @@ const VehicleListCard = ({ vehicle, likeVehicleHandler }: VehicleListCardProps) 
 						<button
 							type="button"
 							className={'like-button'}
-							onClick={() => likeVehicleHandler?.(user, vehicle?._id)}
+							onClick={likeClickHandler}
 							disabled={!likeVehicleHandler}
 							aria-label={'Like vehicle'}
 						>
-							{vehicle?.meLiked?.[0]?.myFavorite ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
+							{liked ? <FavoriteIcon sx={{ color: '#e92c28' }} /> : <FavoriteBorderIcon />}
 						</button>
-						<span className={'metric-count'}>{vehicle?.vehicleLikes ?? 0}</span>
+						<span className={'metric-count'}>{likes}</span>
 					</div>
 				</div>
 			</div>

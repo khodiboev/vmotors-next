@@ -14,6 +14,8 @@ export interface VehicleUpdate {
 	vehicleStockQuantity?: number;
 	vehicleImages?: string[];
 	vehicleDesc?: string;
+	vehicleBodyType?: string;
+	vehicleMileage?: number;
 	vehicleStatus?: VehicleStatus;
 	soldAt?: Date;
 	deletedAt?: Date;

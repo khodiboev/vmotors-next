@@ -10,9 +10,13 @@ import { useMutation, useQuery } from '@apollo/client';
 import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 import { Messages } from '../../config';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
+import { sweetMixinErrorAlert } from '../../sweetAlert';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
+import ArticleLikeFeedback, {
+	ArticleLikeFeedbackState,
+	getArticleLikeFeedbackCopy,
+} from '../community/ArticleLikeFeedback';
 
 const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 	const router = useRouter();
@@ -20,6 +24,7 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 	const { memberId } = router.query;
 	const [searchFilter, setSearchFilter] = useState<BoardArticlesInquiry>(initialInput);
 	const [memberBoArticles, setMemberBoArticles] = useState<BoardArticle[]>([]);
+	const [articleFeedback, setArticleFeedback] = useState<ArticleLikeFeedbackState | null>(null);
 	const user = useReactiveVar(userVar);
 
 	/** APOLLO REQUESTS **/
@@ -45,7 +50,15 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
-	const likeArticleHandler = async (e: any, user: any, id: string) => {
+	const showArticleFeedback = (wasLiked: boolean) => {
+		const feedbackCopy = getArticleLikeFeedbackCopy(wasLiked);
+		setArticleFeedback((prev) => ({
+			id: (prev?.id ?? 0) + 1,
+			...feedbackCopy,
+		}));
+	};
+
+	const likeArticleHandler = async (e: any, user: any, id: string, wasLiked = false) => {
 		try {
 			e.stopPropagation();
 			if (!id) return;
@@ -53,7 +66,7 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 
 			await likeTargetBoardArticle({ variables: { input: id } });
 			await boardArticlesRefetch({ input: searchFilter });
-			await sweetTopSmallSuccessAlert('success', 800);
+			showArticleFeedback(wasLiked);
 		} catch (err: any) {
 			console.log('ERROR, likeArticleHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
@@ -97,6 +110,11 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 					<span>{total} article{total > 1 ? 's' : ''} available</span>
 				</div>
 			)}
+			<ArticleLikeFeedback
+				key={articleFeedback?.id ?? 'article-like-feedback'}
+				feedback={articleFeedback}
+				onDone={() => setArticleFeedback(null)}
+			/>
 		</div>
 	);
 };

@@ -10,6 +10,62 @@
 }
 
 #mobile-wrap {
+  .article-like-feedback {
+    position: fixed;
+    left: 50%;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 120;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: calc(100vw - 32px);
+    max-width: 360px;
+    padding: 12px 14px;
+    border: 1px solid rgba(55, 85, 195, 0.18);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 18px 46px rgba(10, 31, 68, 0.18);
+    backdrop-filter: blur(18px);
+    pointer-events: none;
+    animation: article-like-feedback-cycle 1800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+    .article-like-feedback-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #0a1f44 0%, #3755c3 100%);
+      color: #ffffff;
+      flex-shrink: 0;
+
+      svg {
+        font-size: 17px;
+      }
+    }
+
+    .article-like-feedback-message {
+      min-width: 0;
+      color: #0a1f44;
+      font-family: $font;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    &.is-removed {
+      border-color: rgba(95, 103, 123, 0.18);
+
+      .article-like-feedback-icon {
+        background: #edf3ff;
+        color: #3755c3;
+      }
+    }
+  }
+}
+
+#mobile-wrap {
   #top {
     .mobile-top-shell {
       position: relative;
