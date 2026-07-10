@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
 	Button,
@@ -60,6 +60,13 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [vehicleComments, setVehicleComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
+	// Like/unlike is applied here, once, and merged into whatever vehicle data renders
+	// below (main vehicle + related cards). The list refetch that follows a toggle can
+	// briefly hand back a stale meLiked for the vehicle we just mutated, and since related
+	// cards remount whenever that list reshuffles, keeping the override only in the child
+	// wouldn't survive that remount — so it lives here instead.
+	const [likeOverrides, setLikeOverrides] = useState<Record<string, { liked: boolean; likes: number }>>({});
+	const pendingLikeIds = useRef<Set<string>>(new Set());
 	const [insertCommentData, setInsertCommentData] = useState<CommentInput>({
 		commentGroup: CommentGroup.VEHICLE,
 		commentContent: '',
@@ -123,18 +130,48 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 		if (commentInquiry.search.commentRefId) getCommentsRefetch({ input: commentInquiry });
 	}, [commentInquiry, getCommentsRefetch]);
 
+	const applyLikeOverride = (item: T): T => {
+		const override = item?._id ? likeOverrides[item._id] : undefined;
+		if (!override) return item;
+		return {
+			...item,
+			vehicleLikes: override.likes,
+			meLiked: override.liked ? [{ memberId: user._id, likeRefId: item._id, myFavorite: true }] : [],
+		};
+	};
+
 	const likeVehicleHandler = async (targetUser: T, id: string, message?: string) => {
+		if (!id || pendingLikeIds.current.has(id)) return false;
 		try {
-			if (!id) return false;
 			if (!targetUser._id) throw new Error(Message.NOT_AUTHENTICATED);
+			pendingLikeIds.current.add(id);
+
+			const current =
+				likeOverrides[id] ??
+				(vehicle?._id === id
+					? { liked: !!vehicle?.meLiked?.[0]?.myFavorite, likes: vehicle?.vehicleLikes ?? 0 }
+					: (() => {
+							const item = similarVehicles.find((v) => v._id === id);
+							return { liked: !!item?.meLiked?.[0]?.myFavorite, likes: item?.vehicleLikes ?? 0 };
+						})());
+			const next = { liked: !current.liked, likes: Math.max(0, current.likes + (current.liked ? -1 : 1)) };
+			setLikeOverrides((prev) => ({ ...prev, [id]: next }));
+
 			await likeTargetVehicle({ variables: { input: id } });
 			await getVehicleRefetch({ input: vehicleId });
 			await getVehiclesRefetch();
-			sweetVehicleActionToast(message ?? 'Vehicle liked');
+			sweetVehicleActionToast(message ?? (next.liked ? 'Vehicle liked' : 'Like removed'));
 			return true;
 		} catch (err: any) {
+			setLikeOverrides((prev) => {
+				const rest = { ...prev };
+				delete rest[id];
+				return rest;
+			});
 			sweetMixinErrorAlert(err.message).then();
 			return false;
+		} finally {
+			pendingLikeIds.current.delete(id);
 		}
 	};
 
@@ -159,9 +196,15 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 		: '/img/profile/defaultUser.svg';
 	const heroImage = slideImage ? `${REACT_APP_API_URL}/${slideImage}` : '/img/banner/header1.svg';
 	const activeImages = vehicle?.vehicleImages?.length ? vehicle.vehicleImages : [];
+	const displayVehicle = applyLikeOverride(vehicle as unknown as T) as unknown as Vehicle | null;
 	const relatedVehicles = useMemo(
-		() => similarVehicles.filter((item) => item?._id !== vehicle?._id).slice(0, 6),
-		[similarVehicles, vehicle?._id],
+		() =>
+			similarVehicles
+				.filter((item) => item?._id !== vehicle?._id)
+				.slice(0, 6)
+				.map((item) => applyLikeOverride(item as unknown as T) as unknown as Vehicle),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[similarVehicles, vehicle?._id, likeOverrides],
 	);
 	const detailStats = [
 		{ label: 'Brand', value: vehicle?.vehicleBrand || '-' },
@@ -257,7 +300,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 								</div>
 								<div className={'metric-pill'}>
 									<FavoriteBorderIcon />
-									<span>{vehicle?.vehicleLikes ?? 0} favorites</span>
+									<span>{displayVehicle?.vehicleLikes ?? 0} favorites</span>
 								</div>
 								<div className={'metric-pill'}>
 									<ChatBubbleOutlineRoundedIcon />
@@ -285,12 +328,12 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 											likeVehicleHandler(
 												user,
 												vehicle?._id,
-												vehicle?.meLiked?.[0]?.myFavorite ? 'Removed from favorites' : 'Added to favorites',
+												displayVehicle?.meLiked?.[0]?.myFavorite ? 'Removed from favorites' : 'Added to favorites',
 											)
 										}
 										aria-label={'Save vehicle'}
 									>
-										{vehicle?.meLiked?.[0]?.myFavorite ? <BookmarkIcon color={'primary'} /> : <BookmarkBorderIcon />}
+										{displayVehicle?.meLiked?.[0]?.myFavorite ? <BookmarkIcon color={'primary'} /> : <BookmarkBorderIcon />}
 										<span>Save vehicle</span>
 									</button>
 								</div>
@@ -343,12 +386,12 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 											likeVehicleHandler(
 												user,
 												vehicle?._id,
-												vehicle?.meLiked?.[0]?.myFavorite ? 'Removed from favorites' : 'Added to favorites',
+												displayVehicle?.meLiked?.[0]?.myFavorite ? 'Removed from favorites' : 'Added to favorites',
 											)
 										}
 									>
-										{vehicle?.meLiked?.[0]?.myFavorite ? <BookmarkIcon color={'primary'} /> : <BookmarkBorderIcon />}
-										<span>{vehicle?.meLiked?.[0]?.myFavorite ? 'Saved to favorites' : 'Save to favorites'}</span>
+										{displayVehicle?.meLiked?.[0]?.myFavorite ? <BookmarkIcon color={'primary'} /> : <BookmarkBorderIcon />}
+										<span>{displayVehicle?.meLiked?.[0]?.myFavorite ? 'Saved to favorites' : 'Save to favorites'}</span>
 									</button>
 									<Link
 										href={{
@@ -369,7 +412,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 									</div>
 									<div className={'metric'}>
 										<FavoriteBorderIcon />
-										<span>{vehicle?.vehicleLikes ?? 0}</span>
+										<span>{displayVehicle?.vehicleLikes ?? 0}</span>
 									</div>
 									<div className={'metric'}>
 										<ChatBubbleOutlineRoundedIcon />

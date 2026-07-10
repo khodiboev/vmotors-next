@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -24,23 +24,22 @@ const formatStatusLabel = (status?: string) => {
 
 const VehicleListCard = ({ vehicle, likeVehicleHandler }: VehicleListCardProps) => {
 	const user = useReactiveVar(userVar);
-	const likedFromServer = !!vehicle?.meLiked?.[0]?.myFavorite;
-	const likesFromServer = vehicle?.vehicleLikes ?? 0;
-	// Optimistic like state: toggled immediately on click, cleared when fresh server data arrives
-	const [optimistic, setOptimistic] = useState<{ liked: boolean; likes: number } | null>(null);
 
-	useEffect(() => {
-		setOptimistic(null);
-	}, [likedFromServer, likesFromServer]);
+	// Like state is derived straight from props. The parent page owns the optimistic
+	// override (merged into this vehicle before it reaches us) so it survives this
+	// card remounting when the vehicle list reshuffles after a refetch.
+	const liked = !!vehicle?.meLiked?.[0]?.myFavorite;
+	const likes = vehicle?.vehicleLikes ?? 0;
 
-	const liked = optimistic?.liked ?? likedFromServer;
-	const likes = optimistic?.likes ?? likesFromServer;
+	// Guards against a double-fire (double-click, dev-mode double-invocation) sending
+	// two toggle mutations back to back, which would like-then-unlike and cancel out.
+	const pendingRef = useRef(false);
 
 	const likeClickHandler = async () => {
-		if (!likeVehicleHandler) return;
-		setOptimistic({ liked: !liked, likes: Math.max(0, likes + (liked ? -1 : 1)) });
-		const ok = await likeVehicleHandler(user, vehicle?._id, liked ? 'Like removed' : 'Vehicle liked');
-		if (ok === false) setOptimistic(null);
+		if (!likeVehicleHandler || pendingRef.current) return;
+		pendingRef.current = true;
+		await likeVehicleHandler(user, vehicle?._id, liked ? 'Like removed' : 'Vehicle liked');
+		pendingRef.current = false;
 	};
 
 	const imagePath = vehicle?.vehicleImages?.[0]

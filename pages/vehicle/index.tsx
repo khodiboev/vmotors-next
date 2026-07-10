@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
@@ -41,6 +41,12 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 	const [filterSortName, setFilterSortName] = useState('Newest');
 	const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 	const [viewMode, setViewMode] = useState<'comfort' | 'compact'>(searchFilter.limit === 9 ? 'compact' : 'comfort');
+	// Like/unlike is applied here, once, and merged into whatever vehicle data renders
+	// below. The list refetch that follows a toggle can briefly hand back a stale
+	// meLiked for the vehicle we just mutated, and since cards remount whenever that
+	// list reshuffles, keeping the override only in the child wouldn't survive it.
+	const [likeOverrides, setLikeOverrides] = useState<Record<string, { liked: boolean; likes: number }>>({});
+	const pendingLikeIds = useRef<Set<string>>(new Set());
 
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
@@ -63,17 +69,45 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 		if (device !== 'mobile') setMobileFilterOpen(false);
 	}, [device]);
 
+	const applyLikeOverride = (item: T): T => {
+		const override = item?._id ? likeOverrides[item._id] : undefined;
+		if (!override) return item;
+		return {
+			...item,
+			vehicleLikes: override.likes,
+			meLiked: override.liked ? [{ memberId: '', likeRefId: item._id, myFavorite: true }] : [],
+		};
+	};
+
 	const likeVehicleHandler = async (user: T, id: string, message?: string) => {
+		if (!id || pendingLikeIds.current.has(id)) return false;
 		try {
-			if (!id) return false;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+			pendingLikeIds.current.add(id);
+
+			const current =
+				likeOverrides[id] ??
+				(() => {
+					const item = vehicles.find((v) => v._id === id);
+					return { liked: !!item?.meLiked?.[0]?.myFavorite, likes: item?.vehicleLikes ?? 0 };
+				})();
+			const next = { liked: !current.liked, likes: Math.max(0, current.likes + (current.liked ? -1 : 1)) };
+			setLikeOverrides((prev) => ({ ...prev, [id]: next }));
+
 			await likeTargetVehicle({ variables: { input: id } });
 			await getVehiclesRefetch({ input: searchFilter });
-			sweetVehicleActionToast(message ?? 'Vehicle liked');
+			sweetVehicleActionToast(message ?? (next.liked ? 'Vehicle liked' : 'Like removed'));
 			return true;
 		} catch (err: any) {
+			setLikeOverrides((prev) => {
+				const rest = { ...prev };
+				delete rest[id];
+				return rest;
+			});
 			sweetMixinErrorAlert(err.message).then();
 			return false;
+		} finally {
+			pendingLikeIds.current.delete(id);
 		}
 	};
 
@@ -232,7 +266,13 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 									</Button>
 								</div>
 							) : (
-								vehicles.map((vehicle) => <VehicleListCard vehicle={vehicle} likeVehicleHandler={likeVehicleHandler} key={vehicle._id} />)
+								vehicles.map((vehicle) => (
+									<VehicleListCard
+										vehicle={applyLikeOverride(vehicle as unknown as T) as unknown as Vehicle}
+										likeVehicleHandler={likeVehicleHandler}
+										key={vehicle._id}
+									/>
+								))
 							)}
 						</Stack>
 						<Stack className="pagination-config">
