@@ -14,7 +14,7 @@ import { GET_VEHICLES } from '../../../apollo/user/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { T } from '../../types/common';
 import { LIKE_TARGET_VEHICLE } from '../../../apollo/user/mutation';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
+import { sweetMixinErrorAlert, sweetVehicleActionToast } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
 
 interface TrendPropertiesProps {
@@ -49,13 +49,14 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 
+			const liked = trendProperties?.find((v: T) => v?._id === id)?.meLiked?.[0]?.myFavorite;
 			await likeTargetVehicle({
 				variables: {
 					input: id,
 				},
 			});
 			await getVehiclesRefetch({ input: initialInput });
-			await sweetTopSmallSuccessAlert('success', 800);
+			sweetVehicleActionToast(liked ? 'Like removed' : 'Vehicle liked');
 		} catch (err: any) {
 			console.log('ERROR, likePropertyHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();

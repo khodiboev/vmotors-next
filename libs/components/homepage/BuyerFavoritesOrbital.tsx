@@ -13,7 +13,7 @@ import { T } from '../../types/common';
 import { Message } from '../../enums/common.enum';
 import { GET_VEHICLES } from '../../../apollo/user/query';
 import { LIKE_TARGET_VEHICLE } from '../../../apollo/user/mutation';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
+import { sweetMixinErrorAlert, sweetVehicleActionToast } from '../../sweetAlert';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import HomepageVehicleCard from './HomepageVehicleCard';
 
@@ -77,9 +77,10 @@ const BuyerFavoritesOrbital = ({ initialInput }: BuyerFavoritesOrbitalProps) => 
 		try {
 			if (!id) return;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
+			const liked = vehicles.find((v) => v?._id === id)?.meLiked?.[0]?.myFavorite;
 			await likeTargetVehicle({ variables: { input: id } });
 			await refetch({ input: initialInput });
-			await sweetTopSmallSuccessAlert('success', 800);
+			sweetVehicleActionToast(liked ? 'Like removed' : 'Vehicle liked');
 		} catch (err: any) {
 			console.log('ERROR, likePropertyHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
