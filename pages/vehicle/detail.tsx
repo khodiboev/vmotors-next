@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
+	Backdrop,
 	Button,
 	Pagination as MuiPagination,
 	Stack,
@@ -24,18 +25,25 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import moment from 'moment';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
 import { GET_COMMENTS, GET_VEHICLE, GET_VEHICLES } from '../../apollo/user/query';
-import { CREATE_COMMENT, LIKE_TARGET_VEHICLE } from '../../apollo/user/mutation';
+import { CREATE_COMMENT, LIKE_TARGET_VEHICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
 import { Vehicle } from '../../libs/types/vehicle/vehicle';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
-import { CommentGroup } from '../../libs/enums/comment.enum';
+import { CommentUpdate } from '../../libs/types/comment/comment.update';
+import { CommentGroup, CommentStatus } from '../../libs/enums/comment.enum';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { T } from '../../libs/types/common';
 import { REACT_APP_API_URL, topPropertyRank } from '../../libs/config';
 import { userVar } from '../../apollo/store';
 import { formatterStr } from '../../libs/utils';
 import { vehicleStockLabel, vehicleTitle } from '../../libs/vehicle';
-import { sweetErrorHandling, sweetMixinErrorAlert, sweetVehicleActionToast } from '../../libs/sweetAlert';
+import {
+	sweetConfirmAlert,
+	sweetErrorHandling,
+	sweetMixinErrorAlert,
+	sweetMixinSuccessAlert,
+	sweetVehicleActionToast,
+} from '../../libs/sweetAlert';
 import VehicleDetailCommentCard from '../../libs/components/vehicle-detail/VehicleDetailCommentCard';
 import VehicleDetailRelatedCard from '../../libs/components/vehicle-detail/VehicleDetailRelatedCard';
 
@@ -60,6 +68,9 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [vehicleComments, setVehicleComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
+	const [openCommentBackdrop, setOpenCommentBackdrop] = useState<boolean>(false);
+	const [updatedComment, setUpdatedComment] = useState<string>('');
+	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
 	// Like/unlike is applied here, once, and merged into whatever vehicle data renders
 	// below (main vehicle + related cards). The list refetch that follows a toggle can
 	// briefly hand back a stale meLiked for the vehicle we just mutated, and since related
@@ -75,6 +86,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 	const [createComment] = useMutation(CREATE_COMMENT);
+	const [updateComment] = useMutation(UPDATE_COMMENT);
 
 	const { loading: getVehicleLoading, refetch: getVehicleRefetch } = useQuery(GET_VEHICLE, {
 		fetchPolicy: 'network-only',
@@ -187,6 +199,53 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 			await getCommentsRefetch({ input: commentInquiry });
 		} catch (err: any) {
 			sweetErrorHandling(err);
+		}
+	};
+
+	const editCommentHandler = (comment: Comment) => {
+		setUpdatedComment(comment.commentContent);
+		setUpdatedCommentId(comment._id);
+		setOpenCommentBackdrop(true);
+	};
+
+	const cancelCommentEditHandler = () => {
+		setOpenCommentBackdrop(false);
+		setUpdatedComment('');
+		setUpdatedCommentId('');
+	};
+
+	const updateCommentHandler = async (commentId: string, commentStatus?: CommentStatus.DELETE) => {
+		try {
+			if (!user?._id) throw new Error(Message.NOT_AUTHENTICATED);
+			if (!commentId) throw new Error('Select a comment to update!');
+
+			const updateData: CommentUpdate = {
+				_id: commentId,
+				...(commentStatus && { commentStatus }),
+				...(!commentStatus && { commentContent: updatedComment }),
+			};
+
+			if (!updateData?.commentContent && !updateData?.commentStatus) {
+				throw new Error('Provide data to update your comment!');
+			}
+
+			if (commentStatus) {
+				if (await sweetConfirmAlert('Do you want to delete the comment?')) {
+					await updateComment({ variables: { input: updateData } });
+					await sweetMixinSuccessAlert('Successfully deleted!');
+				} else return;
+			} else {
+				await updateComment({ variables: { input: updateData } });
+				await sweetMixinSuccessAlert('Successfully updated!');
+			}
+
+			await getCommentsRefetch({ input: commentInquiry });
+		} catch (err: any) {
+			sweetMixinErrorAlert(err.message).then();
+		} finally {
+			setOpenCommentBackdrop(false);
+			setUpdatedComment('');
+			setUpdatedCommentId('');
 		}
 	};
 
@@ -556,7 +615,14 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 
 						<div className={'comment-list'}>
 							{vehicleComments.length ? (
-								vehicleComments.map((comment) => <VehicleDetailCommentCard key={comment._id} comment={comment} />)
+								vehicleComments.map((comment) => (
+									<VehicleDetailCommentCard
+										key={comment._id}
+										comment={comment}
+										onEdit={editCommentHandler}
+										onDelete={(commentId) => updateCommentHandler(commentId, CommentStatus.DELETE)}
+									/>
+								))
 							) : (
 								<div className={'comments-empty-state'}>
 									<ChatBubbleOutlineRoundedIcon />
@@ -597,6 +663,30 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 						</div>
 					</section>
 				</Stack>
+
+				<Backdrop className={'edit-comment-backdrop'} open={openCommentBackdrop} onClick={cancelCommentEditHandler}>
+					<div className={'edit-comment-modal'} onClick={(e) => e.stopPropagation()}>
+						<h4>Edit comment</h4>
+						<textarea
+							autoFocus
+							value={updatedComment}
+							onChange={(e) => setUpdatedComment(e.target.value)}
+							placeholder={'Update your note about this vehicle'}
+						/>
+						<div className={'edit-comment-modal-footer'}>
+							<Button variant={'outlined'} color={'inherit'} onClick={cancelCommentEditHandler}>
+								Cancel
+							</Button>
+							<Button
+								variant={'contained'}
+								color={'inherit'}
+								onClick={() => updateCommentHandler(updatedCommentId)}
+							>
+								Update
+							</Button>
+						</div>
+					</div>
+				</Backdrop>
 			</div>
 		</div>
 	);

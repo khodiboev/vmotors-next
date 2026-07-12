@@ -559,11 +559,18 @@
 					border-bottom: none;
 				}
 
+				.review-header {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					gap: 12px;
+					margin-bottom: 12px;
+				}
+
 				.review-author {
 					display: flex;
 					align-items: center;
 					gap: 12px;
-					margin-bottom: 12px;
 
 					img {
 						width: 42px;
@@ -591,6 +598,27 @@
 							font-size: 12px;
 							font-weight: 400;
 							color: var(--dd-muted);
+						}
+					}
+				}
+
+				.review-actions {
+					display: flex;
+					align-items: center;
+					gap: 2px;
+
+					.MuiIconButton-root {
+						width: 32px;
+						height: 32px;
+						color: var(--dd-muted);
+
+						svg {
+							font-size: 17px;
+						}
+
+						&:hover {
+							color: var(--dd-secondary);
+							background: rgba(55, 85, 195, 0.08);
 						}
 					}
 				}
@@ -669,6 +697,75 @@
 							color: #8a96ac;
 							transform: none;
 						}
+					}
+				}
+			}
+		}
+
+		/* ─── Edit review backdrop modal ─── */
+		.edit-review-backdrop {
+			z-index: 1300 !important;
+
+			.edit-review-modal {
+				background: var(--dd-surface);
+				border-radius: 20px;
+				padding: 32px 36px;
+				width: 520px;
+				max-width: calc(100vw - 48px);
+				box-shadow: var(--dd-shadow);
+				border: 1px solid var(--dd-border-strong);
+				display: flex;
+				flex-direction: column;
+				gap: 18px;
+
+				h4 {
+					font-family: $font;
+					font-size: 18px;
+					font-weight: 700;
+					color: var(--dd-primary);
+					margin: 0;
+				}
+
+				textarea {
+					width: 100%;
+					min-height: 120px;
+					padding: 14px 16px;
+					background: var(--dd-soft);
+					border: 1px solid var(--dd-border);
+					border-radius: 12px;
+					outline: none;
+					resize: vertical;
+					font-family: $font;
+					font-size: 14px;
+					line-height: 1.7;
+					color: var(--dd-text);
+
+					&:focus {
+						border-color: var(--dd-secondary);
+					}
+				}
+
+				.edit-review-modal-footer {
+					display: flex;
+					justify-content: flex-end;
+					gap: 10px;
+
+					.MuiButton-outlined {
+						border-radius: 9px;
+						font-family: $font;
+						font-size: 13px;
+						font-weight: 500;
+						text-transform: none;
+					}
+
+					.MuiButton-contained {
+						border-radius: 9px;
+						background: var(--dd-secondary);
+						color: #ffffff;
+						font-family: $font;
+						font-size: 13px;
+						font-weight: 500;
+						text-transform: none;
 					}
 				}
 			}

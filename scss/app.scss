@@ -140,3 +140,17 @@ img[src*='/img/logo/app-icon.svg']:hover {
 .swal2-popup.swal2-toast.santa-toast .swal2-success-ring {
 	border-color: rgba(255, 255, 255, 0.35);
 }
+
+/** Dealer like/unlike toast — coral, squarer corners, slides in from the left. **/
+.swal2-popup.swal2-toast.santa-toast.santa-toast-dealer {
+	background: #e92c28;
+	border-radius: 14px;
+	box-shadow: 0 18px 44px rgba(233, 44, 40, 0.28);
+}
+
+/** Follow/unfollow toast — accent blue, fully rounded, bounces in. **/
+.swal2-popup.swal2-toast.santa-toast.santa-toast-follow {
+	background: #3755c3;
+	border-radius: 28px;
+	box-shadow: 0 18px 44px rgba(55, 85, 195, 0.28);
+}

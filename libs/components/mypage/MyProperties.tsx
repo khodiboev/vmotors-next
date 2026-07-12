@@ -103,7 +103,7 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 				</Stack>
 
 				<Stack className="property-list-box">
-					<Stack className="tab-name-box">
+					<Stack className="tab-name-box" direction="row">
 						{Object.values(VehicleStatus).map((status) => (
 							<button
 								type="button"

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Button, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FollowInquiry } from '../../types/follow/follow.input';
@@ -27,6 +27,13 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 	const [followInquiry, setFollowInquiry] = useState<FollowInquiry>(initialInput);
 	const [memberFollowers, setMemberFollowers] = useState<Follower[]>([]);
 	const user = useReactiveVar(userVar);
+	// Optimistic overrides for follow-back/like state, keyed by the row's member id.
+	// A refetch right after a toggle can briefly hand back stale data, and rows remount
+	// by _id whenever this list reshuffles, so the override lives here — one level above
+	// the rows — instead of inside each row.
+	const [followOverrides, setFollowOverrides] = useState<Record<string, boolean>>({});
+	const [likeOverrides, setLikeOverrides] = useState<Record<string, { liked: boolean; likes: number }>>({});
+	const pendingIds = useRef<Set<string>>(new Set());
 
 	/** APOLLO REQUESTS **/
 	const { refetch: getMemberFollowersRefetch } = useQuery(GET_MEMBER_FOLLOWERS, {
@@ -44,8 +51,8 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 	useEffect(() => {
 		if (router.query.memberId)
 			setFollowInquiry({ ...followInquiry, search: { followingId: router.query.memberId as string } });
-		else setFollowInquiry({ ...followInquiry, search: { followingId: user?._id } });
-	}, [router]);
+		else if (user?._id) setFollowInquiry({ ...followInquiry, search: { followingId: user._id } });
+	}, [router, user?._id]);
 
 	useEffect(() => {
 		getMemberFollowersRefetch({ input: followInquiry });
@@ -55,6 +62,52 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 	const paginationHandler = async (event: ChangeEvent<unknown>, value: number) => {
 		followInquiry.page = value;
 		setFollowInquiry({ ...followInquiry });
+	};
+
+	const wrappedSubscribe = async (id: string) => {
+		if (!id || pendingIds.current.has(id)) return;
+		pendingIds.current.add(id);
+		setFollowOverrides((prev) => ({ ...prev, [id]: true }));
+		const ok = await subscribeHandler(id, getMemberFollowersRefetch, followInquiry);
+		if (ok === false) {
+			setFollowOverrides((prev) => {
+				const rest = { ...prev };
+				delete rest[id];
+				return rest;
+			});
+		}
+		pendingIds.current.delete(id);
+	};
+
+	const wrappedUnsubscribe = async (id: string) => {
+		if (!id || pendingIds.current.has(id)) return;
+		pendingIds.current.add(id);
+		setFollowOverrides((prev) => ({ ...prev, [id]: false }));
+		const ok = await unsubscribeHandler(id, getMemberFollowersRefetch, followInquiry);
+		if (ok === false) {
+			setFollowOverrides((prev) => {
+				const rest = { ...prev };
+				delete rest[id];
+				return rest;
+			});
+		}
+		pendingIds.current.delete(id);
+	};
+
+	const wrappedLike = async (id: string, currentLiked: boolean, currentLikes: number) => {
+		if (!id || pendingIds.current.has(id)) return;
+		pendingIds.current.add(id);
+		const next = { liked: !currentLiked, likes: Math.max(0, currentLikes + (currentLiked ? -1 : 1)) };
+		setLikeOverrides((prev) => ({ ...prev, [id]: next }));
+		const ok = await likeMemberHandler(id, getMemberFollowersRefetch, followInquiry, next.liked ? 'Member liked' : 'Like removed');
+		if (ok === false) {
+			setLikeOverrides((prev) => {
+				const rest = { ...prev };
+				delete rest[id];
+				return rest;
+			});
+		}
+		pendingIds.current.delete(id);
 	};
 
 	return (
@@ -79,11 +132,15 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 							? `${REACT_APP_API_URL}/${follower.followerData.memberImage}`
 							: '/img/profile/defaultUser.svg';
 						const isSelf = user?._id === follower?.followerId;
-						const isFollowingBack = follower.meFollowed?.[0]?.myFollowing;
+						const followerId = follower?.followerData?._id as string;
+						const isFollowingBack = followOverrides[followerId] ?? follower.meFollowed?.[0]?.myFollowing;
+						const likeOverride = likeOverrides[followerId];
+						const liked = likeOverride ? likeOverride.liked : !!follower?.meLiked?.[0]?.myFavorite;
+						const likesCount = likeOverride ? likeOverride.likes : follower?.followerData?.memberLikes ?? 0;
 
 						return (
 							<div className="person-card" key={follower._id}>
-								<div className="person-left" onClick={() => redirectToMemberPageHandler(follower?.followerData?._id)}>
+								<div className="person-left" onClick={() => redirectToMemberPageHandler(followerId)}>
 									<img src={imagePath} alt="" />
 									<div className="person-info">
 										<strong>{follower?.followerData?.memberNick}</strong>
@@ -97,29 +154,19 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 								<div className="person-actions">
 									<button
 										type="button"
-										className={`like-btn${follower?.meLiked?.[0]?.myFavorite ? ' liked' : ''}`}
-										onClick={() => likeMemberHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
+										className={`like-btn${liked ? ' liked' : ''}`}
+										onClick={() => wrappedLike(followerId, liked, likesCount)}
 									>
-										{follower?.meLiked?.[0]?.myFavorite ? (
-											<FavoriteIcon />
-										) : (
-											<FavoriteBorderIcon />
-										)}
-										<span>{follower?.followerData?.memberLikes ?? 0}</span>
+										{liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+										<span>{likesCount}</span>
 									</button>
 									{!isSelf && (
 										isFollowingBack ? (
-											<Button
-												className="unfollow-btn"
-												onClick={() => unsubscribeHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
-											>
+											<Button className="unfollow-btn" onClick={() => wrappedUnsubscribe(followerId)}>
 												Following
 											</Button>
 										) : (
-											<Button
-												className="follow-btn"
-												onClick={() => subscribeHandler(follower?.followerData?._id, getMemberFollowersRefetch, followInquiry)}
-											>
+											<Button className="follow-btn" onClick={() => wrappedSubscribe(followerId)}>
 												Follow
 											</Button>
 										)

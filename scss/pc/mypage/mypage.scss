@@ -514,6 +514,11 @@
 
 		.dashboard-shell-header {
 			display: flex;
+			// This is rendered as a MUI Stack, which defaults to flex-direction:
+			// column when no `direction` prop is passed. Without this explicit
+			// override the title/description and the badge on the right stack
+			// vertically (and left-align) instead of sitting side by side.
+			flex-direction: row;
 			justify-content: space-between;
 			align-items: flex-start;
 			gap: 18px;

@@ -15,7 +15,8 @@ import DashboardVehicleCard, { DashboardVehicleCardSkeleton } from './DashboardV
 const MyFavorites: NextPage = () => {
 	const [myFavorites, setMyFavorites] = useState<Property[]>([]);
 	const [total, setTotal] = useState<number>(0);
-	const [searchFavorites, setSearchFavorites] = useState<T>({ page: 1, limit: 6 });
+	// limit: 9 fills a full 3x3 grid per page.
+	const [searchFavorites, setSearchFavorites] = useState<T>({ page: 1, limit: 9 });
 
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 

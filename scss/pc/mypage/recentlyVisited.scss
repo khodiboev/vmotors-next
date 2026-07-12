@@ -1,0 +1,46 @@
+#pc-wrap {
+	#my-page {
+		// Recently Viewed uses a denser 3-column / 9-card grid instead of the
+		// default 2-column layout shared with Saved Vehicles, so its cards get a
+		// lightly-scaled-down variant — the same treatment as Saved Vehicles' own
+		// 3-column mode.
+		#recently-visited-page {
+			.dashboard-collection-grid {
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+			}
+
+			.vehicle-title {
+				font-size: 18px;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+			}
+
+			.card-body {
+				padding: 18px;
+			}
+
+			.spec-pill:nth-child(n + 3) {
+				display: none;
+			}
+
+			.dealer-box img {
+				width: 38px;
+				height: 38px;
+			}
+
+			.history-note {
+				margin-top: 20px;
+				align-items: center;
+
+				p {
+					color: var(--dashboard-muted, #5b6780);
+					font-family: $font;
+					font-size: 13px;
+					text-align: center;
+				}
+			}
+		}
+	}
+}

@@ -1,15 +1,24 @@
 import React from 'react';
 import Link from 'next/link';
 import moment from 'moment';
+import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
+import { useReactiveVar } from '@apollo/client';
+import { userVar } from '../../../apollo/store';
 import { REACT_APP_API_URL } from '../../config';
 import { Comment } from '../../types/comment/comment';
 
 interface VehicleDetailCommentCardProps {
 	comment: Comment;
+	onEdit?: (comment: Comment) => void;
+	onDelete?: (commentId: string) => void;
 }
 
-const VehicleDetailCommentCard = ({ comment }: VehicleDetailCommentCardProps) => {
+const VehicleDetailCommentCard = ({ comment, onEdit, onDelete }: VehicleDetailCommentCardProps) => {
+	const user = useReactiveVar(userVar);
+	const isOwnComment = !!user?._id && comment?.memberId === user._id;
 	const commenterName = comment?.memberData?.memberFullName ?? comment?.memberData?.memberNick ?? 'Santa member';
 	const commenterImage = comment?.memberData?.memberImage
 		? `${REACT_APP_API_URL}/${comment.memberData.memberImage}`
@@ -32,9 +41,21 @@ const VehicleDetailCommentCard = ({ comment }: VehicleDetailCommentCardProps) =>
 						<span>{moment(comment?.createdAt).format('DD MMM YYYY')}</span>
 					</div>
 				</div>
-				<div className={'comment-tag'}>
-					<ChatBubbleOutlineRoundedIcon />
-					<span>Buyer note</span>
+				<div className={'comment-header-right'}>
+					{isOwnComment && (
+						<div className={'comment-actions'}>
+							<IconButton onClick={() => onEdit?.(comment)} aria-label={'Edit comment'}>
+								<EditIcon />
+							</IconButton>
+							<IconButton onClick={() => onDelete?.(comment._id)} aria-label={'Delete comment'}>
+								<DeleteForeverIcon />
+							</IconButton>
+						</div>
+					)}
+					<div className={'comment-tag'}>
+						<ChatBubbleOutlineRoundedIcon />
+						<span>Buyer note</span>
+					</div>
 				</div>
 			</div>
 

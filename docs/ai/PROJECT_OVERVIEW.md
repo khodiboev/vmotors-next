@@ -196,6 +196,8 @@ yarn -s tsc --noEmit --incremental false   # TypeScript check (must be clean)
 yarn build                                  # Full Next.js build
 ```
 
+**Dev-server note:** this project lives under an iCloud-synced Desktop folder. iCloud's background file sync can corrupt `.next`'s webpack persistent cache mid-write (seen as `ENOENT`/rename failures in the dev server log, or a page suddenly 500ing with a `ReferenceError` for something that is clearly imported in the source). If `yarn dev` starts behaving strangely (stale code running, random 500s, HMR not applying, or a page failing to find data that clearly exists), stop the server, `rm -rf .next`, and restart — this is an environment artifact, not a code bug. Re-verify the fix immediately after restarting.
+
 ---
 
 ## Related Documentation
@@ -206,7 +208,17 @@ yarn build                                  # Full Next.js build
 
 ---
 
-## Latest Status Update (2026-07-10)
+## Latest Status Update (2026-07-11)
+
+Homepage vehicle-card sections (New Arrivals, Buyer Favorites, Trend/Top Properties) now show the branded bottom-center Santa toast on like/unlike instead of a generic top-right "success" alert.
+
+Related-vehicle cards (vehicle detail page) and `/vehicle` list cards no longer revert a like/unlike shortly after showing it correctly. The optimistic like state now lives in the parent page (`likeOverrides`, keyed by vehicle `_id`) instead of inside each card, so it survives the card remounting when the vehicle list reshuffles after a refetch. See `COMPLETED_TASKS.md` 5.7 for the full root-cause writeup.
+
+**Still generic top-right SweetAlert (next up):** dealer like on `/agent`, vehicle like on `/agent/detail`, and follow/unfollow on `/agent/detail` all still use the old shared success alert and are the next planned fix, following the same pattern as the vehicle-card work above.
+
+---
+
+## Previous Status Update (2026-07-10)
 
 The Community list page has a polished 3×2 desktop article grid with responsive fallback to 2 columns on tablet and 1 column on mobile. Article cards were tuned for the smaller column width, preserve equal-height alignment, keep titles clamped, and now clamp descriptions to 2 lines with ellipsis to prevent overflow.
 

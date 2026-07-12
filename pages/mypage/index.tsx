@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { Stack } from '@mui/material';
@@ -11,10 +11,11 @@ import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
+import { getJwtToken } from '../../libs/auth';
 import MyMenu from '../../libs/components/mypage/MyMenu';
 import WriteArticle from '../../libs/components/mypage/WriteArticle';
 import MemberFollowers from '../../libs/components/member/MemberFollowers';
-import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetDealerActionToast, sweetErrorHandling, sweetFollowActionToast, sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
@@ -112,6 +113,9 @@ const MyPage: NextPage = () => {
 
 	const memberImage = user?.memberImage ? `${REACT_APP_API_URL}/${user.memberImage}` : '/img/profile/defaultUser.svg';
 
+	// Guards against a subscribe/unsubscribe double-fire for the same target id.
+	const pendingFollowIds = useRef<Set<string>>(new Set());
+
 	/** APOLLO REQUESTS **/
 	const [subscribe] = useMutation(SUBSCRIBE);
 	const [unsubscribe] = useMutation(UNSUBSCRIBE);
@@ -119,31 +123,41 @@ const MyPage: NextPage = () => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (!user._id) router.push('/').then();
+		// On a fresh page load, userVar hasn't been restored from the stored JWT yet
+		// (that happens in a sibling effect in the layout wrapper, which can run after
+		// this one). Checking the token directly avoids bouncing a genuinely logged-in
+		// visitor back to the homepage before that restore has a chance to complete.
+		if (!user._id && !getJwtToken()) router.push('/').then();
 	}, [router, user]);
 
 	/** HANDLERS **/
 	const subscribeHandler = async (id: string, refetch: any, query: any) => {
+		if (!id || pendingFollowIds.current.has(id)) return false;
 		try {
-			if (!id) throw new Error(Messages.error1);
 			if (!user._id) throw new Error(Messages.error2);
+			pendingFollowIds.current.add(id);
 
 			await subscribe({
 				variables: {
 					input: id,
 				},
 			});
-			await sweetTopSmallSuccessAlert('Subscribed!', 800);
 			await refetch({ input: query });
+			sweetFollowActionToast('Followed');
+			return true;
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
+			return false;
+		} finally {
+			pendingFollowIds.current.delete(id);
 		}
 	};
 
 	const unsubscribeHandler = async (id: string, refetch: any, query: any) => {
+		if (!id || pendingFollowIds.current.has(id)) return false;
 		try {
-			if (!id) throw new Error(Messages.error1);
 			if (!user._id) throw new Error(Messages.error2);
+			pendingFollowIds.current.add(id);
 
 			await unsubscribe({
 				variables: {
@@ -151,16 +165,20 @@ const MyPage: NextPage = () => {
 				},
 			});
 
-			await sweetTopSmallSuccessAlert('Unsubscribed!', 800);
 			await refetch({ input: query });
+			sweetFollowActionToast('Unfollowed');
+			return true;
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
+			return false;
+		} finally {
+			pendingFollowIds.current.delete(id);
 		}
 	};
 
-	const likeMemberHandler = async (id: string, refetch: any, query: any) => {
+	const likeMemberHandler = async (id: string, refetch: any, query: any, message?: string) => {
+		if (!id) return false;
 		try {
-			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
 			await likeTargetMember({
@@ -169,11 +187,13 @@ const MyPage: NextPage = () => {
 				},
 			});
 
-			await sweetTopSmallSuccessAlert('Success!', 800);
 			await refetch({ input: query });
+			sweetDealerActionToast(message ?? 'Member liked');
+			return true;
 		} catch (err: any) {
 			console.log('ERROR, likeMemberHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
+			return false;
 		}
 	};
 

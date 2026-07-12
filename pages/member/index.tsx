@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MemberMenu from '../../libs/components/member/MemberMenu';
@@ -11,7 +11,7 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
 import { GET_MEMBER } from '../../apollo/user/query';
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
-import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetDealerActionToast, sweetErrorHandling, sweetFollowActionToast, sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
 import { userVar } from '../../apollo/store';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -30,6 +30,11 @@ const MemberPage: NextPage = () => {
 	const memberId = router.query?.memberId as string | undefined;
 	const user = useReactiveVar(userVar);
 	const [member, setMember] = useState<Member | null>(null);
+	// Optimistic override for the hero's own follow state. The refetch that follows a
+	// subscribe/unsubscribe can briefly hand back a stale meFollowed, so the hero button
+	// trusts its own click over that until a genuinely different member loads.
+	const [heroFollowOverride, setHeroFollowOverride] = useState<boolean | null>(null);
+	const pendingFollowIds = useRef<Set<string>>(new Set());
 
 	/** APOLLO REQUESTS **/
 	const [subscribe] = useMutation(SUBSCRIBE);
@@ -48,6 +53,10 @@ const MemberPage: NextPage = () => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
+		setHeroFollowOverride(null);
+	}, [memberId]);
+
+	useEffect(() => {
 		if (!router.isReady) return;
 		if (!category) {
 			router.replace(
@@ -63,39 +72,55 @@ const MemberPage: NextPage = () => {
 
 	/** HANDLERS **/
 	const subscribeHandler = async (id: string, refetch: any, query: any) => {
+		if (!id || pendingFollowIds.current.has(id)) return false;
 		try {
-			if (!id) throw new Error(Messages.error1);
 			if (!user._id) throw new Error(Messages.error2);
+			pendingFollowIds.current.add(id);
+			if (id === member?._id) setHeroFollowOverride(true);
 			await subscribe({ variables: { input: id } });
-			await sweetTopSmallSuccessAlert('Followed!', 800);
 			await refetch({ input: query });
+			sweetFollowActionToast('Followed');
+			return true;
 		} catch (err: any) {
+			if (id === member?._id) setHeroFollowOverride(null);
 			sweetErrorHandling(err).then();
+			return false;
+		} finally {
+			pendingFollowIds.current.delete(id);
 		}
 	};
 
 	const unsubscribeHandler = async (id: string, refetch: any, query: any) => {
+		if (!id || pendingFollowIds.current.has(id)) return false;
 		try {
-			if (!id) throw new Error(Messages.error1);
 			if (!user._id) throw new Error(Messages.error2);
+			pendingFollowIds.current.add(id);
+			if (id === member?._id) setHeroFollowOverride(false);
 			await unsubscribe({ variables: { input: id } });
-			await sweetTopSmallSuccessAlert('Unfollowed!', 800);
 			await refetch({ input: query });
+			sweetFollowActionToast('Unfollowed');
+			return true;
 		} catch (err: any) {
+			if (id === member?._id) setHeroFollowOverride(null);
 			sweetErrorHandling(err).then();
+			return false;
+		} finally {
+			pendingFollowIds.current.delete(id);
 		}
 	};
 
-	const likeMemberHandler = async (id: string, refetch: any, query: any) => {
+	const likeMemberHandler = async (id: string, refetch: any, query: any, message?: string) => {
+		if (!id) return false;
 		try {
-			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 			await likeTargetMember({ variables: { input: id } });
-			await sweetTopSmallSuccessAlert('Success!', 800);
 			await refetch({ input: query });
+			sweetDealerActionToast(message ?? 'Member liked');
+			return true;
 		} catch (err: any) {
 			console.log('ERROR, likeMemberHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
+			return false;
 		}
 	};
 
@@ -113,7 +138,7 @@ const MemberPage: NextPage = () => {
 		? `${REACT_APP_API_URL}/${member.memberImage}`
 		: '/img/profile/defaultUser.svg';
 	const isAgent = (member as any)?.memberType === 'AGENT';
-	const isFollowing = member?.meFollowed?.[0]?.myFollowing;
+	const isFollowing = heroFollowOverride ?? member?.meFollowed?.[0]?.myFollowing;
 	const canFollow = user?._id && user._id !== member?._id;
 
 	return (

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NextPage } from 'next';
-import { Pagination, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import { useQuery } from '@apollo/client';
@@ -9,10 +9,14 @@ import { T } from '../../types/common';
 import { GET_VISITED } from '../../../apollo/user/query';
 import DashboardVehicleCard, { DashboardVehicleCardSkeleton } from './DashboardVehicleCard';
 
+// Fixed at the last 9 most recently viewed vehicles (3x3 grid) — the backend
+// already returns them newest-first, so a single un-paginated page of 9 covers it.
+const RECENTLY_VISITED_LIMIT = 9;
+
 const RecentlyVisited: NextPage = () => {
 	const [recentlyVisited, setRecentlyVisited] = useState<Property[]>([]);
 	const [total, setTotal] = useState<number>(0);
-	const [searchVisited, setSearchVisited] = useState<T>({ page: 1, limit: 6 });
+	const [searchVisited] = useState<T>({ page: 1, limit: RECENTLY_VISITED_LIMIT });
 
 	const { loading: getVisitedLoading } = useQuery(GET_VISITED, {
 		fetchPolicy: 'network-only',
@@ -25,10 +29,6 @@ const RecentlyVisited: NextPage = () => {
 			setTotal(data.getVisited?.metaCounter?.[0]?.total || 0);
 		},
 	});
-
-	const paginationHandler = (e: T, value: number) => {
-		setSearchVisited({ ...searchVisited, page: value });
-	};
 
 	return (
 		<div id="recently-visited-page" className={'dashboard-collection-page'}>
@@ -60,8 +60,8 @@ const RecentlyVisited: NextPage = () => {
 							<AutoAwesomeOutlinedIcon />
 						</div>
 						<div>
-							<strong>{searchVisited.page}</strong>
-							<span>Current page</span>
+							<strong>{Math.min(total, RECENTLY_VISITED_LIMIT)}</strong>
+							<span>Shown here</span>
 						</div>
 					</article>
 				</Stack>
@@ -88,20 +88,9 @@ const RecentlyVisited: NextPage = () => {
 					) : null}
 				</Stack>
 
-				{recentlyVisited?.length ? (
-					<Stack className="pagination-config">
-						<Stack className="pagination-box">
-							<Pagination
-								count={Math.ceil(total / searchVisited.limit)}
-								page={searchVisited.page}
-								shape="circular"
-								color="primary"
-								onChange={paginationHandler}
-							/>
-						</Stack>
-						<Stack className="total-result">
-							<Typography>Total {total} recently viewed vehicle{total === 1 ? '' : 's'}</Typography>
-						</Stack>
+				{recentlyVisited?.length && total > RECENTLY_VISITED_LIMIT ? (
+					<Stack className="history-note">
+						<Typography>Showing your {RECENTLY_VISITED_LIMIT} most recent views out of {total} total.</Typography>
 					</Stack>
 				) : null}
 			</Stack>

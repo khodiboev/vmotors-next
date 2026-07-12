@@ -7,6 +7,7 @@ import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import BookmarkAddedRoundedIcon from '@mui/icons-material/BookmarkAddedRounded';
+import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { REACT_APP_API_URL, topPropertyRank } from '../../config';
@@ -133,9 +134,19 @@ const DashboardVehicleCard = ({ vehicle, contextLabel, likeVehicleHandler }: Das
 							className={'like-button'}
 							onClick={() => likeVehicleHandler?.(user, vehicle?._id)}
 							disabled={!likeVehicleHandler}
-							aria-label={'Like vehicle'}
+							aria-label={contextLabel === 'Favorite' ? 'Remove from saved vehicles' : 'Like vehicle'}
 						>
-							{vehicle?.meLiked?.[0]?.myFavorite ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
+							{contextLabel === 'Favorite' ? (
+								vehicle?.meLiked?.[0]?.myFavorite ? (
+									<BookmarkAddedRoundedIcon color={'primary'} />
+								) : (
+									<BookmarkBorderRoundedIcon />
+								)
+							) : vehicle?.meLiked?.[0]?.myFavorite ? (
+								<FavoriteIcon color={'primary'} />
+							) : (
+								<FavoriteBorderIcon />
+							)}
 						</button>
 						<span className={'metric-count'}>{vehicle?.vehicleLikes ?? 0}</span>
 					</div>

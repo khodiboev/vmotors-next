@@ -28,7 +28,7 @@ export const PropertyCard = ({ property, updatePropertyHandler }: PropertyCardPr
 
 	return (
 		<Stack className="property-card-box">
-			<Stack className="image-title-box" onClick={() => router.push(`/vehicle/detail?id=${property._id}`)}>
+			<Stack className="image-title-box" direction="row" onClick={() => router.push(`/vehicle/detail?id=${property._id}`)}>
 				<div className={'image-box'}>
 					<img src={image} alt={vehicleTitle(property)} />
 				</div>
@@ -83,7 +83,7 @@ export const PropertyCard = ({ property, updatePropertyHandler }: PropertyCardPr
 				</div>
 			</div>
 
-			<Stack className={'action-box'}>
+			<Stack className={'action-box'} direction="row">
 				<Button onClick={() => router.push({ pathname: '/mypage', query: { category: 'addVehicle', vehicleId: property._id } })}>
 					Edit
 				</Button>

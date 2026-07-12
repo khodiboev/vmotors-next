@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -13,7 +13,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { LIKE_TARGET_MEMBER } from '../../apollo/user/mutation';
 import { GET_AGENTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import { sweetDealerActionToast, sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import { Messages } from '../../libs/config';
 import DealerDirectoryCard from '../../libs/components/dealer-list/DealerDirectoryCard';
 import DealerDirectorySkeleton from '../../libs/components/dealer-list/DealerDirectorySkeleton';
@@ -40,6 +40,12 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 	const [searchText, setSearchText] = useState<string>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string)?.search?.text ?? '' : initialInput?.search?.text ?? '',
 	);
+	// Like is applied here, once, and merged into whatever agent data renders below.
+	// The list refetch that follows a toggle can briefly hand back a stale meLiked for
+	// the agent we just mutated, and since dealer cards remount whenever that list
+	// reshuffles, keeping the override only in the child card wouldn't survive that.
+	const [likeOverrides, setLikeOverrides] = useState<Record<string, { liked: boolean; likes: number }>>({});
+	const pendingLikeIds = useRef<Set<string>>(new Set());
 
 /** APOLLO REQUESTS **/
 const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
@@ -108,10 +114,30 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 		setCurrentPage(value);
 	};
 
+	const applyLikeOverride = (item: T): T => {
+		const override = item?._id ? likeOverrides[item._id] : undefined;
+		if (!override) return item;
+		return {
+			...item,
+			memberLikes: override.likes,
+			meLiked: override.liked ? [{ memberId: '', likeRefId: item._id, myFavorite: true }] : [],
+		};
+	};
+
 	const likeMemberHandler = async (user: any, id: string) => {
+		if (!id || pendingLikeIds.current.has(id)) return;
 		try {
-			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
+			pendingLikeIds.current.add(id);
+
+			const current =
+				likeOverrides[id] ??
+				(() => {
+					const item = agents.find((a) => a._id === id);
+					return { liked: !!item?.meLiked?.[0]?.myFavorite, likes: item?.memberLikes ?? 0 };
+				})();
+			const next = { liked: !current.liked, likes: Math.max(0, current.likes + (current.liked ? -1 : 1)) };
+			setLikeOverrides((prev) => ({ ...prev, [id]: next }));
 
 			await likeTargetMember({
 				variables: {
@@ -120,10 +146,17 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 			});
 
 			await getAgentsRefetch({ input: searchFilter });
-			await sweetTopSmallSuccessAlert('success', 800);
+			sweetDealerActionToast(next.liked ? 'Dealer liked' : 'Like removed');
 		} catch (err: any) {
-			console.log('ERROR, likePropertyHandler:', err.message);
+			setLikeOverrides((prev) => {
+				const rest = { ...prev };
+				delete rest[id];
+				return rest;
+			});
+			console.log('ERROR, likeMemberHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
+		} finally {
+			pendingLikeIds.current.delete(id);
 		}
 	};
 
@@ -222,7 +255,13 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 						</div>
 					) : (
 						agents.map((agent: Member) => {
-							return <DealerDirectoryCard agent={agent} key={agent._id} likeMemberHandler={likeMemberHandler} />;
+							return (
+								<DealerDirectoryCard
+									agent={applyLikeOverride(agent as unknown as T) as unknown as Member}
+									key={agent._id}
+									likeMemberHandler={likeMemberHandler}
+								/>
+							);
 						})
 					)}
 				</Stack>

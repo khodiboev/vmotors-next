@@ -796,6 +796,33 @@
 				}
 			}
 
+			.comment-header-right {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.comment-actions {
+				display: flex;
+				align-items: center;
+				gap: 2px;
+
+				.MuiIconButton-root {
+					width: 34px;
+					height: 34px;
+					color: var(--detail-muted);
+
+					svg {
+						font-size: 18px;
+					}
+
+					&:hover {
+						color: var(--detail-secondary);
+						background: rgba(55, 85, 195, 0.08);
+					}
+				}
+			}
+
 			.comment-tag {
 				display: inline-flex;
 				align-items: center;
@@ -1154,6 +1181,75 @@
 
 		.loading-section {
 			min-height: 260px;
+		}
+
+		// ─── Edit comment backdrop modal ──────────────────────────────────────
+		.edit-comment-backdrop {
+			z-index: 1300 !important;
+
+			.edit-comment-modal {
+				background: var(--detail-surface-strong);
+				border-radius: 20px;
+				padding: 32px 36px;
+				width: 520px;
+				max-width: calc(100vw - 48px);
+				box-shadow: var(--detail-shadow);
+				border: 1px solid var(--detail-border-strong);
+				display: flex;
+				flex-direction: column;
+				gap: 18px;
+
+				h4 {
+					font-family: $font;
+					font-size: 18px;
+					font-weight: 700;
+					color: var(--detail-primary);
+					margin: 0;
+				}
+
+				textarea {
+					width: 100%;
+					min-height: 120px;
+					padding: 14px 16px;
+					background: var(--detail-soft);
+					border: 1px solid var(--detail-border);
+					border-radius: 12px;
+					outline: none;
+					resize: vertical;
+					font-family: $font;
+					font-size: 14px;
+					line-height: 1.7;
+					color: var(--detail-text);
+
+					&:focus {
+						border-color: var(--detail-secondary);
+					}
+				}
+
+				.edit-comment-modal-footer {
+					display: flex;
+					justify-content: flex-end;
+					gap: 10px;
+
+					.MuiButton-outlined {
+						border-radius: 9px;
+						font-family: $font;
+						font-size: 13px;
+						font-weight: 500;
+						text-transform: none;
+					}
+
+					.MuiButton-contained {
+						border-radius: 9px;
+						background: var(--detail-secondary);
+						color: #ffffff;
+						font-family: $font;
+						font-size: 13px;
+						font-weight: 500;
+						text-transform: none;
+					}
+				}
+			}
 		}
 	}
 }

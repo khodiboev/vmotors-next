@@ -35,6 +35,15 @@ const ALLOWED_IMAGE_ACCEPT = 'image/jpg,image/jpeg,image/png,image/webp';
 const EDIT_DRAFT_STORAGE_KEY = 'santa-community-edit-draft';
 const UPLOAD_FAILED_MESSAGE = 'Upload failed!';
 
+// React StrictMode double-invokes this editor's mount/unmount in development, and the
+// underlying toastui-editor instance doesn't always tear its DOM down cleanly on that
+// phantom unmount. The next mount can then pick up leftover toolbar/tab markup and fold
+// its own UI labels into the WYSIWYG document as real paragraphs. This strips that exact
+// known leak out of the saved content as a safety net, without touching the editor's
+// DOM lifecycle (an earlier attempt to clear the container manually crashed React).
+const EDITOR_CHROME_LEAK_PATTERN = /Write\s+Preview\s+Type here\s+(?:Type here\s+)?Markdown\s+WYSIWYG\s*/g;
+const stripEditorChromeLeak = (value = '') => value.replace(EDITOR_CHROME_LEAK_PATTERN, '').trim();
+
 const getEditorContentMeta = (value = '') => {
 	const plainText = value
 		.replace(/!\[[^\]]*]\([^)]+\)/g, ' ')
@@ -264,7 +273,7 @@ const TuiEditor = () => {
 		try {
 			const editorInstance = editorRef.current?.getInstance();
 			const trimmedTitle = articleTitle.trim();
-			const articleContent = editorInstance?.getMarkdown()?.trim() ?? '';
+			const articleContent = stripEditorChromeLeak(editorInstance?.getMarkdown()?.trim() ?? '');
 			const { length: meaningfulContentLength } = getEditorContentMeta(articleContent);
 
 			if (!articleCategory || (!trimmedTitle && !hasMeaningfulEditorContent(articleContent))) {
@@ -371,10 +380,22 @@ const TuiEditor = () => {
 				<div ref={editorContainerRef}>
 					<Editor
 						key={`${articleId || 'new'}-${editorRenderKey}`}
-						initialValue={editorInitialValue}
+						// A genuinely empty string is falsy, and the underlying
+						// toastui-editor treats a falsy initialValue as "no value was
+						// given" — it then falls back to adopting whatever HTML is
+						// already sitting in the mount container as the initial
+						// document. In this app that container can carry over stale
+						// toolbar/tab markup from the editor's own chrome, which is
+						// how "Write / Preview / Type here / Markdown / WYSIWYG" ends
+						// up as literal saved content. Passing a single space keeps
+						// initialValue truthy so that fallback path never runs, while
+						// staying invisible and not counting as real content anywhere
+						// content length is checked.
+						initialValue={editorInitialValue || ' '}
 						placeholder={'Type here'}
 						previewStyle={'tab'}
-						height={'640px'}
+						height={'auto'}
+						minHeight={'640px'}
 						initialEditType={'wysiwyg'}
 						toolbarItems={[
 							['heading', 'bold', 'italic', 'strike'],

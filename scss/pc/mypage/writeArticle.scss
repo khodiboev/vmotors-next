@@ -147,9 +147,11 @@
 			}
 
 			// Hide the Markdown / WYSIWYG mode-switch button
-			// Users stay in WYSIWYG; switching modes would expose raw markdown syntax
+			// Users stay in WYSIWYG; switching modes would expose raw markdown syntax.
+			// !important is required: the editor library sets style="display: block"
+			// inline on this element, which otherwise beats a plain display:none rule.
 			.toastui-editor-mode-switch {
-				display: none;
+				display: none !important;
 			}
 
 			button { padding: 4px; }

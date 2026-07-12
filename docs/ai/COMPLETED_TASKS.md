@@ -9,6 +9,25 @@ This file records all significant completed work on the Santa frontend, in rever
 
 ## Phase 5: Footer, Toggles, Hero Backgrounds — and a Vehicle Detail Rollback (July 2026)
 
+### 5.7 — Homepage Like Toast + Related/List Vehicle Like State Fix (2026-07-11)
+
+**What changed:** Two independent UI-only bugs in vehicle like/unlike feedback were fixed. GraphQL, Apollo, routing, and backend like/unlike business logic were intentionally preserved.
+
+**1. Homepage like toast used the generic top-right alert:**
+- `NewArrivalsOrbital`, `BuyerFavoritesOrbital`, `TrendProperties`, and `TopProperties` (all homepage vehicle-card sections) called `sweetTopSmallSuccessAlert('success', 800)` on like/unlike — a plain white top-right SweetAlert2 toast literally reading "success".
+- Switched all four to the existing `sweetVehicleActionToast` (bottom-center, Santa navy, used on `/vehicle` and `/vehicle/detail`) with proper **"Vehicle liked"** / **"Like removed"** copy, matching the wording already used by `VehicleListCard` and `VehicleDetailRelatedCard`.
+- Files: `libs/components/homepage/NewArrivalsOrbital.tsx`, `BuyerFavoritesOrbital.tsx`, `TrendProperties.tsx`, `TopProperties.tsx`.
+
+**2. Related-vehicle and vehicle-list cards silently reverted a like/unlike shortly after showing it correctly:**
+- **Symptom:** clicking the heart on a "Related Hyundai and Kia inventory" card (vehicle detail page) or a `/vehicle` list card would flash the correct liked/unliked state, then revert to the pre-click state a moment later — even though the mutation had actually succeeded on the backend (confirmed by querying `getVehicle`/`getVehicles` directly).
+- **Root cause:** each card kept its own optimistic like state, reconciled against the `vehicle` prop it received. The `getVehicles` list refetch that runs right after the like mutation can briefly hand back a **stale** `meLiked` for the vehicle just mutated (a backend list-query consistency lag, not a mutation failure). Since related/list cards are keyed by `_id` and get **recreated** whenever that list array reshuffles after a refetch, any optimistic state living only inside the card was lost on that remount, and the fresh (but still-stale) prop won.
+- **Fix:** moved the optimistic like/unlike bookkeeping up to the page components (`pages/vehicle/detail.tsx`, `pages/vehicle/index.tsx`) as a `likeOverrides` map keyed by vehicle `_id`, set synchronously the moment a like/unlike is clicked and merged into every vehicle object handed down to cards (`applyLikeOverride`). Because this state lives in the page, it survives child cards remounting when the underlying list reshuffles. `VehicleDetailRelatedCard` and `VehicleListCard` were simplified back to plain prop-driven rendering (no local like state) plus a small `pendingRef` guard against double-firing the same click.
+- Files: `pages/vehicle/detail.tsx`, `pages/vehicle/index.tsx`, `libs/components/vehicle-detail/VehicleDetailRelatedCard.tsx`, `libs/components/vehicle-list/VehicleListCard.tsx`.
+
+**Validation:** `yarn tsc --noEmit` passed with zero errors across all eight changed files. Verified live in-browser (after clearing a corrupted `.next` dev cache — see note in `PROJECT_OVERVIEW.md` about this being an iCloud-sync artifact, not a code issue): liked/unliked three different related-vehicle cards back and forth, cross-checked each result directly against `getVehicle`/`getVehicles` GraphQL responses, and confirmed the UI matched backend truth and stayed stable for 6+ seconds after each click (no reversion).
+
+---
+
 ### 5.6 — Community Article Grid + Like Feedback Polish (2026-07-10)
 
 **What changed:** The bottom Community article grid and all board-article like success feedback were polished as UI-only improvements. GraphQL, Apollo, routing, pagination, article fetching, backend APIs, and like/unlike business logic were intentionally preserved.

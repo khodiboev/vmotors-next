@@ -1,22 +1,29 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import PropertyBigCard from '../../libs/components/common/PropertyBigCard';
 import ReviewCard from '../../libs/components/agent/ReviewCard';
-import { Button, Pagination } from '@mui/material';
+import { Backdrop, Button, Pagination } from '@mui/material';
 import { useRouter } from 'next/router';
 import { Vehicle } from '../../libs/types/vehicle/vehicle';
 import { Member } from '../../libs/types/member/member';
-import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import {
+	sweetConfirmAlert,
+	sweetErrorHandling,
+	sweetMixinErrorAlert,
+	sweetMixinSuccessAlert,
+	sweetVehicleActionToast,
+} from '../../libs/sweetAlert';
 import { userVar } from '../../apollo/store';
 import { VehiclesInquiry } from '../../libs/types/vehicle/vehicle.input';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
-import { CommentGroup } from '../../libs/enums/comment.enum';
+import { CommentUpdate } from '../../libs/types/comment/comment.update';
+import { CommentGroup, CommentStatus } from '../../libs/enums/comment.enum';
 import { REACT_APP_API_URL, Messages } from '../../libs/config';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
-import { CREATE_COMMENT, LIKE_TARGET_VEHICLE } from '../../apollo/user/mutation';
+import { CREATE_COMMENT, LIKE_TARGET_VEHICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
 import { GET_COMMENTS, GET_MEMBER, GET_VEHICLES } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 
@@ -42,9 +49,19 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		commentContent: '',
 		commentRefId: '',
 	});
+	const [openReviewBackdrop, setOpenReviewBackdrop] = useState<boolean>(false);
+	const [updatedComment, setUpdatedComment] = useState<string>('');
+	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
+	// Like is applied here, once, and merged into whatever vehicle data renders below.
+	// The list refetch that follows a toggle can briefly hand back a stale meLiked for
+	// the vehicle we just mutated, and since inventory cards remount whenever that list
+	// reshuffles, keeping the override only in the child card wouldn't survive that.
+	const [likeOverrides, setLikeOverrides] = useState<Record<string, { liked: boolean; likes: number }>>({});
+	const pendingLikeIds = useRef<Set<string>>(new Set());
 
 	/** APOLLO REQUESTS **/
 	const [createComment] = useMutation(CREATE_COMMENT);
+	const [updateComment] = useMutation(UPDATE_COMMENT);
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
 	const {
@@ -167,10 +184,77 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		}
 	};
 
-	const likePropertyHandler = async (user: any, id: string) => {
+	const editCommentHandler = (comment: Comment) => {
+		setUpdatedComment(comment.commentContent);
+		setUpdatedCommentId(comment._id);
+		setOpenReviewBackdrop(true);
+	};
+
+	const cancelCommentEditHandler = () => {
+		setOpenReviewBackdrop(false);
+		setUpdatedComment('');
+		setUpdatedCommentId('');
+	};
+
+	const updateCommentHandler = async (commentId: string, commentStatus?: CommentStatus.DELETE) => {
 		try {
-			if (!id) return;
+			if (!user?._id) throw new Error(Messages.error2);
+			if (!commentId) throw new Error('Select a review to update!');
+
+			const updateData: CommentUpdate = {
+				_id: commentId,
+				...(commentStatus && { commentStatus }),
+				...(!commentStatus && { commentContent: updatedComment }),
+			};
+
+			if (!updateData?.commentContent && !updateData?.commentStatus) {
+				throw new Error('Provide data to update your review!');
+			}
+
+			if (commentStatus) {
+				if (await sweetConfirmAlert('Do you want to delete the review?')) {
+					await updateComment({ variables: { input: updateData } });
+					await sweetMixinSuccessAlert('Successfully deleted!');
+				} else return;
+			} else {
+				await updateComment({ variables: { input: updateData } });
+				await sweetMixinSuccessAlert('Successfully updated!');
+			}
+
+			await getCommentsRefetch({ input: commentInquiry });
+		} catch (err: any) {
+			sweetMixinErrorAlert(err.message).then();
+		} finally {
+			setOpenReviewBackdrop(false);
+			setUpdatedComment('');
+			setUpdatedCommentId('');
+		}
+	};
+
+	const applyLikeOverride = (item: T): T => {
+		const override = item?._id ? likeOverrides[item._id] : undefined;
+		if (!override) return item;
+		return {
+			...item,
+			vehicleLikes: override.likes,
+			meLiked: override.liked ? [{ memberId: user._id, likeRefId: item._id, myFavorite: true }] : [],
+		};
+	};
+
+	const likePropertyHandler = async (user: any, id: string) => {
+		if (!id || pendingLikeIds.current.has(id)) return;
+		try {
 			if (!user._id) throw new Error(Messages.error2);
+			pendingLikeIds.current.add(id);
+
+			const current =
+				likeOverrides[id] ??
+				(() => {
+					const item = agentProperties.find((v) => v._id === id);
+					return { liked: !!item?.meLiked?.[0]?.myFavorite, likes: item?.vehicleLikes ?? 0 };
+				})();
+			const next = { liked: !current.liked, likes: Math.max(0, current.likes + (current.liked ? -1 : 1)) };
+			setLikeOverrides((prev) => ({ ...prev, [id]: next }));
 
 			await likeTargetVehicle({
 				variables: {
@@ -179,10 +263,17 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 			});
 
 			await getVehiclesRefetch({ input: searchFilter });
-			await sweetTopSmallSuccessAlert('success', 800);
+			sweetVehicleActionToast(next.liked ? 'Vehicle liked' : 'Like removed');
 		} catch (err: any) {
+			setLikeOverrides((prev) => {
+				const rest = { ...prev };
+				delete rest[id];
+				return rest;
+			});
 			console.log('ERROR, likePropertyHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
+		} finally {
+			pendingLikeIds.current.delete(id);
 		}
 	};
 
@@ -266,7 +357,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 							<div className="vehicle-grid">
 								{agentProperties.map((property: Vehicle) => (
 									<PropertyBigCard
-										property={property}
+										property={applyLikeOverride(property as unknown as T) as unknown as Vehicle}
 										key={property._id}
 										likePropertyHandler={likePropertyHandler}
 									/>
@@ -306,7 +397,12 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 					{commentTotal > 0 ? (
 						<div className="reviews-list">
 							{agentComments?.map((comment: Comment) => (
-								<ReviewCard comment={comment} key={comment?._id} />
+								<ReviewCard
+									comment={comment}
+									key={comment?._id}
+									onEdit={editCommentHandler}
+									onDelete={(commentId) => updateCommentHandler(commentId, CommentStatus.DELETE)}
+								/>
 							))}
 							<div className="review-pagination">
 								<Pagination
@@ -348,6 +444,26 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 				</section>
 
 			</div>
+
+			<Backdrop className={'edit-review-backdrop'} open={openReviewBackdrop} onClick={cancelCommentEditHandler}>
+				<div className={'edit-review-modal'} onClick={(e) => e.stopPropagation()}>
+					<h4>Edit review</h4>
+					<textarea
+						autoFocus
+						value={updatedComment}
+						onChange={(e) => setUpdatedComment(e.target.value)}
+						placeholder={'Update your review for this dealer'}
+					/>
+					<div className={'edit-review-modal-footer'}>
+						<Button variant={'outlined'} color={'inherit'} onClick={cancelCommentEditHandler}>
+							Cancel
+						</Button>
+						<Button variant={'contained'} color={'inherit'} onClick={() => updateCommentHandler(updatedCommentId)}>
+							Update
+						</Button>
+					</div>
+				</div>
+			</Backdrop>
 		</div>
 	);
 };

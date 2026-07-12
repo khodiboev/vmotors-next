@@ -218,7 +218,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 MyArticles.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 6,
+		limit: 9,
 		sort: 'createdAt',
 		direction: 'DESC',
 		search: {},

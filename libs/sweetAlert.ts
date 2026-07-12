@@ -135,6 +135,65 @@ export const sweetVehicleActionToast = (msg: string, duration: number = 2000) =>
 	}).then();
 };
 
+// Dealer like/unlike confirmations only — bottom-center coral Santa-styled toast that
+// slides in from the left. Kept visually distinct from the vehicle toast (navy, fades
+// straight up) and the follow toast (blue, bounces in) so each action reads as its own
+// kind of feedback at a glance.
+export const sweetDealerActionToast = (msg: string, duration: number = 2000) => {
+	const Toast = Swal.mixin({
+		toast: true,
+		position: 'bottom',
+		showConfirmButton: false,
+		timer: duration,
+		customClass: {
+			popup: 'santa-toast santa-toast-dealer',
+			title: 'santa-toast-title',
+			container: 'santa-toast-container',
+		},
+		showClass: {
+			popup: 'animate__animated animate__fadeInLeft animate__faster',
+		},
+		hideClass: {
+			popup: 'animate__animated animate__fadeOutRight animate__faster',
+		},
+	});
+
+	Toast.fire({
+		icon: 'success',
+		iconColor: '#ffffff',
+		title: msg,
+	}).then();
+};
+
+// Follow/unfollow confirmations only — bottom-center blue Santa-styled toast with a
+// bouncier entrance. Kept visually distinct from the vehicle toast (navy) and the
+// dealer toast (coral) so each action reads as its own kind of feedback at a glance.
+export const sweetFollowActionToast = (msg: string, duration: number = 2000) => {
+	const Toast = Swal.mixin({
+		toast: true,
+		position: 'bottom',
+		showConfirmButton: false,
+		timer: duration,
+		customClass: {
+			popup: 'santa-toast santa-toast-follow',
+			title: 'santa-toast-title',
+			container: 'santa-toast-container',
+		},
+		showClass: {
+			popup: 'animate__animated animate__bounceInUp animate__faster',
+		},
+		hideClass: {
+			popup: 'animate__animated animate__fadeOut animate__faster',
+		},
+	});
+
+	Toast.fire({
+		icon: 'success',
+		iconColor: '#ffffff',
+		title: msg,
+	}).then();
+};
+
 export const sweetTopSmallSuccessAlert = async (
 	msg: string,
 	duration: number = 2000,

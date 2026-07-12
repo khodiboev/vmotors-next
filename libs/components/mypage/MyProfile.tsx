@@ -28,6 +28,8 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 			memberPhone: user?.memberPhone ?? '',
 			memberAddress: user?.memberAddress ?? '',
 			memberImage: user?.memberImage ?? '',
+			memberFullName: user?.memberFullName ?? '',
+			memberDesc: user?.memberDesc ?? '',
 		}));
 	}, [user]);
 
@@ -74,6 +76,10 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 		}
 	};
 
+	const removeImageHandler = () => {
+		setUpdateData((prev) => ({ ...prev, memberImage: '' }));
+	};
+
 	const updatePropertyHandler = useCallback(async () => {
 		try {
 			if (!user._id) throw new Error(Messages.error2);
@@ -97,10 +103,7 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 	}, [updateData, updateMember, user]);
 
 	const isUpdateDisabled =
-		updateData.memberNick === '' ||
-		updateData.memberPhone === '' ||
-		updateData.memberAddress === '' ||
-		updateData.memberImage === '';
+		updateData.memberNick === '' || updateData.memberPhone === '' || updateData.memberAddress === '';
 
 	const profileImage = updateData?.memberImage ? `${REACT_APP_API_URL}/${updateData.memberImage}` : '/img/profile/defaultUser.svg';
 
@@ -161,9 +164,16 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 							</Stack>
 							<Stack className="upload-big-box">
 								<input type="file" hidden id="hidden-input" onChange={uploadImage} accept="image/jpg, image/jpeg, image/png" />
-								<label htmlFor="hidden-input" className="labeler">
-									<Typography>Upload profile image</Typography>
-								</label>
+								<Stack className="upload-actions-row">
+									<label htmlFor="hidden-input" className="labeler">
+										<Typography>Upload profile image</Typography>
+									</label>
+									{updateData.memberImage && (
+										<button type="button" className="remove-image-button" onClick={removeImageHandler}>
+											Remove photo
+										</button>
+									)}
+								</Stack>
 								<Typography className="upload-text">JPG, JPEG, or PNG files work best for a crisp marketplace profile.</Typography>
 							</Stack>
 						</Stack>
@@ -188,13 +198,31 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberPhone: value })}
 							/>
 						</Stack>
-						<Stack className="input-box full-width">
+						<Stack className="input-box">
+							<Typography className="title">Full name</Typography>
+							<input
+								type="text"
+								placeholder="Your full name, shown on your dealer/member page"
+								value={updateData.memberFullName}
+								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberFullName: value })}
+							/>
+						</Stack>
+						<Stack className="input-box">
 							<Typography className="title">Location</Typography>
 							<input
 								type="text"
 								placeholder="Your city or region"
 								value={updateData.memberAddress}
 								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberAddress: value })}
+							/>
+						</Stack>
+						<Stack className="input-box full-width">
+							<Typography className="title">About / Bio</Typography>
+							<textarea
+								className="about-textarea"
+								placeholder="Tell buyers and dealers a bit about yourself or your dealership"
+								value={updateData.memberDesc}
+								onChange={({ target: { value } }) => setUpdateData({ ...updateData, memberDesc: value })}
 							/>
 						</Stack>
 					</Stack>
@@ -230,6 +258,8 @@ MyProfile.defaultProps = {
 		memberNick: '',
 		memberPhone: '',
 		memberAddress: '',
+		memberFullName: '',
+		memberDesc: '',
 	},
 };
 
