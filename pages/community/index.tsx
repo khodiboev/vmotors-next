@@ -113,17 +113,25 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const user = useReactiveVar(userVar);
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
 
-	const { loading: boardArticlesLoading, refetch: boardArticlesRefetch } = useQuery(GET_BOARD_ARTICLES, {
+	// State is synced from `data` in an effect instead of onCompleted:
+	// Apollo 3.5 + React 18 strict mode drops onCompleted on hard loads.
+	const {
+		loading: boardArticlesLoading,
+		data: boardArticlesData,
+		refetch: boardArticlesRefetch,
+	} = useQuery(GET_BOARD_ARTICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: searchCommunity,
 		},
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setBoardArticles(data?.getBoardArticles?.list ?? []);
-			setTotalCount(data?.getBoardArticles?.metaCounter?.[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!boardArticlesData?.getBoardArticles) return;
+		setBoardArticles(boardArticlesData.getBoardArticles.list ?? []);
+		setTotalCount(boardArticlesData.getBoardArticles.metaCounter?.[0]?.total ?? 0);
+	}, [boardArticlesData]);
 
 	useEffect(() => {
 		if (!router?.query?.articleCategory) {

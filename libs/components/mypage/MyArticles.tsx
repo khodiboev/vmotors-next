@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Button, Pagination, Stack, Typography } from '@mui/material';
@@ -47,11 +47,14 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 			input: searchCommunity,
 		},
 		notifyOnNetworkStatusChange: true,
-		onCompleted(data: T) {
-			setBoardArticles(data?.getBoardArticles?.list);
-			setTotalCount(data?.getBoardArticles?.metaCounter[0]?.total);
-		},
 	});
+
+	// Synced from `data` in an effect — Apollo 3.5 drops onCompleted on hard loads
+	useEffect(() => {
+		if (!boardArticlesData?.getBoardArticles) return;
+		setBoardArticles(boardArticlesData.getBoardArticles.list);
+		setTotalCount(boardArticlesData.getBoardArticles.metaCounter[0]?.total);
+	}, [boardArticlesData]);
 
 	/** HANDLERS **/
 	const paginationHandler = (e: T, value: number) => {

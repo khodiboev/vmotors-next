@@ -67,36 +67,37 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const [createComment] = useMutation(CREATE_COMMENT);
 	const [updateComment] = useMutation(UPDATE_COMMENT);
 
-	const {
-		refetch: boardArticleRefetch,
-	} = useQuery(GET_BOARD_ARTICLE, {
+	// State is synced from `data` in effects below instead of onCompleted:
+	// Apollo 3.5 + React 18 strict mode drops onCompleted on hard loads.
+	const { data: boardArticleData, refetch: boardArticleRefetch } = useQuery(GET_BOARD_ARTICLE, {
 		fetchPolicy: 'network-only',
 		variables: {
 			input: articleId,
 		},
 		notifyOnNetworkStatusChange: true,
-		onCompleted(data: any) {
-			setBoardArticle(data?.getBoardArticle);
-
-			if (data?.getBoardArticle?.memberData?.memberImage) {
-				setMemberImage(`${process.env.REACT_APP_API_URL}/${data?.getBoardArticle?.memberData?.memberImage}`);
-			}
-		},
 	});
 
-	const {
-		refetch: getCommentsRefetch,
-	} = useQuery(GET_COMMENTS, {
+	useEffect(() => {
+		if (!boardArticleData?.getBoardArticle) return;
+		setBoardArticle(boardArticleData.getBoardArticle);
+		if (boardArticleData.getBoardArticle?.memberData?.memberImage) {
+			setMemberImage(`${process.env.REACT_APP_API_URL}/${boardArticleData.getBoardArticle.memberData.memberImage}`);
+		}
+	}, [boardArticleData]);
+
+	const { data: getCommentsData, refetch: getCommentsRefetch } = useQuery(GET_COMMENTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: searchFilter,
 		},
 		notifyOnNetworkStatusChange: true,
-		onCompleted(data: any) {
-			setComments(data.getComments?.list);
-			setTotal(data.getComments?.metaCounter?.[0]?.total || 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!getCommentsData?.getComments) return;
+		setComments(getCommentsData.getComments.list);
+		setTotal(getCommentsData.getComments.metaCounter?.[0]?.total || 0);
+	}, [getCommentsData]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Stack, Typography } from '@mui/material';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
@@ -18,17 +18,20 @@ const RecentlyVisited: NextPage = () => {
 	const [total, setTotal] = useState<number>(0);
 	const [searchVisited] = useState<T>({ page: 1, limit: RECENTLY_VISITED_LIMIT });
 
-	const { loading: getVisitedLoading } = useQuery(GET_VISITED, {
+	// Synced from `data` in an effect — Apollo 3.5 drops onCompleted on hard loads
+	const { loading: getVisitedLoading, data: getVisitedData } = useQuery(GET_VISITED, {
 		fetchPolicy: 'network-only',
 		variables: {
 			input: searchVisited,
 		},
 		notifyOnNetworkStatusChange: true,
-		onCompleted(data: T) {
-			setRecentlyVisited(data.getVisited?.list ?? []);
-			setTotal(data.getVisited?.metaCounter?.[0]?.total || 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!getVisitedData?.getVisited) return;
+		setRecentlyVisited(getVisitedData.getVisited.list ?? []);
+		setTotal(getVisitedData.getVisited.metaCounter?.[0]?.total || 0);
+	}, [getVisitedData]);
 
 	return (
 		<div id="recently-visited-page" className={'dashboard-collection-page'}>

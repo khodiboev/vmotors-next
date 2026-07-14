@@ -25,19 +25,28 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 
 	const [updateVehicle] = useMutation(UPDATE_VEHICLE);
 
-	const { loading, refetch: getDealerVehiclesRefetch } = useQuery(GET_DEALER_VEHICLES, {
+	// Synced from `data` in an effect — Apollo 3.5 drops onCompleted on hard loads
+	const {
+		loading,
+		data: getDealerVehiclesData,
+		refetch: getDealerVehiclesRefetch,
+	} = useQuery(GET_DEALER_VEHICLES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setDealerVehicles(data?.getDealerVehicles?.list ?? []);
-			setTotal(data?.getDealerVehicles?.metaCounter?.[0]?.total ?? 0);
-		},
 	});
 
 	useEffect(() => {
-		if (user?._id && user?.memberType !== 'AGENT') router.back();
-	}, [router, user]);
+		if (!getDealerVehiclesData?.getDealerVehicles) return;
+		setDealerVehicles(getDealerVehiclesData.getDealerVehicles.list ?? []);
+		setTotal(getDealerVehiclesData.getDealerVehicles.metaCounter?.[0]?.total ?? 0);
+	}, [getDealerVehiclesData]);
+
+	useEffect(() => {
+		if (user?._id && user?.memberType !== 'AGENT') router.replace('/mypage');
+	}, [router, user?._id, user?.memberType]);
+
+	if (user?._id && user?.memberType !== 'AGENT') return null;
 
 	const paginationHandler = (e: T, value: number) => setSearchFilter({ ...searchFilter, page: value });
 	const changeStatusHandler = (value: VehicleStatus) => setSearchFilter({ ...searchFilter, search: { vehicleStatus: value } });

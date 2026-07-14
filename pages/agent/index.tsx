@@ -50,15 +50,19 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 /** APOLLO REQUESTS **/
 const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
-	const { loading: getAgentsLoading, refetch: getAgentsRefetch } = useQuery(GET_AGENTS, {
+	// State is synced from `data` in an effect instead of onCompleted:
+	// Apollo 3.5 + React 18 strict mode drops onCompleted on hard loads.
+	const { loading: getAgentsLoading, data: getAgentsData, refetch: getAgentsRefetch } = useQuery(GET_AGENTS, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setAgents(data?.getAgents?.list);
-			setTotal(data?.getAgents?.metaCounter[0]?.total);
-		},
 	});
+
+	useEffect(() => {
+		if (!getAgentsData?.getAgents) return;
+		setAgents(getAgentsData.getAgents.list);
+		setTotal(getAgentsData.getAgents.metaCounter[0]?.total);
+	}, [getAgentsData]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -294,7 +298,7 @@ const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 AgentList.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 10,
+		limit: 9,
 		sort: 'createdAt',
 		direction: 'DESC',
 		search: {},

@@ -16,16 +16,19 @@ const MemberProperties: NextPage = ({ initialInput }: any) => {
 	const [dealerVehicles, setDealerVehicles] = useState<Vehicle[]>([]);
 	const [total, setTotal] = useState<number>(0);
 
-	const { refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
+	// Synced from `data` in an effect — Apollo 3.5 drops onCompleted on hard loads
+	const { data: getVehiclesData, refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		skip: !searchFilter?.search?.memberId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: any) => {
-			setDealerVehicles(data?.getVehicles?.list ?? []);
-			setTotal(data?.getVehicles?.metaCounter?.[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!getVehiclesData?.getVehicles) return;
+		setDealerVehicles(getVehiclesData.getVehicles.list ?? []);
+		setTotal(getVehiclesData.getVehicles.metaCounter?.[0]?.total ?? 0);
+	}, [getVehiclesData]);
 
 	useEffect(() => {
 		if (searchFilter.search.memberId) getVehiclesRefetch({ input: searchFilter });

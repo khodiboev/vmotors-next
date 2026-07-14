@@ -41,15 +41,18 @@ const MemberPage: NextPage = () => {
 	const [unsubscribe] = useMutation(UNSUBSCRIBE);
 	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
-	const { refetch: getMemberRefetch } = useQuery(GET_MEMBER, {
+	// State is synced from `data` in an effect instead of onCompleted:
+	// Apollo 3.5 + React 18 strict mode drops onCompleted on hard loads.
+	const { data: getMemberData, refetch: getMemberRefetch } = useQuery(GET_MEMBER, {
 		fetchPolicy: 'network-only',
 		variables: { input: memberId },
 		skip: !memberId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setMember(data?.getMember ?? null);
-		},
 	});
+
+	useEffect(() => {
+		setMember(getMemberData?.getMember ?? null);
+	}, [getMemberData]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {

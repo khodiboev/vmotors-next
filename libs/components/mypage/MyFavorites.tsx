@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Pagination, Stack, Typography } from '@mui/material';
 import BookmarkAddedRoundedIcon from '@mui/icons-material/BookmarkAddedRounded';
@@ -20,17 +20,24 @@ const MyFavorites: NextPage = () => {
 
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
-	const { loading: getFavoritesLoading, refetch: getFavoritesRefetch } = useQuery(GET_FAVORITES, {
+	// Synced from `data` in an effect — Apollo 3.5 drops onCompleted on hard loads
+	const {
+		loading: getFavoritesLoading,
+		data: getFavoritesData,
+		refetch: getFavoritesRefetch,
+	} = useQuery(GET_FAVORITES, {
 		fetchPolicy: 'network-only',
 		variables: {
 			input: searchFavorites,
 		},
 		notifyOnNetworkStatusChange: true,
-		onCompleted(data: T) {
-			setMyFavorites(data.getFavorites?.list ?? []);
-			setTotal(data.getFavorites?.metaCounter?.[0]?.total || 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!getFavoritesData?.getFavorites) return;
+		setMyFavorites(getFavoritesData.getFavorites.list ?? []);
+		setTotal(getFavoritesData.getFavorites.metaCounter?.[0]?.total || 0);
+	}, [getFavoritesData]);
 
 	const paginationHandler = (e: T, value: number) => {
 		setSearchFavorites({ ...searchFavorites, page: value });

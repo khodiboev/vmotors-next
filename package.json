@@ -11,7 +11,7 @@
 		"changelog": "standard-version --skip.tag"
 	},
 	"dependencies": {
-		"@apollo/client": "^3.5.10",
+		"@apollo/client": "3.7.17",
 		"@apollo/react-components": "^4.0.0-beta.2",
 		"@babel/plugin-proposal-private-methods": "^7.16.11",
 		"@cahil/utils": "^2.3.2",

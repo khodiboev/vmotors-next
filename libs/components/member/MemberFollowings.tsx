@@ -36,16 +36,19 @@ const MemberFollowings = (props: MemberFollowingsProps) => {
 	const pendingIds = useRef<Set<string>>(new Set());
 
 	/** APOLLO REQUESTS **/
-	const { refetch: getMemberFollowingsRefetch } = useQuery(GET_MEMBER_FOLLOWINGS, {
+	// Synced from `data` in an effect — Apollo 3.5 drops onCompleted on hard loads
+	const { data: getMemberFollowingsData, refetch: getMemberFollowingsRefetch } = useQuery(GET_MEMBER_FOLLOWINGS, {
 		fetchPolicy: 'network-only',
 		variables: { input: followInquiry },
 		skip: !followInquiry?.search?.followerId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setMemberFollowings(data?.getMemberFollowings?.list);
-			setTotal(data?.getMemberFollowings?.metaCounter[0]?.total);
-		},
 	});
+
+	useEffect(() => {
+		if (!getMemberFollowingsData?.getMemberFollowings) return;
+		setMemberFollowings(getMemberFollowingsData.getMemberFollowings.list);
+		setTotal(getMemberFollowingsData.getMemberFollowings.metaCounter[0]?.total);
+	}, [getMemberFollowingsData]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {

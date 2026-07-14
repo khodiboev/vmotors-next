@@ -73,29 +73,18 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		fetchPolicy: 'network-only',
 		variables: { input: agentId },
 		skip: !agentId,
-		onCompleted: (data: T) => {
-			setAgent(data?.getMember);
-
-			setSearchFilter({
-				...searchFilter,
-				search: {
-					memberId: data?.getMember?._id,
-				},
-			});
-
-			setCommentInquiry({
-				...commentInquiry,
-				search: {
-					commentRefId: data?.getMember?._id,
-				},
-			});
-
-			setInsertCommentData({
-				...insertCommentData,
-				commentRefId: data?.getMember?._id,
-			});
-		},
 	});
+
+	// State is synced from `data` in effects instead of onCompleted:
+	// Apollo 3.5 + React 18 strict mode drops onCompleted on hard loads.
+	useEffect(() => {
+		const member = getMemberData?.getMember;
+		if (!member) return;
+		setAgent(member);
+		setSearchFilter((prev: any) => ({ ...prev, search: { memberId: member._id } }));
+		setCommentInquiry((prev: any) => ({ ...prev, search: { commentRefId: member._id } }));
+		setInsertCommentData((prev: any) => ({ ...prev, commentRefId: member._id }));
+	}, [getMemberData]);
 
 	const {
 		loading: getVehiclesLoading,
@@ -107,11 +96,13 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		variables: { input: searchFilter },
 		skip: !searchFilter.search.memberId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setAgentProperties(data?.getVehicles?.list);
-			setPropertyTotal(data?.getVehicles?.metaCounter[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!getVehiclesData?.getVehicles) return;
+		setAgentProperties(getVehiclesData.getVehicles.list);
+		setPropertyTotal(getVehiclesData.getVehicles.metaCounter[0]?.total ?? 0);
+	}, [getVehiclesData]);
 
 	const {
 		loading: getCommentsLoading,
@@ -123,11 +114,13 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		variables: { input: commentInquiry },
 		skip: !commentInquiry.search.commentRefId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setAgentComments(data?.getComments?.list);
-			setCommentTotal(data?.getComments?.metaCounter[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!getCommentsData?.getComments) return;
+		setAgentComments(getCommentsData.getComments.list);
+		setCommentTotal(getCommentsData.getComments.metaCounter[0]?.total ?? 0);
+	}, [getCommentsData]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {

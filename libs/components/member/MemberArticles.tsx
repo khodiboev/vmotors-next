@@ -30,15 +30,18 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 	/** APOLLO REQUESTS **/
 	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
 
-	const { refetch: boardArticlesRefetch } = useQuery(GET_BOARD_ARTICLES, {
+	// Synced from `data` in an effect — Apollo 3.5 drops onCompleted on hard loads
+	const { data: boardArticlesData, refetch: boardArticlesRefetch } = useQuery(GET_BOARD_ARTICLES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: any) => {
-			setMemberBoArticles(data?.getBoardArticles?.list);
-			setTotal(data?.getBoardArticles?.metaCounter?.[0]?.total || 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!boardArticlesData?.getBoardArticles) return;
+		setMemberBoArticles(boardArticlesData.getBoardArticles.list);
+		setTotal(boardArticlesData.getBoardArticles.metaCounter?.[0]?.total || 0);
+	}, [boardArticlesData]);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
