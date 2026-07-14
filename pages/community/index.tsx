@@ -349,7 +349,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 							<span className="total-label">Articles in this board</span>
 							<strong>{totalCount}</strong>
 						</div>
-
+ 
 						<div className="activity-rail">
 							<span className="label">Recent activity</span>
 							{recentActivityItems.length ? (

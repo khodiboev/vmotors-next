@@ -373,6 +373,8 @@
 			.card-copy {
 				display: flex;
 				flex-direction: column;
+				min-width: 0;
+				width: 100%;
 				gap: 10px;
 			}
 
@@ -385,6 +387,12 @@
 
 			.vehicle-title {
 				display: block;
+				width: 100%;
+				min-width: 0;
+				max-width: 100%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 				color: var(--home-text);
 				font-family: $font;
 				font-size: 20px;

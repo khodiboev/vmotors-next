@@ -634,6 +634,8 @@
 				flex-direction: column;
 				gap: 10px;
 				min-width: 0;
+				width: 100%;
+				white-space: normal;
 			}
 
 			.vehicle-title {
@@ -642,6 +644,12 @@
 				-webkit-box-orient: vertical;
 				line-clamp: 2;
 				overflow: hidden;
+				width: 100%;
+				min-width: 0;
+				max-width: 100%;
+				white-space: normal;
+				overflow-wrap: anywhere;
+				word-break: break-word;
 				color: var(--list-text);
 				font-family: $font;
 				font-size: 24px;

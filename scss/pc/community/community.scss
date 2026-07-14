@@ -373,6 +373,7 @@
 			min-width: 0;
 			width: 100%;
 			overflow: hidden;
+			white-space: normal;
 
 			strong {
 				color: var(--community-text);
@@ -382,20 +383,25 @@
 				line-height: 1.04;
 				letter-spacing: -0.065em;
 				text-wrap: balance;
+				white-space: normal;
 				overflow-wrap: break-word;
 				word-break: break-word;
 			}
 
 			p {
 				margin: 0;
+				width: 100%;
+				min-width: 0;
+				max-width: 100%;
 				color: #64748b;
 				font-family: $font;
 				font-size: 15px;
 				line-height: 1.8;
-				overflow-wrap: break-word;
+				white-space: normal;
+				overflow-wrap: anywhere;
 				word-break: break-word;
 				display: -webkit-box;
-				-webkit-line-clamp: 5;
+				-webkit-line-clamp: 3;
 				-webkit-box-orient: vertical;
 				overflow: hidden;
 			}
@@ -430,6 +436,9 @@
 		.activity-rail {
 			display: flex;
 			flex-direction: column;
+			min-width: 0;
+			max-width: 100%;
+			overflow: hidden;
 			gap: 12px;
 		}
 
@@ -473,6 +482,10 @@
 		.activity-item {
 			display: flex;
 			flex-direction: column;
+			width: 100%;
+			min-width: 0;
+			max-width: 100%;
+			overflow: hidden;
 			gap: 8px;
 			padding: 14px 0;
 			border-top: 1px solid rgba(96, 110, 145, 0.16);
@@ -491,11 +504,18 @@
 			}
 
 			strong {
+				display: block;
+				width: 100%;
+				min-width: 0;
+				max-width: 100%;
 				color: var(--community-text);
 				font-size: 16px;
 				font-weight: 700;
 				line-height: 1.4;
 				letter-spacing: -0.03em;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 				transition: color 0.24s ease;
 			}
 		}
@@ -680,6 +700,9 @@
 			display: flex;
 			flex: 1;
 			flex-direction: column;
+			min-width: 0;
+			width: 100%;
+			overflow: hidden;
 			gap: 16px;
 			padding: 22px;
 		}
@@ -692,7 +715,12 @@
 			display: flex;
 			flex: 1;
 			flex-direction: column;
+			min-width: 0;
+			width: 100%;
+			max-width: 100%;
+			overflow: hidden;
 			gap: 10px;
+			white-space: normal;
 		}
 
 		.article-footer {
@@ -708,6 +736,7 @@
 			line-height: 1.18;
 			letter-spacing: -0.055em;
 			min-height: calc(24px * 1.18 * 2);
+			white-space: normal;
 			display: -webkit-box;
 			-webkit-line-clamp: 2;
 			-webkit-box-orient: vertical;
@@ -716,12 +745,18 @@
 		}
 
 		.article-summary {
+			width: 100%;
+			min-width: 0;
+			max-width: 100%;
 			color: var(--community-muted);
 			font-size: 13px;
 			line-height: 1.72;
-			min-height: calc(13px * 1.72 * 2);
+			min-height: calc(13px * 1.72 * 3);
+			white-space: normal;
+			overflow-wrap: anywhere;
+			word-break: break-word;
 			display: -webkit-box;
-			-webkit-line-clamp: 2;
+			-webkit-line-clamp: 3;
 			-webkit-box-orient: vertical;
 			overflow: hidden;
 		}
