@@ -377,6 +377,38 @@
 			color: #ffffff;
 		}
 
+		.admin-console-btn {
+			margin-top: 4px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			width: fit-content;
+			padding: 11px 18px;
+			border-radius: 12px;
+			background: linear-gradient(135deg, #0a1f44 0%, #173bab 52%, #3755c3 100%);
+			box-shadow: 0 10px 22px -10px rgba(23, 59, 171, 0.55);
+			font-family: $font;
+			font-size: 13px;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			color: #fff;
+			transition:
+				transform 0.2s ease,
+				filter 0.2s ease,
+				box-shadow 0.2s ease;
+
+			svg {
+				font-size: 18px;
+			}
+
+			&:hover {
+				filter: brightness(1.12);
+				transform: translateY(-1px);
+				box-shadow: 0 14px 26px -10px rgba(23, 59, 171, 0.62);
+			}
+		}
+
 		.profile-metrics {
 			margin-top: 22px;
 			display: grid;

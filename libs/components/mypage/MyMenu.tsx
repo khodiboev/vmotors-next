@@ -4,6 +4,7 @@ import { Stack, Typography, Box, List, ListItem } from '@mui/material';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded';
@@ -103,9 +104,10 @@ const MyMenu = () => {
 					)}
 
 					{user?.memberType === 'ADMIN' ? (
-						<a href="/_admin/users" target={'_blank'} rel="noreferrer" className={'view-list-link'}>
-							<Typography className={'view-list'}>Open admin console</Typography>
-						</a>
+						<Link href={'/_admin/users'} className={'admin-console-btn'}>
+							<AdminPanelSettingsOutlinedIcon />
+							<span>Admin Panel</span>
+						</Link>
 					) : (
 						<Typography className={'profile-note'}>
 							{user?.memberType === 'AGENT' ? 'Dealer tools and inventory controls' : 'Buyer tools and saved vehicle tracking'}
