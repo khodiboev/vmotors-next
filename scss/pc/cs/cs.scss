@@ -568,6 +568,34 @@
 					font-weight: 600;
 					letter-spacing: 0.04em;
 				}
+
+				&.expandable {
+					grid-template-columns: 130px minmax(0, 1fr) 150px 24px;
+				}
+
+				.notice-caret {
+					color: var(--support-muted);
+					transition: transform 0.25s ease;
+
+					&.open {
+						transform: rotate(180deg);
+					}
+				}
+			}
+
+			.notice-body {
+				padding: 4px 24px 22px 172px;
+				border-top: none;
+				background: rgba(246, 249, 255, 0.6);
+
+				p {
+					margin: 0;
+					color: var(--support-muted);
+					font-family: $font;
+					font-size: 14px;
+					line-height: 1.75;
+					white-space: pre-wrap;
+				}
 			}
 		}
 
