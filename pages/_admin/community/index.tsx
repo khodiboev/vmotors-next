@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
-import { Box, Stack, MenuItem } from '@mui/material';
+import { Box, Stack, MenuItem, InputAdornment, OutlinedInput } from '@mui/material';
 import { List, ListItem } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
 import { TabContext } from '@mui/lab';
 import TablePagination from '@mui/material/TablePagination';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CommunityArticleList from '../../../libs/components/admin/community/CommunityArticleList';
 import { AllBoardArticlesInquiry } from '../../../libs/types/board-article/board-article.input';
 import { BoardArticle } from '../../../libs/types/board-article/board-article';
@@ -28,6 +30,7 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 		communityInquiry?.search?.articleStatus ? communityInquiry?.search?.articleStatus : 'ALL',
 	);
 	const [searchType, setSearchType] = useState('ALL');
+	const [searchText, setSearchText] = useState('');
 
 	/** APOLLO REQUESTS **/
 	const [updateBoardArticleByAdmin] = useMutation(UPDATE_BOARD_ARTICLE_BY_ADMIN);
@@ -96,6 +99,13 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 		}
 	};
 
+	const searchTextHandler = (nextText: string) => {
+		const search = { ...communityInquiry.search };
+		if (nextText) search.text = nextText;
+		else delete search.text;
+		setCommunityInquiry({ ...communityInquiry, page: 1, sort: 'createdAt', search });
+	};
+
 	const searchTypeHandler = async (newValue: string) => {
 		try {
 			setSearchType(newValue);
@@ -151,9 +161,6 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 		}
 	};
 
-	console.log('+communityInquiry', communityInquiry);
-	console.log('+articles', articles);
-
 	return (
 		<Box component={'div'} className={'content'}>
 			<Typography variant={'h2'} className={'tit'} sx={{ mb: '24px' }}>
@@ -198,6 +205,36 @@ const AdminCommunity: NextPage = ({ initialInquiry, ...props }: any) => {
 										</MenuItem>
 									))}
 								</Select>
+								<OutlinedInput
+									value={searchText}
+									onChange={(e) => setSearchText(e.target.value)}
+									sx={{ flex: 1 }}
+									className={'search'}
+									placeholder="Search article title"
+									onKeyDown={(event) => {
+										if (event.key === 'Enter') searchTextHandler(searchText);
+									}}
+									endAdornment={
+										<>
+											{searchText && (
+												<CancelRoundedIcon
+													style={{ cursor: 'pointer' }}
+													onClick={() => {
+														setSearchText('');
+														searchTextHandler('');
+													}}
+												/>
+											)}
+											<InputAdornment
+												position="end"
+												sx={{ cursor: 'pointer' }}
+												onClick={() => searchTextHandler(searchText)}
+											>
+												<SearchRoundedIcon />
+											</InputAdornment>
+										</>
+									}
+								/>
 							</Stack>
 							<Divider />
 						</Box>

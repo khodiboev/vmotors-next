@@ -56,6 +56,7 @@ interface AllVehicleSearch {
 	vehicleStatus?: VehicleStatus;
 	vehicleBrandList?: VehicleBrand[];
 	vehicleLocationList?: string[];
+	text?: string;
 }
 
 export interface AllVehiclesInquiry {

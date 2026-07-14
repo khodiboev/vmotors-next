@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
-import { Box, Divider, List, ListItem, MenuItem, Select, Stack, TablePagination, Typography } from '@mui/material';
+import {
+	Box,
+	Divider,
+	InputAdornment,
+	List,
+	ListItem,
+	MenuItem,
+	OutlinedInput,
+	Select,
+	Stack,
+	TablePagination,
+	Typography,
+} from '@mui/material';
 import { TabContext } from '@mui/lab';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { useMutation, useQuery } from '@apollo/client';
 import withAdminLayout from '../../../libs/components/layout/LayoutAdmin';
 import { PropertyPanelList } from '../../../libs/components/admin/properties/PropertyList';
@@ -21,7 +35,7 @@ const AdminVehicles: NextPage = ({ initialInquiry }: any) => {
 	const [vehiclesTotal, setVehiclesTotal] = useState<number>(0);
 	const [value, setValue] = useState(vehiclesInquiry?.search?.vehicleStatus ?? 'ALL');
 	const [brandFilter, setBrandFilter] = useState('ALL');
-	const [locationText, setLocationText] = useState('');
+	const [searchText, setSearchText] = useState('');
 
 	const [updateVehicleByAdmin] = useMutation(UPDATE_VEHICLE_BY_ADMIN);
 	const [removeVehicleByAdmin] = useMutation(REMOVE_VEHICLE_BY_ADMIN);
@@ -76,10 +90,10 @@ const AdminVehicles: NextPage = ({ initialInquiry }: any) => {
 		setVehiclesInquiry({ ...vehiclesInquiry, page: 1, sort: 'createdAt', search });
 	};
 
-	const locationFilterHandler = async () => {
+	const searchTextHandler = (nextText: string) => {
 		const search = { ...vehiclesInquiry.search };
-		if (locationText) search.vehicleLocationList = [locationText];
-		else delete search.vehicleLocationList;
+		if (nextText) search.text = nextText;
+		else delete search.text;
 		setVehiclesInquiry({ ...vehiclesInquiry, page: 1, sort: 'createdAt', search });
 	};
 
@@ -138,11 +152,35 @@ const AdminVehicles: NextPage = ({ initialInquiry }: any) => {
 										<MenuItem value={brand} onClick={() => brandFilterHandler(brand)} key={brand}>{brand}</MenuItem>
 									))}
 								</Select>
-								<input
-									value={locationText}
-									placeholder="Location"
-									onChange={(e) => setLocationText(e.target.value)}
-									onBlur={locationFilterHandler}
+								<OutlinedInput
+									value={searchText}
+									onChange={(e) => setSearchText(e.target.value)}
+									sx={{ flex: 1 }}
+									className={'search'}
+									placeholder="Search brand, model, trim, color, or location"
+									onKeyDown={(event) => {
+										if (event.key === 'Enter') searchTextHandler(searchText);
+									}}
+									endAdornment={
+										<>
+											{searchText && (
+												<CancelRoundedIcon
+													style={{ cursor: 'pointer' }}
+													onClick={() => {
+														setSearchText('');
+														searchTextHandler('');
+													}}
+												/>
+											)}
+											<InputAdornment
+												position="end"
+												sx={{ cursor: 'pointer' }}
+												onClick={() => searchTextHandler(searchText)}
+											>
+												<SearchRoundedIcon />
+											</InputAdornment>
+										</>
+									}
 								/>
 							</Stack>
 							<Divider />
