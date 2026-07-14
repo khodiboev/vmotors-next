@@ -625,3 +625,83 @@ export const GET_MEMBER_FOLLOWINGS = gql`
 		}
 	}
 `;
+
+/**************************
+ *      NOTIFICATION      *
+ *************************/
+
+export const GET_MY_NOTIFICATIONS = gql`
+	query GetMyNotifications($input: NotificationsInquiry!) {
+		getMyNotifications(input: $input) {
+			list {
+				_id
+				notificationType
+				notificationStatus
+				notificationGroup
+				notificationTitle
+				notificationDesc
+				authorId
+				receiverId
+				vehicleId
+				articleId
+				createdAt
+				updatedAt
+				authorData {
+					_id
+					memberNick
+					memberFullName
+					memberImage
+					memberType
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+export const GET_MY_CONVERSATIONS = gql`
+	query GetMyConversations {
+		getMyConversations {
+			list {
+				peerId
+				unreadCount
+				peerData {
+					_id
+					memberNick
+					memberFullName
+					memberImage
+					memberType
+				}
+				lastMessage {
+					_id
+					notificationDesc
+					authorId
+					receiverId
+					notificationStatus
+					createdAt
+				}
+			}
+		}
+	}
+`;
+
+export const GET_CONVERSATION = gql`
+	query GetConversation($input: ConversationInquiry!) {
+		getConversation(input: $input) {
+			list {
+				_id
+				notificationDesc
+				authorId
+				receiverId
+				notificationStatus
+				vehicleId
+				createdAt
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;

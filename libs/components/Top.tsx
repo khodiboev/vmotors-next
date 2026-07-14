@@ -11,7 +11,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { CaretDown } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import NotificationsMenu from './common/NotificationsMenu';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
@@ -281,7 +281,7 @@ const Top = () => {
 							</Link>
 						)}
 
-						{user?._id && <NotificationsOutlinedIcon className="notification-icon mobile" />}
+						{user?._id && <NotificationsMenu />}
 
 						{user?._id ? (
 							<button type="button" className="login-user mobile" onClick={(event) => setLogoutAnchor(event.currentTarget)}>
@@ -389,7 +389,7 @@ const Top = () => {
 									{t('My Page')}
 								</Link>
 
-								<NotificationsOutlinedIcon className={'notification-icon'} />
+								<NotificationsMenu />
 
 								<button type="button" className={'login-user'} onClick={(event) => setLogoutAnchor(event.currentTarget)}>
 									<img

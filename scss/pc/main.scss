@@ -2153,3 +2153,466 @@ body::-webkit-scrollbar {
 	border-radius: 2px;
 	margin-right: 8px;
 }
+
+/* ── Notifications bell + panel (Popover portals to body) ─────────── */
+.notifications-bell {
+	padding: 6px !important;
+
+	.MuiBadge-badge {
+		font-family: $font;
+		font-size: 10px;
+		font-weight: 600;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 4px;
+	}
+}
+
+.notifications-popover {
+	.MuiPopover-paper {
+		margin-top: 12px;
+		border-radius: 18px;
+		box-shadow:
+			0 2px 8px rgba(6, 16, 36, 0.1),
+			0 24px 56px -16px rgba(6, 16, 36, 0.28);
+		overflow: hidden;
+	}
+}
+
+.notifications-panel {
+	width: 380px;
+	max-height: 520px;
+	display: flex;
+	flex-direction: column;
+	background: #fff;
+
+	.panel-head {
+		flex-shrink: 0;
+		padding: 16px 18px 12px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 1px solid #eef2fa;
+
+		strong {
+			font-family: $font;
+			font-size: 15.5px;
+			font-weight: 700;
+			color: #0f172a;
+		}
+
+		button {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			column-gap: 5px;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-family: $font;
+			font-size: 12.5px;
+			font-weight: 600;
+			color: #173bab;
+			transition: color 0.2s ease;
+
+			svg {
+				width: 15px;
+				height: 15px;
+			}
+
+			&:hover {
+				color: #3b82f6;
+			}
+		}
+	}
+
+	.panel-list {
+		overflow-y: auto;
+	}
+
+	.panel-empty {
+		padding: 44px 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		row-gap: 10px;
+
+		svg {
+			width: 34px;
+			height: 34px;
+			color: #c3cddf;
+		}
+
+		span {
+			font-family: $font;
+			font-size: 13.5px;
+			color: #8a96ab;
+		}
+	}
+
+	.panel-item {
+		border-bottom: 1px solid #f2f5fb;
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+		&.unread {
+			background: #f6f9ff;
+		}
+
+		.item-main {
+			width: 100%;
+			padding: 13px 18px;
+			display: flex;
+			flex-direction: row;
+			align-items: flex-start;
+			column-gap: 12px;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			text-align: left;
+			transition: background 0.15s ease;
+
+			&:hover {
+				background: #eef3fc;
+			}
+		}
+
+		.item-avatar {
+			position: relative;
+			flex-shrink: 0;
+
+			.MuiAvatar-root {
+				width: 42px;
+				height: 42px;
+			}
+
+			.type-badge {
+				position: absolute;
+				right: -4px;
+				bottom: -3px;
+				width: 20px;
+				height: 20px;
+				padding: 4px;
+				border-radius: 50%;
+				background: #fff;
+				box-shadow: 0 1px 4px rgba(6, 16, 36, 0.18);
+
+				&.like {
+					color: #e11d48;
+				}
+
+				&.comment {
+					color: #7c3aed;
+				}
+
+				&.message {
+					color: #173bab;
+				}
+			}
+		}
+
+		.item-body {
+			flex: 1;
+			min-width: 0;
+			display: flex;
+			flex-direction: column;
+			row-gap: 3px;
+
+			p {
+				margin: 0;
+				font-family: $font;
+				font-size: 13.5px;
+				font-weight: 400;
+				line-height: 1.45;
+				color: #26334b;
+
+				b {
+					font-weight: 600;
+					color: #0f172a;
+				}
+			}
+
+			.desc {
+				font-family: $font;
+				font-size: 12.5px;
+				line-height: 1.45;
+				color: #596579;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+			}
+
+			.time {
+				font-family: $font;
+				font-size: 11.5px;
+				color: #9aa5b8;
+			}
+		}
+
+		.unread-dot {
+			flex-shrink: 0;
+			margin-top: 6px;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: #3b82f6;
+		}
+
+		.unread-count {
+			flex-shrink: 0;
+			margin-top: 4px;
+			min-width: 20px;
+			height: 20px;
+			padding: 0 6px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 999px;
+			background: linear-gradient(135deg, #173bab, #3b82f6);
+			font-family: $font;
+			font-size: 11px;
+			font-style: normal;
+			font-weight: 700;
+			color: #fff;
+		}
+	}
+
+	.panel-section {
+		display: block;
+		padding: 12px 18px 6px;
+		font-family: $font;
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #8a96ab;
+	}
+}
+
+/* ── Chat modal (dealer conversation window) ───────────────────────── */
+.chat-modal {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	.chat-window {
+		width: 480px;
+		max-width: calc(100vw - 40px);
+		height: 620px;
+		max-height: calc(100vh - 80px);
+		display: flex;
+		flex-direction: column;
+		border-radius: 22px;
+		background: #fff;
+		box-shadow: 0 36px 90px -22px rgba(4, 10, 24, 0.55);
+		overflow: hidden;
+		outline: none;
+		animation: chatWindowRise 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+	}
+
+	.chat-head {
+		flex-shrink: 0;
+		padding: 16px 18px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		column-gap: 13px;
+		background: linear-gradient(160deg, #050e20 0%, #0a1f44 60%, #12306e 100%);
+
+		.MuiAvatar-root {
+			width: 44px;
+			height: 44px;
+			border: 2px solid rgba(147, 197, 253, 0.35);
+		}
+
+		.peer-copy {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			row-gap: 2px;
+
+			strong {
+				font-family: $font;
+				font-size: 15.5px;
+				font-weight: 700;
+				color: #fff;
+			}
+
+			span {
+				font-family: $font;
+				font-size: 12px;
+				color: rgba(191, 219, 254, 0.75);
+			}
+		}
+
+		button {
+			width: 36px;
+			height: 36px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: none;
+			border-radius: 10px;
+			background: rgba(255, 255, 255, 0.1);
+			color: rgba(224, 233, 248, 0.85);
+			cursor: pointer;
+			transition: background 0.2s ease;
+
+			&:hover {
+				background: rgba(255, 255, 255, 0.2);
+			}
+		}
+	}
+
+	.chat-feed {
+		flex: 1;
+		padding: 18px;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		row-gap: 10px;
+		background:
+			radial-gradient(ellipse 70% 40% at 90% 0%, rgba(59, 130, 246, 0.05), transparent),
+			#f6f9ff;
+	}
+
+	.chat-empty {
+		margin: auto;
+		font-family: $font;
+		font-size: 13.5px;
+		color: #8a96ab;
+	}
+
+	.chat-bubble-row {
+		display: flex;
+
+		&.mine {
+			justify-content: flex-end;
+
+			.chat-bubble {
+				border-radius: 16px 16px 4px 16px;
+				background: linear-gradient(135deg, #173bab, #2f54c9);
+				color: #fff;
+
+				span {
+					color: rgba(224, 233, 248, 0.7);
+				}
+			}
+		}
+
+		&.theirs {
+			justify-content: flex-start;
+
+			.chat-bubble {
+				border-radius: 16px 16px 16px 4px;
+				background: #fff;
+				border: 1px solid #e3eaf6;
+				color: #0f172a;
+
+				span {
+					color: #9aa5b8;
+				}
+			}
+		}
+
+		.chat-bubble {
+			max-width: 78%;
+			padding: 10px 14px 8px;
+
+			p {
+				margin: 0;
+				font-family: $font;
+				font-size: 13.5px;
+				line-height: 1.55;
+				word-break: break-word;
+				white-space: pre-wrap;
+			}
+
+			span {
+				display: block;
+				margin-top: 4px;
+				font-family: $font;
+				font-size: 10.5px;
+				text-align: right;
+			}
+		}
+	}
+
+	.chat-compose {
+		flex-shrink: 0;
+		padding: 14px 16px;
+		display: flex;
+		flex-direction: row;
+		column-gap: 10px;
+		border-top: 1px solid #eef2fa;
+		background: #fff;
+
+		input {
+			flex: 1;
+			height: 46px;
+			padding: 0 16px;
+			border-radius: 14px;
+			border: 1px solid #dfe6f2;
+			background: #fbfcff;
+			font-family: $font;
+			font-size: 13.5px;
+			color: #0f172a;
+
+			&::placeholder {
+				color: #9aa5b8;
+			}
+
+			&:focus {
+				outline: none;
+				border-color: #3b82f6;
+				background: #fff;
+				box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+			}
+		}
+
+		button {
+			flex-shrink: 0;
+			width: 46px;
+			height: 46px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: none;
+			border-radius: 14px;
+			background: linear-gradient(135deg, #173bab, #3b82f6);
+			color: #fff;
+			cursor: pointer;
+			transition: filter 0.2s ease;
+
+			svg {
+				width: 19px;
+				height: 19px;
+			}
+
+			&:hover {
+				filter: brightness(1.12);
+			}
+
+			&:disabled {
+				background: #dfe6f2;
+				color: #9aa5b8;
+				cursor: default;
+			}
+		}
+	}
+}
+
+@keyframes chatWindowRise {
+	from {
+		opacity: 0;
+		transform: translateY(16px) scale(0.98);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}

@@ -1262,3 +1262,198 @@
 		background-position: -200% 0;
 	}
 }
+
+/* ── Dealer messaging (button + modal) ─────────────────────────────── */
+#pc-wrap #property-detail-page {
+	.dealer-message-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		padding: 15px 16px;
+		border: none;
+		border-radius: 18px;
+		background: linear-gradient(135deg, #0a1f44 0%, #173bab 52%, #3755c3 100%);
+		color: #fff;
+		font-family: $font;
+		font-size: 13px;
+		font-weight: 700;
+		cursor: pointer;
+		box-shadow: 0 12px 26px -12px rgba(23, 59, 171, 0.55);
+		transition:
+			transform 0.2s ease,
+			filter 0.2s ease,
+			box-shadow 0.2s ease;
+
+		svg {
+			width: 18px;
+			height: 18px;
+		}
+
+		&:hover {
+			filter: brightness(1.12);
+			transform: translateY(-1px);
+			box-shadow: 0 16px 30px -12px rgba(23, 59, 171, 0.62);
+		}
+	}
+
+	.dealer-message-modal {
+		position: fixed;
+		inset: 0;
+		z-index: 1300;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		.modal-backdrop {
+			position: absolute;
+			inset: 0;
+			background: rgba(4, 10, 24, 0.55);
+			backdrop-filter: blur(4px);
+			animation: dealerModalFade 0.25s ease;
+		}
+
+		.modal-card {
+			position: relative;
+			width: 520px;
+			max-width: calc(100vw - 48px);
+			padding: 26px 26px 22px;
+			border-radius: 22px;
+			background: #fff;
+			box-shadow: 0 32px 80px -20px rgba(4, 10, 24, 0.5);
+			animation: dealerModalRise 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+			.modal-head {
+				display: flex;
+				flex-direction: row;
+				align-items: flex-start;
+				justify-content: space-between;
+				column-gap: 16px;
+
+				.label {
+					display: block;
+					font-family: $font;
+					font-size: 12px;
+					font-weight: 600;
+					letter-spacing: 0.08em;
+					text-transform: uppercase;
+					color: #3b82f6;
+				}
+
+				strong {
+					display: block;
+					margin-top: 6px;
+					font-family: $font;
+					font-size: 19px;
+					font-weight: 700;
+					color: #0f172a;
+				}
+
+				button {
+					flex-shrink: 0;
+					width: 36px;
+					height: 36px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					border: none;
+					border-radius: 10px;
+					background: #eef2fa;
+					color: #596579;
+					cursor: pointer;
+					transition:
+						background 0.2s ease,
+						color 0.2s ease;
+
+					&:hover {
+						background: #dfe6f2;
+						color: #0f172a;
+					}
+				}
+			}
+
+			textarea {
+				margin-top: 18px;
+				width: 100%;
+				min-height: 140px;
+				padding: 14px 16px;
+				border-radius: 14px;
+				border: 1px solid #dfe6f2;
+				background: #fbfcff;
+				resize: vertical;
+				font-family: $font;
+				font-size: 14px;
+				line-height: 1.6;
+				color: #0f172a;
+
+				&::placeholder {
+					color: #9aa5b8;
+				}
+
+				&:focus {
+					outline: none;
+					border-color: #3b82f6;
+					background: #fff;
+					box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+				}
+			}
+
+			.modal-foot {
+				margin-top: 16px;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				column-gap: 16px;
+
+				> span {
+					font-family: $font;
+					font-size: 12px;
+					color: #8a96ab;
+				}
+
+				button {
+					height: 46px;
+					padding: 0 22px;
+					border-radius: 12px;
+					background: linear-gradient(135deg, #0a1f44 0%, #173bab 52%, #3755c3 100%);
+					font-family: $font;
+					font-size: 13.5px;
+					font-weight: 600;
+					text-transform: none;
+					color: #fff;
+
+					&:hover {
+						background: linear-gradient(135deg, #0a1f44 0%, #173bab 52%, #3755c3 100%);
+						filter: brightness(1.12);
+					}
+
+					&.Mui-disabled {
+						background: #dfe6f2;
+						color: #9aa5b8;
+					}
+				}
+			}
+		}
+	}
+}
+
+@keyframes dealerModalFade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes dealerModalRise {
+	from {
+		opacity: 0;
+		transform: translateY(14px) scale(0.98);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}

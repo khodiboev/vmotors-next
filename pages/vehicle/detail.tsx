@@ -18,6 +18,9 @@ import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFi
 import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined';
 import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -25,7 +28,7 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import moment from 'moment';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
 import { GET_COMMENTS, GET_VEHICLE, GET_VEHICLES } from '../../apollo/user/query';
-import { CREATE_COMMENT, LIKE_TARGET_VEHICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
+import { CREATE_COMMENT, LIKE_TARGET_VEHICLE, SEND_MESSAGE, UPDATE_COMMENT } from '../../apollo/user/mutation';
 import { Vehicle } from '../../libs/types/vehicle/vehicle';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
@@ -87,21 +90,32 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 	const [createComment] = useMutation(CREATE_COMMENT);
 	const [updateComment] = useMutation(UPDATE_COMMENT);
+	const [sendMessage] = useMutation(SEND_MESSAGE);
+	const [messageOpen, setMessageOpen] = useState<boolean>(false);
+	const [messageText, setMessageText] = useState<string>('');
+	const [messageSending, setMessageSending] = useState<boolean>(false);
 
-	const { loading: getVehicleLoading, refetch: getVehicleRefetch } = useQuery(GET_VEHICLE, {
+	// State is synced from `data` in effects below instead of onCompleted:
+	// Apollo 3.5 + React 18 strict mode drops onCompleted on hard loads.
+	const {
+		loading: getVehicleLoading,
+		data: getVehicleData,
+		refetch: getVehicleRefetch,
+	} = useQuery(GET_VEHICLE, {
 		fetchPolicy: 'network-only',
 		variables: { input: vehicleId },
 		skip: !vehicleId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			if (data?.getVehicle) {
-				setVehicle(data.getVehicle);
-				setSlideImage(data.getVehicle.vehicleImages?.[0] ?? '');
-			}
-		},
 	});
 
-	const { refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
+	useEffect(() => {
+		if (getVehicleData?.getVehicle) {
+			setVehicle(getVehicleData.getVehicle);
+			setSlideImage(getVehicleData.getVehicle.vehicleImages?.[0] ?? '');
+		}
+	}, [getVehicleData]);
+
+	const { data: getVehiclesData, refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			input: {
@@ -116,19 +130,25 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 			},
 		},
 		skip: !vehicle,
-		onCompleted: (data: T) => setSimilarVehicles(data?.getVehicles?.list ?? []),
 	});
 
-	const { refetch: getCommentsRefetch } = useQuery(GET_COMMENTS, {
+	useEffect(() => {
+		if (getVehiclesData?.getVehicles) setSimilarVehicles(getVehiclesData.getVehicles.list ?? []);
+	}, [getVehiclesData]);
+
+	const { data: getCommentsData, refetch: getCommentsRefetch } = useQuery(GET_COMMENTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: commentInquiry },
 		skip: !commentInquiry?.search?.commentRefId,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setVehicleComments(data?.getComments?.list ?? []);
-			setCommentTotal(data?.getComments?.metaCounter?.[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (getCommentsData?.getComments) {
+			setVehicleComments(getCommentsData.getComments.list ?? []);
+			setCommentTotal(getCommentsData.getComments.metaCounter?.[0]?.total ?? 0);
+		}
+	}, [getCommentsData]);
 
 	useEffect(() => {
 		if (!router.query.id) return;
@@ -199,6 +219,38 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 			await getCommentsRefetch({ input: commentInquiry });
 		} catch (err: any) {
 			sweetErrorHandling(err);
+		}
+	};
+
+	const openMessageHandler = async () => {
+		if (!user._id) {
+			await router.push({ pathname: '/account/join', query: { referrer: router.asPath } });
+			return;
+		}
+		setMessageOpen(true);
+	};
+
+	const sendMessageHandler = async () => {
+		const receiverId = vehicle?.memberData?._id ?? vehicle?.memberId;
+		if (!messageText.trim() || !receiverId || messageSending) return;
+		try {
+			setMessageSending(true);
+			await sendMessage({
+				variables: {
+					input: {
+						receiverId,
+						notificationDesc: messageText.trim(),
+						vehicleId: vehicle?._id,
+					},
+				},
+			});
+			setMessageOpen(false);
+			setMessageText('');
+			await sweetMixinSuccessAlert('Your message was sent to the dealer');
+		} catch (err: any) {
+			await sweetMixinErrorAlert(err.message);
+		} finally {
+			setMessageSending(false);
 		}
 	};
 
@@ -566,6 +618,10 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 								</p>
 
 								<div className={'dealer-actions'}>
+									<button type={'button'} className={'dealer-message-button'} onClick={openMessageHandler}>
+										<MailOutlineRoundedIcon />
+										<span>Message dealer</span>
+									</button>
 									<Link
 										href={{
 											pathname: '/agent/detail',
@@ -584,6 +640,40 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 									)}
 								</div>
 							</div>
+							{messageOpen && (
+								<div className={'dealer-message-modal'} role={'dialog'} aria-modal={'true'}>
+									<div className={'modal-backdrop'} onClick={() => setMessageOpen(false)} />
+									<div className={'modal-card'}>
+										<div className={'modal-head'}>
+											<div>
+												<span className={'label'}>Message to {dealerName || 'dealer'}</span>
+												<strong>{vehicleTitle(vehicle)}</strong>
+											</div>
+											<button type={'button'} aria-label={'Close'} onClick={() => setMessageOpen(false)}>
+												<CloseRoundedIcon />
+											</button>
+										</div>
+										<textarea
+											autoFocus={true}
+											placeholder={'Hi! Is this vehicle still available? I would like to learn more about it.'}
+											value={messageText}
+											onChange={(e) => setMessageText(e.target.value)}
+											maxLength={500}
+										/>
+										<div className={'modal-foot'}>
+											<span>{messageText.length}/500 · The dealer replies in your notifications</span>
+											<Button
+												variant={'contained'}
+												endIcon={<SendRoundedIcon />}
+												disabled={!messageText.trim() || messageSending}
+												onClick={sendMessageHandler}
+											>
+												{messageSending ? 'Sending…' : 'Send message'}
+											</Button>
+										</div>
+									</div>
+								</div>
+							)}
 						</div>
 					</section>
 

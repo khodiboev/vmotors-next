@@ -4,6 +4,8 @@ import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -47,18 +49,32 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 	// list reshuffles, keeping the override only in the child wouldn't survive it.
 	const [likeOverrides, setLikeOverrides] = useState<Record<string, { liked: boolean; likes: number }>>({});
 	const pendingLikeIds = useRef<Set<string>>(new Set());
+	const [dealerNoticeOpen, setDealerNoticeOpen] = useState<boolean>(false);
 
 	const [likeTargetVehicle] = useMutation(LIKE_TARGET_VEHICLE);
 
-	const { loading, refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
+	useEffect(() => {
+		if (!localStorage.getItem('santaDealerNoticeSeen')) setDealerNoticeOpen(true);
+	}, []);
+
+	const dismissDealerNotice = () => {
+		localStorage.setItem('santaDealerNoticeSeen', 'true');
+		setDealerNoticeOpen(false);
+	};
+
+	// State is synced from `data` in an effect instead of onCompleted:
+	// Apollo 3.5 + React 18 strict mode drops onCompleted on hard loads.
+	const { loading, data: getVehiclesData, refetch: getVehiclesRefetch } = useQuery(GET_VEHICLES, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setVehicles(data?.getVehicles?.list ?? []);
-			setTotal(data?.getVehicles?.metaCounter?.[0]?.total ?? 0);
-		},
 	});
+
+	useEffect(() => {
+		if (!getVehiclesData?.getVehicles) return;
+		setVehicles(getVehiclesData.getVehicles.list ?? []);
+		setTotal(getVehiclesData.getVehicles.metaCounter?.[0]?.total ?? 0);
+	}, [getVehiclesData]);
 
 	useEffect(() => {
 		if (router.query.input) setSearchFilter(JSON.parse(router.query.input as string));
@@ -155,6 +171,23 @@ const VehicleList: NextPage = ({ initialInput }: any) => {
 		<div id="property-list-page" style={{ position: 'relative' }}>
 			<div className="container">
 				<Stack className={'vehicles-page-shell'}>
+					{dealerNoticeOpen && (
+						<div className={'dealer-contact-notice'} role={'status'}>
+							<span className={'notice-icon'}>
+								<HandshakeOutlinedIcon />
+							</span>
+							<div className={'notice-copy'}>
+								<strong>Buying works through dealers on Santa</strong>
+								<p>
+									There is no online checkout — pick a vehicle you like, then call or message its dealer directly to
+									arrange the purchase.
+								</p>
+							</div>
+							<button type={'button'} aria-label={'Dismiss'} onClick={dismissDealerNotice}>
+								<CloseRoundedIcon />
+							</button>
+						</div>
+					)}
 					<Stack className={'vehicles-page-header'}>
 						<div className={'eyebrow'}>Santa curated inventory</div>
 						<div className={'heading-row'}>

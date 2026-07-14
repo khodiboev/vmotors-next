@@ -335,3 +335,45 @@ export const UNSUBSCRIBE = gql`
 		}
 	}
 `;
+
+/**************************
+ *      NOTIFICATION      *
+ *************************/
+
+export const SEND_MESSAGE = gql`
+	mutation SendMessage($input: MessageInput!) {
+		sendMessage(input: $input) {
+			_id
+			notificationType
+			notificationStatus
+			notificationGroup
+			notificationTitle
+			notificationDesc
+			authorId
+			receiverId
+			vehicleId
+			createdAt
+		}
+	}
+`;
+
+export const READ_NOTIFICATION = gql`
+	mutation ReadNotification($notificationId: String!) {
+		readNotification(notificationId: $notificationId) {
+			_id
+			notificationStatus
+		}
+	}
+`;
+
+export const READ_ALL_NOTIFICATIONS = gql`
+	mutation ReadAllNotifications {
+		readAllNotifications
+	}
+`;
+
+export const READ_CONVERSATION = gql`
+	mutation ReadConversation($peerId: String!) {
+		readConversation(peerId: $peerId)
+	}
+`;
