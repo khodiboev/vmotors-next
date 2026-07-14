@@ -136,7 +136,11 @@ const AddProperty = ({ initialValues }: any) => {
 		}
 	}, [insertVehicleData, vehicleId]);
 
-	if (user?.memberType !== 'AGENT') router.back();
+	useEffect(() => {
+		if (user?._id && user?.memberType !== 'AGENT') router.replace('/mypage');
+	}, [router, user?._id, user?.memberType]);
+
+	if (!user?._id || user?.memberType !== 'AGENT') return null;
 	if (device === 'mobile') return <div>ADD NEW VEHICLE MOBILE PAGE</div>;
 
 	return (
