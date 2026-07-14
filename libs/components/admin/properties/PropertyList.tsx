@@ -44,6 +44,13 @@ export const PropertyPanelList = ({
 				</TableRow>
 			</TableHead>
 			<TableBody>
+				{properties.length === 0 && (
+					<TableRow>
+						<TableCell align="center" colSpan={11}>
+							<span className={'no-data'}>No vehicles match the current filters.</span>
+						</TableCell>
+					</TableRow>
+				)}
 				{properties.map((vehicle, index) => {
 					const image = vehicle.vehicleImages?.[0] ? `${REACT_APP_API_URL}/${vehicle.vehicleImages[0]}` : '/img/banner/header1.svg';
 					return (
@@ -64,13 +71,20 @@ export const PropertyPanelList = ({
 							<TableCell>{vehicle.vehicleLocation}</TableCell>
 							<TableCell>{vehicle.vehicleStockQuantity}</TableCell>
 							<TableCell>${formatterStr(vehicle.vehiclePrice)}</TableCell>
-							<TableCell>{vehicle.vehicleStatus}</TableCell>
+							<TableCell>
+								<span className={`status-chip ${vehicle.vehicleStatus.toLowerCase()}`}>{vehicle.vehicleStatus}</span>
+							</TableCell>
 							<TableCell>{vehicle.memberData?.memberNick ?? vehicle.memberData?.memberFullName ?? '-'}</TableCell>
 							<TableCell align="right">
 								<IconButton onClick={(e) => menuIconClickHandler(e, index)}>
 									<MoreVertIcon />
 								</IconButton>
-								<Menu anchorEl={anchorEl[index]} open={Boolean(anchorEl[index])} onClose={menuIconCloseHandler}>
+								<Menu
+									className={'admin-row-menu'}
+									anchorEl={anchorEl[index]}
+									open={Boolean(anchorEl[index])}
+									onClose={menuIconCloseHandler}
+								>
 									{Object.values(VehicleStatus).map((status) => (
 										<MenuItem
 											key={status}
@@ -80,7 +94,9 @@ export const PropertyPanelList = ({
 											Mark {status}
 										</MenuItem>
 									))}
-									<MenuItem onClick={() => removePropertyHandler(vehicle._id)}>Remove</MenuItem>
+									<MenuItem className={'danger'} onClick={() => removePropertyHandler(vehicle._id)}>
+										Remove listing
+									</MenuItem>
 								</Menu>
 							</TableCell>
 						</TableRow>

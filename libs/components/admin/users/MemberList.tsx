@@ -181,7 +181,10 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="left">{member.memberPhone}</TableCell>
 
 										<TableCell align="center">
-											<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
+											<Button
+												onClick={(e: any) => menuIconClickHandler(e, index)}
+												className={`type-chip ${member.memberType.toLowerCase()}`}
+											>
 												{member.memberType}
 											</Button>
 
@@ -214,7 +217,10 @@ export const MemberPanelList = (props: MemberPanelListType) => {
 										<TableCell align="center">{member.memberWarnings}</TableCell>
 										<TableCell align="center">{member.memberBlocks}</TableCell>
 										<TableCell align="center">
-											<Button onClick={(e: any) => menuIconClickHandler(e, member._id)} className={'badge success'}>
+											<Button
+												onClick={(e: any) => menuIconClickHandler(e, member._id)}
+												className={`status-chip clickable ${member.memberStatus.toLowerCase()}`}
+											>
 												{member.memberStatus}
 											</Button>
 
