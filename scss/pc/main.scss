@@ -923,6 +923,15 @@ body::-webkit-scrollbar {
 
 		&.auth {
 			height: 300px;
+
+			.container {
+				margin-top: 0;
+				justify-content: center;
+
+				strong {
+					font-size: 40px;
+				}
+			}
 		}
 
 		// ── Per-page gradient compositions ──────────────────────────────
