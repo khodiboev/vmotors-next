@@ -89,6 +89,14 @@ const NotificationsMenu = () => {
 		setChatPeer(conversation.peerData);
 	};
 
+	const goToPeerProfileHandler = async (event: React.MouseEvent, peerId?: string) => {
+		event.stopPropagation();
+		if (!peerId) return;
+		setAnchor(null);
+		if (String(peerId) === String(user?._id)) await router.push(`/mypage?memberId=${peerId}`);
+		else await router.push(`/member?memberId=${peerId}`);
+	};
+
 	const markAllHandler = useCallback(async () => {
 		setActivityList((prev) => prev.map((ele) => ({ ...ele, notificationStatus: NotificationStatus.READ })));
 		setConversations((prev) => prev.map((ele) => ({ ...ele, unreadCount: 0 })));
@@ -172,10 +180,15 @@ const NotificationsMenu = () => {
 							const mine = String(last?.authorId) === String(user._id);
 							return (
 								<div key={String(conversation.peerId)} className={`panel-item ${conversation.unreadCount ? 'unread' : ''}`}>
+									<button
+										type={'button'}
+										className={'item-avatar-btn'}
+										aria-label={`View ${peerName}'s profile`}
+										onClick={(event) => goToPeerProfileHandler(event, peer?._id as string | undefined)}
+									>
+										<Avatar src={peerImage} alt={peerName} />
+									</button>
 									<button type={'button'} className={'item-main'} onClick={() => openConversationHandler(conversation)}>
-										<div className={'item-avatar'}>
-											<Avatar src={peerImage} alt={peerName} />
-										</div>
 										<div className={'item-body'}>
 											<p>
 												<b>{peerName}</b>

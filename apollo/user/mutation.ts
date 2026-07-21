@@ -357,6 +357,16 @@ export const SEND_MESSAGE = gql`
 	}
 `;
 
+export const UPDATE_MESSAGE = gql`
+	mutation UpdateMessage($input: NotificationUpdate!) {
+		updateMessage(input: $input) {
+			_id
+			notificationStatus
+			notificationDesc
+		}
+	}
+`;
+
 export const READ_NOTIFICATION = gql`
 	mutation ReadNotification($notificationId: String!) {
 		readNotification(notificationId: $notificationId) {

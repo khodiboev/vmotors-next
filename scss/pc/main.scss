@@ -2252,6 +2252,8 @@ body::-webkit-scrollbar {
 	}
 
 	.panel-item {
+		display: flex;
+		align-items: stretch;
 		border-bottom: 1px solid #f2f5fb;
 
 		&:last-child {
@@ -2262,7 +2264,23 @@ body::-webkit-scrollbar {
 			background: #f6f9ff;
 		}
 
+		.item-avatar-btn {
+			flex-shrink: 0;
+			padding: 13px 0 13px 18px;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			display: flex;
+			align-items: flex-start;
+
+			&:hover .MuiAvatar-root {
+				opacity: 0.82;
+			}
+		}
+
 		.item-main {
+			flex: 1;
+			min-width: 0;
 			width: 100%;
 			padding: 13px 18px;
 			display: flex;
@@ -2421,7 +2439,13 @@ body::-webkit-scrollbar {
 		flex-direction: row;
 		align-items: center;
 		column-gap: 13px;
+		cursor: pointer;
 		background: linear-gradient(160deg, #050e20 0%, #0a1f44 60%, #12306e 100%);
+
+		&:hover .peer-copy strong {
+			text-decoration: underline;
+			text-underline-offset: 2px;
+		}
 
 		.MuiAvatar-root {
 			width: 44px;
@@ -2540,6 +2564,60 @@ body::-webkit-scrollbar {
 				text-align: right;
 			}
 		}
+
+		.chat-bubble.editable {
+			cursor: context-menu;
+		}
+
+		.chat-bubble-edit {
+			display: flex;
+			flex-direction: column;
+			row-gap: 6px;
+			min-width: 200px;
+
+			input {
+				width: 100%;
+				height: 34px;
+				padding: 0 10px;
+				border-radius: 8px;
+				border: none;
+				font-family: $font;
+				font-size: 13px;
+				color: #0f172a;
+				outline: none;
+			}
+
+			.chat-bubble-edit-actions {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-end;
+				column-gap: 8px;
+
+				button {
+					border: none;
+					background: transparent;
+					font-family: $font;
+					font-size: 11.5px;
+					font-weight: 700;
+					letter-spacing: 0.02em;
+					cursor: pointer;
+					padding: 3px 8px;
+					border-radius: 6px;
+					color: inherit;
+					opacity: 0.85;
+
+					&:hover {
+						opacity: 1;
+						background: rgba(255, 255, 255, 0.14);
+					}
+
+					&:last-child {
+						color: #fff;
+						background: rgba(255, 255, 255, 0.16);
+					}
+				}
+			}
+		}
 	}
 
 	.chat-compose {
@@ -2602,6 +2680,28 @@ body::-webkit-scrollbar {
 				color: #9aa5b8;
 				cursor: default;
 			}
+		}
+	}
+}
+
+.chat-message-menu {
+	.MuiMenuItem-root {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		column-gap: 10px;
+		font-family: $font;
+		font-size: 13.5px;
+		color: #26334b;
+
+		svg {
+			width: 18px;
+			height: 18px;
+			color: #596579;
+		}
+
+		&:hover {
+			background: #f3f6fc;
 		}
 	}
 }

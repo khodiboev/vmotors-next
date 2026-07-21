@@ -7,6 +7,7 @@ export enum NotificationType {
 export enum NotificationStatus {
 	WAIT = 'WAIT',
 	READ = 'READ',
+	DELETE = 'DELETE',
 }
 
 export enum NotificationGroup {
