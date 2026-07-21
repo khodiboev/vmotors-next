@@ -78,6 +78,19 @@ export const GET_MEMBER = gql(`
 }
 `);
 
+export const GET_SUPPORT_CONTACT = gql(`
+ query GetSupportContact {
+    getSupportContact {
+        _id
+        memberType
+        memberNick
+        memberFullName
+        memberImage
+        memberPhone
+    }
+}
+`);
+
 /**************************
  *        VEHICLE         *
  *************************/

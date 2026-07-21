@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem } from '@mui/material';
 import Link from 'next/link';
-import { useReactiveVar } from '@apollo/client';
+import { useLazyQuery, useReactiveVar } from '@apollo/client';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -16,15 +16,25 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import { userVar } from '../../../apollo/store';
 import { REACT_APP_API_URL } from '../../config';
 import { logOut } from '../../auth';
-import { sweetConfirmAlert } from '../../sweetAlert';
+import { sweetConfirmAlert, sweetMixinErrorAlert } from '../../sweetAlert';
+import { GET_SUPPORT_CONTACT } from '../../../apollo/user/query';
+import { Member } from '../../types/member/member';
+import ChatModal from '../common/ChatModal';
 
 const MyMenu = () => {
 	const router = useRouter();
 	const pathname = typeof router.query.category === 'string' ? router.query.category : 'myProfile';
 	const user = useReactiveVar(userVar);
+	const [supportContact, setSupportContact] = useState<Member | null>(null);
+	const [chatOpen, setChatOpen] = useState<boolean>(false);
+
+	const [fetchSupportContact, { loading: supportContactLoading }] = useLazyQuery(GET_SUPPORT_CONTACT, {
+		fetchPolicy: 'network-only',
+	});
 
 	const listingItems = [
 		...(user?.memberType === 'AGENT'
@@ -54,6 +64,22 @@ const MyMenu = () => {
 		}
 	};
 
+	const messageAdminHandler = async () => {
+		if (supportContactLoading) return;
+		try {
+			let contact = supportContact;
+			if (!contact) {
+				const { data } = await fetchSupportContact();
+				contact = data?.getSupportContact ?? null;
+				if (!contact) throw new Error('Support is not available right now.');
+				setSupportContact(contact);
+			}
+			setChatOpen(true);
+		} catch (err: any) {
+			await sweetMixinErrorAlert(err.message);
+		}
+	};
+
 	const renderNavItems = (items: Array<{ key: string; label: string; icon: React.ReactNode; href: string }>) => {
 		return (
 			<List className={'sub-section'}>
@@ -74,6 +100,7 @@ const MyMenu = () => {
 	};
 
 	return (
+		<>
 		<Stack width={'100%'} className={'dashboard-menu-shell'}>
 			<Stack className={'profile'}>
 				<Box component={'div'} className={'profile-img'}>
@@ -152,6 +179,18 @@ const MyMenu = () => {
 					</Typography>
 					{renderNavItems(accountItems)}
 					<List className={'sub-section utility-list'}>
+						{user?.memberType !== 'ADMIN' && (
+							<ListItem onClick={messageAdminHandler}>
+								<div className={'flex-box'}>
+									<span className={'com-icon'}>
+										<SupportAgentOutlinedIcon />
+									</span>
+									<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+										Message admin
+									</Typography>
+								</div>
+							</ListItem>
+						)}
 						<ListItem onClick={logoutHandler}>
 							<div className={'flex-box'}>
 								<span className={'com-icon'}>
@@ -166,6 +205,9 @@ const MyMenu = () => {
 				</Stack>
 			</Stack>
 		</Stack>
+
+		{supportContact && <ChatModal peer={supportContact} open={chatOpen} onClose={() => setChatOpen(false)} />}
+		</>
 	);
 };
 

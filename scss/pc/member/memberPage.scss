@@ -198,6 +198,25 @@
 							background: rgba(55, 85, 195, 0.06);
 						}
 					}
+
+					.message-btn {
+						padding: 11px 28px;
+						background: transparent;
+						color: #0a1f44;
+						border: 2px solid rgba(10, 31, 68, 0.16);
+						border-radius: 14px;
+						font-family: $font;
+						font-size: 14px;
+						font-weight: 700;
+						text-transform: none;
+						letter-spacing: 0.01em;
+						transition: all 0.22s ease;
+
+						&:hover {
+							background: rgba(10, 31, 68, 0.05);
+							border-color: rgba(10, 31, 68, 0.28);
+						}
+					}
 				}
 			}
 		}
@@ -412,7 +431,8 @@
 				width: 100%;
 
 				.follow-btn,
-				.following-btn {
+				.following-btn,
+				.message-btn {
 					width: 100%;
 				}
 			}

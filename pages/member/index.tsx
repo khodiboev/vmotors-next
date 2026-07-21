@@ -17,6 +17,7 @@ import { userVar } from '../../apollo/store';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Member } from '../../libs/types/member/member';
 import { T } from '../../libs/types/common';
+import ChatModal from '../../libs/components/common/ChatModal';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -35,6 +36,7 @@ const MemberPage: NextPage = () => {
 	// trusts its own click over that until a genuinely different member loads.
 	const [heroFollowOverride, setHeroFollowOverride] = useState<boolean | null>(null);
 	const pendingFollowIds = useRef<Set<string>>(new Set());
+	const [chatOpen, setChatOpen] = useState<boolean>(false);
 
 	/** APOLLO REQUESTS **/
 	const [subscribe] = useMutation(SUBSCRIBE);
@@ -125,6 +127,14 @@ const MemberPage: NextPage = () => {
 			sweetMixinErrorAlert(err.message).then();
 			return false;
 		}
+	};
+
+	const openMessageHandler = async () => {
+		if (!user?._id) {
+			await router.push({ pathname: '/account/join', query: { referrer: router.asPath } });
+			return;
+		}
+		setChatOpen(true);
 	};
 
 	const redirectToMemberPageHandler = async (memberId: string) => {
@@ -225,6 +235,9 @@ const MemberPage: NextPage = () => {
 										Follow
 									</Button>
 								)}
+								<Button className="message-btn" onClick={openMessageHandler}>
+									Message
+								</Button>
 							</div>
 						)}
 					</div>
@@ -259,6 +272,8 @@ const MemberPage: NextPage = () => {
 				</div>
 
 			</div>
+
+			{member && <ChatModal peer={member} open={chatOpen} onClose={() => setChatOpen(false)} />}
 		</div>
 	);
 };
