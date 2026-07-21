@@ -442,10 +442,10 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 												displayVehicle?.meLiked?.[0]?.myFavorite ? 'Removed from favorites' : 'Added to favorites',
 											)
 										}
-										aria-label={'Save vehicle'}
+										aria-label={displayVehicle?.meLiked?.[0]?.myFavorite ? 'Saved to favorites' : 'Save to favorites'}
 									>
 										{displayVehicle?.meLiked?.[0]?.myFavorite ? <BookmarkIcon color={'primary'} /> : <BookmarkBorderIcon />}
-										<span>Save vehicle</span>
+										<span>{displayVehicle?.meLiked?.[0]?.myFavorite ? 'Saved to favorites' : 'Save to favorites'}</span>
 									</button>
 								</div>
 
