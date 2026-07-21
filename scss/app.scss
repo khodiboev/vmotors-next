@@ -118,6 +118,14 @@ img[src*='/img/logo/app-icon.svg']:hover {
 	}
 }
 
+/** SweetAlert2's default z-index (1060) sits BELOW MUI's Modal/Popover/Menu (1300+),
+    so any confirm/error alert fired while a MUI Modal is open (e.g. delete-message
+    confirm from inside ChatModal) renders behind that modal's backdrop — visible but
+    with its buttons unclickable on the first try. Always keep SweetAlert2 on top. **/
+.swal2-container {
+	z-index: 20000 !important;
+}
+
 /** SANTA VEHICLE TOAST — SweetAlert2 mounts on <body>, outside #pc-wrap/#mobile-wrap.
     Its stylesheet is injected at runtime after ours, so selectors must out-rank
     .swal2-popup.swal2-toast (hence the triple class). **/
