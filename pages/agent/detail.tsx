@@ -334,6 +334,15 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 								</div>
 							</div>
 						</div>
+
+						<div className="hero-actions">
+							<Button
+								className="view-profile-btn"
+								onClick={() => redirectToMemberPageHandler(agent?._id as string)}
+							>
+								Go to Profile
+							</Button>
+						</div>
 					</div>
 				</section>
 
