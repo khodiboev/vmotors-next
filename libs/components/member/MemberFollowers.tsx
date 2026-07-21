@@ -159,6 +159,7 @@ const MemberFollowers = (props: MemberFollowsProps) => {
 										type="button"
 										className={`like-btn${liked ? ' liked' : ''}`}
 										onClick={() => wrappedLike(followerId, liked, likesCount)}
+										aria-label={'Like member'}
 									>
 										{liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
 										<span>{likesCount}</span>

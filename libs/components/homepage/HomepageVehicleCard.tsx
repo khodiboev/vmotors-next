@@ -91,6 +91,7 @@ const HomepageVehicleCard = ({ property, likePropertyHandler }: HomepageVehicleC
 							className={'like-button'}
 							disabled={!likePropertyHandler}
 							onClick={() => likePropertyHandler?.(user, property?._id)}
+							aria-label={'Like vehicle'}
 						>
 							{property?.meLiked?.[0]?.myFavorite ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
 						</button>

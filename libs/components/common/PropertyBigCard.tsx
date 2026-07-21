@@ -77,6 +77,7 @@ const PropertyBigCard = (props: PropertyBigCardProps) => {
 									e.stopPropagation();
 									likePropertyHandler(user, property._id);
 								}}
+								aria-label={'Like vehicle'}
 							>
 								<FavoriteIcon />
 								{property?.vehicleLikes}

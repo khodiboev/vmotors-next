@@ -81,7 +81,11 @@ const CommunityCard = (props: CommunityCardProps) => {
 							<RemoveRedEyeIcon />
 						</IconButton>
 						<Typography className="view-cnt">{boardArticle?.articleViews}</Typography>
-						<IconButton color={'default'} onClick={(e) => likeArticleHandler(e, user, boardArticle?._id, isLiked)}>
+						<IconButton
+						color={'default'}
+						onClick={(e) => likeArticleHandler(e, user, boardArticle?._id, isLiked)}
+						aria-label={'Like article'}
+					>
 							{isLiked ? <FavoriteIcon color={'primary'} /> : <FavoriteBorderIcon />}
 						</IconButton>
 						<Typography className="view-cnt">{boardArticle?.articleLikes}</Typography>
