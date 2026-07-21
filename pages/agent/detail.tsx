@@ -14,7 +14,7 @@ import {
 	sweetMixinSuccessAlert,
 	sweetVehicleActionToast,
 } from '../../libs/sweetAlert';
-import { userVar } from '../../apollo/store';
+import { heroOverrideVar, userVar } from '../../apollo/store';
 import { VehiclesInquiry } from '../../libs/types/vehicle/vehicle.input';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
@@ -81,6 +81,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 		const member = getMemberData?.getMember;
 		if (!member) return;
 		setAgent(member);
+		heroOverrideVar({ pathname: '/agent/detail', title: member.memberFullName ?? member.memberNick ?? '' });
 		setSearchFilter((prev: any) => ({ ...prev, search: { memberId: member._id } }));
 		setCommentInquiry((prev: any) => ({ ...prev, search: { commentRefId: member._id } }));
 		setInsertCommentData((prev: any) => ({ ...prev, commentRefId: member._id }));

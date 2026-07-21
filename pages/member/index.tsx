@@ -13,7 +13,7 @@ import { GET_MEMBER } from '../../apollo/user/query';
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
 import { sweetDealerActionToast, sweetErrorHandling, sweetFollowActionToast, sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
-import { userVar } from '../../apollo/store';
+import { heroOverrideVar, userVar } from '../../apollo/store';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Member } from '../../libs/types/member/member';
 import { T } from '../../libs/types/common';
@@ -53,7 +53,11 @@ const MemberPage: NextPage = () => {
 	});
 
 	useEffect(() => {
-		setMember(getMemberData?.getMember ?? null);
+		const nextMember = getMemberData?.getMember ?? null;
+		setMember(nextMember);
+		if (nextMember) {
+			heroOverrideVar({ pathname: '/member', title: nextMember.memberFullName ?? nextMember.memberNick ?? '' });
+		}
 	}, [getMemberData]);
 
 	/** LIFECYCLES **/

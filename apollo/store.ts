@@ -26,3 +26,8 @@ export const userVar = makeVar<CustomJwtPayload>({
 
 //@ts-ignore
 export const socketVar = makeVar<WebSocket>();
+
+// Lets a page override withLayoutBasic's hero title once its own client-fetched
+// data (e.g. a dealer's name) is ready. Scoped by pathname so a stale value from
+// a page you've since navigated away from is never picked up by a different page.
+export const heroOverrideVar = makeVar<{ pathname: string; title: string } | null>(null);

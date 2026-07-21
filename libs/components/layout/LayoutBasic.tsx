@@ -8,7 +8,7 @@ import { Stack } from '@mui/material';
 import { getJwtToken, updateUserInfo } from '../../auth';
 import Chat from '../Chat';
 import { useReactiveVar } from '@apollo/client';
-import { userVar } from '../../../apollo/store';
+import { heroOverrideVar, userVar } from '../../../apollo/store';
 import { useTranslation } from 'next-i18next';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -21,6 +21,7 @@ const withLayoutBasic = (Component: any) => {
 		const device = useDeviceDetect();
 		const [authHeader, setAuthHeader] = useState<boolean>(false);
 		const user = useReactiveVar(userVar);
+		const heroOverride = useReactiveVar(heroOverrideVar);
 
 		const memoizedValues = useMemo(() => {
 			let title = '',
@@ -35,22 +36,22 @@ const withLayoutBasic = (Component: any) => {
 					break;
 				case '/agent':
 					title = 'Dealers';
-					desc = 'Home / Vehicles';
+					desc = 'Home / Dealers';
 					heroClass = 'hero-dealers';
 					break;
 				case '/agent/detail':
-					title = 'Dealer Page';
-					desc = 'Home / Vehicles';
+					title = heroOverride?.pathname === '/agent/detail' && heroOverride.title ? heroOverride.title : 'Dealer Profile';
+					desc = 'Home / Dealers';
 					heroClass = 'hero-dealers';
 					break;
 				case '/mypage':
-					title = 'my page';
-					desc = 'Home / Vehicles';
+					title = 'My Page';
+					desc = 'Home / My Page';
 					heroClass = 'hero-mypage';
 					break;
 				case '/community':
 					title = 'Community';
-					desc = 'Home / Vehicles';
+					desc = 'Home / Community';
 					heroClass = 'hero-community';
 					break;
 				case '/community/detail':
@@ -70,16 +71,21 @@ const withLayoutBasic = (Component: any) => {
 					setAuthHeader(true);
 					break;
 				case '/member':
-					title = 'Member Page';
-					desc = 'Home / Vehicles';
+					title = heroOverride?.pathname === '/member' && heroOverride.title ? heroOverride.title : 'Member Page';
+					desc = 'Home / Member';
 					heroClass = 'hero-mypage';
+					break;
+				case '/about':
+					title = 'About Santa';
+					desc = 'Building a clearer Hyundai and Kia marketplace';
+					heroClass = 'hero-default';
 					break;
 				default:
 					break;
 			}
 
 			return { title, desc, heroClass };
-		}, [router.pathname]);
+		}, [router.pathname, heroOverride]);
 
 		/** LIFECYCLES **/
 		useEffect(() => {
