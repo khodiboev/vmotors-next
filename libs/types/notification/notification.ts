@@ -1,6 +1,6 @@
 import { NotificationGroup, NotificationStatus, NotificationType } from '../../enums/notification.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from '../property/property';
+import { TotalCounter } from '../vehicle/vehicle';
 
 export interface Notification {
 	_id: string;

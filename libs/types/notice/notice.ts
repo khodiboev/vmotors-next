@@ -1,6 +1,6 @@
 import { NoticeCategory, NoticeStatus } from '../../enums/notice.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from '../property/property';
+import { TotalCounter } from '../vehicle/vehicle';
 import { Direction } from '../../enums/common.enum';
 
 export interface Notice {
