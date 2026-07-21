@@ -71,7 +71,6 @@ const Chat = () => {
 	useEffect(() => {
 		socket.onmessage = (msg) => {
 			const data = JSON.parse(msg.data);
-			console.log('WebSocket message:', data);
 
 			switch (data.event) {
 				case 'info':
