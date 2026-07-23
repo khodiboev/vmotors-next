@@ -112,7 +112,8 @@ img[src*='/img/logo/app-icon.svg']:hover {
 
 	.container {
 		position: relative;
-		width: 1300px;
+		/* fixed 1300px caused a site-wide horizontal scrollbar below that viewport width (e.g. 1280px laptops) */
+		width: min(1300px, 100% - 48px);
 		margin: 0 auto;
 		display: flex;
 	}

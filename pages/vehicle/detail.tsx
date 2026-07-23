@@ -301,6 +301,7 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 		}
 	};
 
+	const isOwnVehicle = !!user?._id && user._id === (vehicle?.memberData?._id ?? vehicle?.memberId);
 	const dealerName = vehicle?.memberData?.memberFullName ?? vehicle?.memberData?.memberNick;
 	const dealerImage = vehicle?.memberData?.memberImage
 		? `${REACT_APP_API_URL}/${vehicle.memberData.memberImage}`
@@ -618,10 +619,12 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 								</p>
 
 								<div className={'dealer-actions'}>
-									<button type={'button'} className={'dealer-message-button'} onClick={openMessageHandler}>
-										<MailOutlineRoundedIcon />
-										<span>Message dealer</span>
-									</button>
+									{!isOwnVehicle && (
+										<button type={'button'} className={'dealer-message-button'} onClick={openMessageHandler}>
+											<MailOutlineRoundedIcon />
+											<span>Message dealer</span>
+										</button>
+									)}
 									<Link
 										href={{
 											pathname: '/agent/detail',
