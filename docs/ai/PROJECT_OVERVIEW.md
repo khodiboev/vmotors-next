@@ -37,7 +37,7 @@ All visible branding now says Santa. Internal code names (file paths, TypeScript
 | Rich text | TUI Editor (`@toast-ui/react-editor`) |
 | Animation | Framer Motion (navbar, homepage sections, orbital carousel) |
 | Upload | Apollo `createUploadLink` |
-| Chat | Apollo WebSocket subscription |
+| Chat | "Santa Assistant" — local, rule-based keyword search over `GET_VEHICLES` (no WebSocket, no LLM; see DECISIONS.md D-13) |
 | Icons | MUI Icons + Phosphor React |
 
 ---
@@ -83,6 +83,7 @@ libs/
     cs/                 Faq, Notice
     Top.tsx             Global navigation (Journey Navigation)
     Footer.tsx          Global footer
+    Chat.tsx            "Santa Assistant" floating widget, rendered by all 3 layout HOCs
   types/                TypeScript interfaces (Vehicle, Member, etc.)
   enums/                TypeScript enums (VehicleBrand, VehicleStatus, etc.)
   hooks/                useDeviceDetect, useScroll
@@ -208,7 +209,17 @@ yarn build                                  # Full Next.js build
 
 ---
 
-## Latest Status Update (2026-07-11)
+## Latest Status Update (2026-07-23)
+
+A long single-session sweep: a small round of Vehicle Detail bug fixes, a full click-through QA pass as USER/AGENT/ADMIN (no defects found beyond wording), a full rewrite of the floating chat widget into a real (free, rule-based, no LLM) inventory search assistant called **Santa Assistant**, and a mobile-parity pass that found two pages (`/account/join`, `/community/detail`) rendering **literal placeholder text** instead of real content on any phone. Also fixed a backend bug where sold vehicles stayed visible (and dead-linked) in Recently Viewed / Saved Vehicles. Full write-up: `COMPLETED_TASKS.md` Phase 6. New decisions: `DECISIONS.md` D-13 (Santa Assistant is rule-based, not an LLM — and why) and D-14 (space-constrained card badges are icon-only, not text pills).
+
+**Known gap:** mobile changes in this phase were verified mostly by code/CSS inspection, not a live phone/DevTools screenshot — this session's browser tooling could not reliably spoof a mobile user agent. Worth a real spot-check.
+
+**Environment reminder:** always `rm -rf .next` when switching between `yarn build` and `yarn dev` in either direction — running one right after the other without clearing it reliably breaks the dev server into a `"missing required error components"` loop (see Phase 6.8).
+
+---
+
+## Previous Status Update (2026-07-11)
 
 Homepage vehicle-card sections (New Arrivals, Buyer Favorites, Trend/Top Properties) now show the branded bottom-center Santa toast on like/unlike instead of a generic top-right "success" alert.
 

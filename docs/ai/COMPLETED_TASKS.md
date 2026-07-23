@@ -7,6 +7,112 @@ This file records all significant completed work on the Santa frontend, in rever
 
 ---
 
+## Phase 6: Site-Wide Bug Sweep, Santa Assistant, and Mobile Parity (2026-07-23)
+
+A single long QA-and-fix session covering: a small round of Vehicle Detail bug fixes, a full click-through QA pass of the whole site as USER/AGENT/ADMIN, replacing the legacy broken chat widget with a real search assistant, closing two mobile pages that were rendering literal placeholder text instead of real content, and fixing several card-layout overflow bugs found via user-supplied screenshots (two of which traced back to a real backend bug). Every sub-entry below preserves existing GraphQL/Apollo/routing/business logic unless explicitly stated otherwise.
+
+### 6.1 — Vehicle Detail: Three Small, Scoped Bug Fixes (pre-QA round)
+
+**1. Site-wide horizontal scroll below ~1300px viewport width.**
+`#pc-wrap .container` (`scss/app.scss`) and `.footer-container` (`scss/pc/main.scss`) were a hardcoded `width: 1300px` with no responsive fallback — any window narrower than that (a very common real laptop width, e.g. 1280px) got a horizontal scrollbar on every `withLayoutBasic`/`withLayoutHome` page. Changed both to `width: min(1300px, 100% - 48px)`, which is pixel-identical to the old behavior at ≥1300px and only shrinks below that. Confirmed live: at 1265px viewport, `scrollWidth === clientWidth` (previously overflowed).
+
+**2. A dealer could message themselves.**
+`pages/vehicle/detail.tsx`'s "Message dealer" button had no self-check, unlike the existing precedent in `pages/agent/detail.tsx:166` (`"Cannot write a review for yourself"`). Added `isOwnVehicle = user._id === (vehicle?.memberData?._id ?? vehicle?.memberId)` and hid the button when true. Guests and other users are unaffected.
+
+**3. Inconsistent "please log in" wording.**
+Vehicle actions used `Message.NOT_AUTHENTICATED` = *"You are not authenticated, please login first!"* while community/member/mypage actions used the shorter `Messages.error2` = *"Please login first!"*. Changed the shared `Message.NOT_AUTHENTICATED` enum value (`libs/enums/common.enum.ts`) to match — a single-line fix that propagates to all 6 call sites.
+
+**Files:** `scss/app.scss`, `scss/pc/main.scss`, `pages/vehicle/detail.tsx`, `libs/enums/common.enum.ts`.
+
+---
+
+### 6.2 — Full-Site Click-Through QA Pass (USER / AGENT / ADMIN)
+
+Manually exercised every major interactive surface in the browser, logged in as each of the three roles (seed accounts `User1`/`Justin`/`Admin`): vehicle like/unlike, vehicle comment create/edit/delete, dealer review submit, dealer follow/unfollow, message-a-dealer, community article like/unlike and comment create/delete, My Page (Following list, notifications bell showing a real sent message), agent vehicle status changes (Reserve/Sold, verified against the database and reverted), agent Add Vehicle form, and all 5 Admin panel sections (Members, Vehicles, Community, FAQ, Notices).
+
+**Result:** no functional defects found beyond the wording inconsistency already fixed in 6.1 — everything tested works as intended. This pass is what surfaced the "please log in" wording mismatch, and gave the baseline confidence for the mobile and layout work that followed.
+
+---
+
+### 6.3 — Santa Assistant: Replacing the Legacy Chat Widget
+
+**What it was:** `libs/components/Chat.tsx` was a leftover Nestar-era **global broadcast chatroom** — every visitor site-wide shared one open WebSocket room (`socket.gateway.ts` in the backend), capped at the last 5 messages, with no `_id` on messages (React key warnings), no reconnect handling, and no try/catch around `.send()`. The floating widget was branded "Online Chat" / "Santa client support" in the UI, implying private 1:1 support — but technically put a visitor in a room with random other site visitors.
+
+**What replaced it:** a fully rewritten `Chat.tsx` — a private, per-session, rule-based **inventory search assistant** ("Santa Assistant"), with no backend changes and no paid API:
+- Parses the typed question for known brand (`Hyundai`/`Kia`), fuel-type keywords (English + Uzbek stems, e.g. `elektromobil`→`ELECTRIC`), and leftover significant words as free-text candidates.
+- Runs the existing `GET_VEHICLES` query (already used by `/vehicle`) with `brandList`/`fuelList`/`text` built from the parsed input; tries up to 2 keyword candidates before falling back to brand/fuel-only or a generic "browse all" empty state.
+- Renders results as small linked vehicle cards (image, title, price, location) inside the bot's chat bubble.
+- All UI copy is in English (a mid-session request switched this from an initial Uzbek draft).
+- Explicitly **not persisted** — resets on page reload. This was a deliberate choice after asking the user, not an oversight.
+
+**Why not a real LLM:** the user was asked directly; Anthropic API is pay-per-token with no free tier beyond initial trial credit, and the free rule-based approach fully covers the requested "ask about a vehicle, get an answer" use case.
+
+**Files:** `libs/components/Chat.tsx` (full rewrite), `scss/pc/main.scss` (`.chatting` bubble/result-card styles).
+
+---
+
+### 6.4 — Mobile Parity: Two Pages Were Rendering Placeholder Text, Not Real Content
+
+Chrome DevTools device emulation on the homepage (a user-supplied screenshot) surfaced a much larger mobile problem than the single visual bug it showed. Investigating it top to bottom found:
+
+**Critical: two pages literally stub out their mobile branch.**
+- `pages/account/join.tsx`: `if (device === 'mobile') return <div>LOGIN MOBILE</div>;` — on any real phone, Login/Signup was a single line of placeholder text. No form, no way to log in or sign up from a phone at all.
+- `pages/community/detail.tsx`: same pattern, `<div>COMMUNITY DETAIL PAGE MOBILE</div>` — no article content, comments, or like button on mobile.
+
+Both stub branches were removed outright (matching the already-established D-02 "CSS handles responsive layout, not a JS device branch" pattern used by every other redesigned page) so the real JSX renders unconditionally, then given real `#mobile-wrap` CSS: `scss/pc/account/join.scss` (two-column form stacks to one column) and `scss/pc/community/detail.scss` (header/body/comments padding and type scale, edit-modal made viewport-safe).
+
+**Stale mobile CSS for a component that was since redesigned.**
+`TopAgentCard.tsx`'s ("Trusted Dealers" homepage section) markup was rebuilt with a premium layout (`agent-avatar`, `agent-copy`, `agent-stats`, `agent-link`) at some point, but its `#mobile-wrap .top-agent-card` rules in `scss/mobile/main.scss` were never updated — they still targeted the old pre-redesign shape (`img`/`strong`/`span` direct children), so on mobile the cards rendered with none of their intended styling. Rewrote the mobile block to match the current component structure.
+
+**Santa Assistant was unreachable on mobile everywhere.**
+`<Chat />` was rendered only in the desktop (`else`) branch of all three layout HOCs (`LayoutHome.tsx`, `LayoutBasic.tsx`, `LayoutFull.tsx`) — the mobile branch never mounted it, and even if it had, `.chatting`/`.chat-frame`/etc. had zero mobile CSS anywhere. Added `<Chat />` to all three mobile branches and wrote a matching `#mobile-wrap .chatting` block (viewport-relative width capped at 360px, shorter panel height, full-width message input).
+
+**Confirmed already fine, no changes needed:** `agent-detail-page` (Dealer Detail) and `member-page` both already had adequate dedicated `#mobile-wrap` CSS in their own PC scss files — an earlier pass in this same session had wrongly concluded they had *zero* mobile coverage by only grepping the central `scss/mobile/main.scss`, missing that some pages keep their mobile overrides colocated in their own file instead.
+
+**Files:** `pages/account/join.tsx`, `pages/community/detail.tsx`, `scss/pc/account/join.scss`, `scss/pc/community/detail.scss`, `scss/mobile/main.scss`, `libs/components/layout/LayoutHome.tsx`, `LayoutBasic.tsx`, `LayoutFull.tsx`.
+
+**Verification note:** this session's browser tooling could not reliably spoof a mobile user agent (viewport-only resize does not trigger this codebase's UA-based `useDeviceDetect`), so most of this phase was verified by direct code/CSS-cascade inspection plus `yarn build` succeeding, rather than a live mobile screenshot. Recommend a real-device or DevTools-emulation spot-check.
+
+---
+
+### 6.5 — My Articles: Card Title Touching the Card Edge
+
+`libs/components/common/CommunityCard.tsx` (used only by `MyArticles.tsx`) renders its title/author text inside `.desc-box`, which had **zero horizontal padding** in its shared base definition (`scss/pc/general.scss`) — the title text ran edge-to-edge to the card boundary, ~1–2px from touching it. (The card's photo is intentionally edge-to-edge; the text was not meant to be.) Added `padding: 2px 14px 0` to the page-scoped `.desc-box` override in `scss/pc/mypage/myArticles.scss` — matching the `14px` horizontal padding already used by the sibling Edit/Delete button row. Verified via `getBoundingClientRect()`: title now sits ~15px from each edge instead of ~1–2px.
+
+---
+
+### 6.6 — Recently Viewed / Saved Vehicles: Two Card-Overflow Bugs at 3-Column Width
+
+Both `#recently-visited-page` and `#my-favorites-page` reuse `DashboardVehicleCard` in a denser 3-column grid than the component's default 2-column design. Two overflow bugs, found from user screenshots, both traced to sizing that was tuned only for the wider 2-column card:
+
+**1. Badge overlapping the price.** The bottom-left context pill (originally text: "Recently viewed" / "Favorite") and the bottom-right price chip are both absolutely positioned from opposite edges with no collision handling — at 3-column width the "Recently viewed" pill's text was wide enough to reach and overlap the price. `myFavorites.scss` already had a scaled-down fix for this on the Saved Vehicles page; `recentlyVisited.scss` was missing the equivalent fix. Rather than re-tuning padding on both, the user asked for a simpler, permanent fix: drop the text label entirely and keep only the icon (clock-with-arrow for "Recently viewed", bookmark for "Favorite"). `DashboardVehicleCard.tsx`'s `.media-context-pill` is now icon-only (with `aria-label`/`title` preserving the meaning for screen readers/hover), and the CSS became a small fixed-size circle (36px desktop / 32px mobile) instead of a text pill — structurally too small to ever reach the price chip again, so the previous 3-column-specific shrinking overrides for it were removed as dead code.
+
+**2. Views/likes stats overflowing the card's right edge.** `.engagement-box` (eye icon + views, like button, like count) kept its 2-column sizing (38px like-button, 12px text, 10px gaps) in the 3-column context, where — combined with the dealer name/avatar column — it no longer fit and got clipped by the card's `overflow: hidden`. Added a 3-column-scoped size reduction (30px like-button, 11px text, tighter gaps, smaller dealer name/address text) to both `recentlyVisited.scss` and `myFavorites.scss`.
+
+**Files:** `libs/components/mypage/DashboardVehicleCard.tsx`, `scss/pc/mypage/myFavorites.scss`, `scss/pc/mypage/recentlyVisited.scss`, `scss/mobile/main.scss`.
+
+---
+
+### 6.7 — Backend Fix: Sold Vehicles Leaking Into Recently Viewed / Saved Vehicles
+
+While investigating 6.6, a card in Recently Viewed turned out to be a **sold** vehicle with a broken image, and clicking it landed on "We couldn't find that vehicle." — `pages/vehicle/detail.tsx` calls `getVehicle`, which (correctly) only returns `vehicleStatus: AVAILABLE` vehicles. The list endpoints behind Recently Viewed and Saved Vehicles did not apply the same rule.
+
+**Root cause (backend, `vmotors` repo):** `ViewService.getVisitedVehicles` and `LikeService.getFavoriteVehicles` both filtered their vehicle lookup only by `deletedAt: { $exists: false }`, with no `vehicleStatus` filter — so a vehicle that later became `SOLD` (or `RESERVED`) stayed visible in a user's history/favorites indefinitely, as a dead link. This directly contradicts the migration's own documented intent ("Public listings show available non-deleted vehicles" — `vmotors/docs/ai/COMPLETED_TASKS.md`).
+
+**Fix:** added `vehicleStatus: VehicleStatus.AVAILABLE` to both aggregation `$match` stages, identical to the rule already enforced by `getVehicle`/`getVehicles`. The vehicle document itself is untouched — this only changes which vehicles are eligible to appear in these two list queries. The main public `/vehicle` listing (`getVehicles`) already had this filter and needed no change.
+
+**Verification:** looked up the exact vehicle from the report directly in MongoDB (`db.views.findOne({ viewRefId: ... })`) to find the real affected member (`David`, an `AGENT`), then called `getVisited` with his credentials before/after: his list dropped from 16 to 15 entries and the sold `Sonata` is gone; all 15 remaining entries are `AVAILABLE`. `npx tsc -p apps/vmotors-api/tsconfig.app.json --noEmit` passed; the `nest start --watch` dev process picked up the change without a crash.
+
+**Files:** `vmotors/apps/vmotors-api/src/components/view/view.service.ts`, `vmotors/apps/vmotors-api/src/components/like/like.service.ts`.
+
+---
+
+### 6.8 — Environment Note: `.next` Corruption Between `yarn build` and `yarn dev`
+
+Running a production `yarn build` and then starting `yarn dev` **without** clearing `.next` in between reliably broke the dev server into a `"missing required error components, refreshing..."` loop (matches the already-documented iCloud-sync `.next` corruption pattern, but this specific trigger — production/dev mode mismatch in the same `.next` folder — is a new, reproducible variant of it). Hit this twice in this session; the fix both times was `rm -rf .next` before restarting `yarn dev`. **Rule of thumb: always `rm -rf .next` when switching between `yarn build` and `yarn dev`, not just when dev misbehaves on its own.**
+
+---
+
 ## Phase 5: Footer, Toggles, Hero Backgrounds — and a Vehicle Detail Rollback (July 2026)
 
 ### 5.7 — Homepage Like Toast + Related/List Vehicle Like State Fix (2026-07-11)

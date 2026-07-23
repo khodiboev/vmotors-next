@@ -150,3 +150,27 @@ import NewArrivalsOrbital from '...';
 **Rule:** When improving feedback for a specific domain action, prefer a scoped component rendered by the owning page/component unless the product explicitly wants a site-wide alert redesign.
 
 **Preserved:** `LIKE_TARGET_BOARD_ARTICLE` variables, mutation calls, Apollo refetch/cache behavior, routing, pagination, article fetching, and backend APIs stayed unchanged.
+
+---
+
+## D-13: Santa Assistant Is a Rule-Based Keyword Search, Not an LLM
+
+**Decision:** The floating chat widget ("Santa Assistant", `libs/components/Chat.tsx`) answers vehicle questions by parsing the typed text for known brand/fuel keywords plus leftover significant words, then running the existing `GET_VEHICLES` query and rendering the results — it does not call any AI/LLM API.
+
+**Why:** The user was asked directly whether to pay for an LLM (Anthropic API is pay-per-token, no meaningful free tier) or use a free rule-based approach. They chose free. The rule-based version fully covers the requested use case ("ask about a model/price/location, get matching listings") with zero ongoing cost and no new backend dependency.
+
+**What this replaced:** a legacy Nestar-era global WebSocket broadcast chatroom (every site visitor in one shared room, backend `socket.gateway.ts`) that was branded as private "Online Chat" / "Santa client support" but was not — see Phase 6.3 in `COMPLETED_TASKS.md` for the full before/after.
+
+**If a real LLM is wanted later:** the natural integration point is a new backend resolver (not the old `socket.gateway.ts` broadcast path) that takes the question, looks up relevant vehicles the same way the current keyword search does, and passes that as context to the model — keeping the "backend does the data lookup, model only phrases the answer" shape rather than trusting the model with raw DB access.
+
+**Not persisted:** conversation history resets on page reload/close. This is a deliberate scope decision (confirmed with the user), not an oversight — persisting it would require a new backend table and would only make sense for logged-in users, while the assistant is also useful to guests.
+
+---
+
+## D-14: Space-Constrained Card Badges Are Icon-Only, Not Text Pills
+
+**Decision:** `DashboardVehicleCard`'s bottom-left context badge (used on My Page's "Recently viewed" and "Saved vehicles" grids) shows only an icon (clock-with-arrow / bookmark) with no visible text label — the text moved to `aria-label`/`title` instead.
+
+**Why:** In the 3-column card variant, the text pill ("Recently viewed") was wide enough to overlap the bottom-right price chip on the same card. A per-column-count padding/font-size override already existed for this on the Saved Vehicles page but was missing on Recently Viewed, and even where present it was a fragile fix (still just a smaller pill, still text-width-dependent). Dropping the text entirely removes the collision class of bug outright: a fixed 36px/32px circle can never grow wide enough to reach the price chip, regardless of card width or locale (text length varies by language; an icon does not).
+
+**Rule:** For a badge whose only job is to convey a short, already-visually-distinct status (an icon most users will recognize in context) inside a space-constrained card, prefer icon-only with `aria-label`/`title` over a text pill, rather than continuously re-tuning padding/font-size per breakpoint.
