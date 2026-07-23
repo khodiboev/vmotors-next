@@ -739,3 +739,117 @@
 		}
 	}
 }
+
+/* ─── MOBILE ─── */
+#mobile-wrap {
+	#community-detail-page {
+		--cd-primary: #0a1f44;
+		--cd-secondary: #3755c3;
+		--cd-soft: #edf3ff;
+		--cd-surface: #ffffff;
+		--cd-border: rgba(118, 135, 178, 0.16);
+		--cd-shadow: 0 28px 80px rgba(10, 31, 68, 0.12);
+		--cd-shadow-soft: 0 8px 32px rgba(10, 31, 68, 0.06);
+		--cd-muted: #5a667d;
+		--cd-text: #374151;
+
+		padding: 24px 0 56px;
+
+		.container {
+			padding: 0 16px;
+			gap: 16px;
+		}
+
+		.article-category-nav {
+			flex-wrap: wrap;
+			padding: 12px 16px;
+			row-gap: 10px;
+
+			.MuiTabs-root {
+				order: 3;
+				width: 100%;
+				overflow-x: auto;
+			}
+
+			.write-button {
+				margin-left: auto;
+			}
+		}
+
+		.article-detail-main {
+			gap: 16px;
+		}
+
+		.article-header-card .article-header-inner {
+			padding: 24px 20px;
+			gap: 14px;
+		}
+
+		.article-header-card .article-title {
+			font-size: 21px;
+			max-width: 100%;
+		}
+
+		.article-body-card {
+			padding: 24px 18px 28px;
+
+			.article-content {
+				max-width: 100%;
+
+				.toastui-editor-contents {
+					font-size: 15px !important;
+
+					p,
+					ul li,
+					ol li {
+						font-size: 15px;
+					}
+
+					img {
+						max-height: 260px;
+					}
+
+					h1 {
+						font-size: 20px;
+					}
+
+					h2 {
+						font-size: 18px;
+					}
+
+					h3 {
+						font-size: 16px;
+					}
+
+					pre {
+						padding: 14px 16px;
+					}
+				}
+			}
+
+			.article-like-section .like-action-button {
+				width: 100%;
+				justify-content: center;
+			}
+		}
+
+		.article-comments-card {
+			padding: 24px 18px;
+			gap: 20px;
+
+			.comment-item {
+				padding: 16px 16px;
+			}
+
+			.comment-content {
+				padding-left: 0;
+				margin-top: 4px;
+			}
+		}
+
+		.edit-backdrop .edit-modal {
+			width: calc(100vw - 32px);
+			padding: 24px 20px;
+		}
+	}
+}

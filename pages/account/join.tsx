@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { NextPage } from 'next';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Checkbox, FormControlLabel, FormGroup, Stack } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -25,7 +24,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 
 const Join: NextPage = () => {
 	const router = useRouter();
-	const device = useDeviceDetect();
 	const [input, setInput] = useState({ nick: '', password: '', phone: '' });
 	const [loginView, setLoginView] = useState<boolean>(true);
 	const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -68,11 +66,8 @@ const Join: NextPage = () => {
 		if (event.key === 'Enter') submitHandler();
 	};
 
-	if (device === 'mobile') {
-		return <div>LOGIN MOBILE</div>;
-	} else {
-		return (
-			<Stack className={'join-page'}>
+	return (
+		<Stack className={'join-page'}>
 				<Stack className={'container'}>
 					<Stack className={'main'}>
 						<Stack className={'brand-panel'}>
@@ -255,8 +250,7 @@ const Join: NextPage = () => {
 					</Stack>
 				</Stack>
 			</Stack>
-		);
-	}
+	);
 };
 
 export default withLayoutBasic(Join);

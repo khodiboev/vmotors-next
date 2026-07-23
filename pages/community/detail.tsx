@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { Button, Tab, Tabs, IconButton, Backdrop, Pagination } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -38,7 +37,6 @@ export const getStaticProps = async ({ locale }: any) => ({
 });
 
 const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
 
@@ -252,10 +250,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
-	if (device === 'mobile') {
-		return <div>COMMUNITY DETAIL PAGE MOBILE</div>;
-	} else {
-		return (
+	return (
 			<div id="community-detail-page">
 				<div className="container">
 					{/* Horizontal category nav — replaces old sidebar */}
@@ -468,8 +463,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 					onDone={() => setArticleFeedback(null)}
 				/>
 			</div>
-		);
-	}
+	);
 };
 CommunityDetail.defaultProps = {
 	initialInput: {
