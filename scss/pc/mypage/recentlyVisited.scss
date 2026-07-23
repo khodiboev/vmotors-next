@@ -30,6 +30,63 @@
 				height: 38px;
 			}
 
+			.dealer-box {
+				strong {
+					font-size: 13px;
+				}
+
+				span {
+					font-size: 11px;
+				}
+			}
+
+			// At 3 columns the brand badge keeps its 2-column padding/font size,
+			// which is wide enough that it can crowd the bottom-right price chip
+			// on longer prices. Scale both down. (The context pill is icon-only
+			// and small enough at any column count not to need its own override.)
+			.media-badge {
+				padding: 6px 10px;
+				font-size: 10px;
+			}
+
+			.price-chip {
+				padding: 9px 11px;
+				border-radius: 14px;
+
+				span {
+					font-size: 15px;
+				}
+			}
+
+			// The engagement stats (views/like button/like count) keep their
+			// 2-column sizing by default, which no longer fits next to the dealer
+			// info at 3-column width and overflows the card's right edge.
+			.card-footer {
+				gap: 8px;
+			}
+
+			.engagement-box {
+				gap: 6px;
+			}
+
+			.metric,
+			.metric-count {
+				font-size: 11px;
+			}
+
+			.metric svg {
+				font-size: 15px;
+			}
+
+			.like-button {
+				width: 30px;
+				height: 30px;
+
+				svg {
+					font-size: 15px;
+				}
+			}
+
 			.history-note {
 				margin-top: 20px;
 				align-items: center;

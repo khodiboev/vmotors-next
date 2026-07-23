@@ -54,9 +54,8 @@ const DashboardVehicleCard = ({ vehicle, contextLabel, likeVehicleHandler }: Das
 					<span className={'media-badge brand'}>{vehicle?.vehicleBrand}</span>
 				</div>
 
-				<div className={'media-context-pill'}>
+				<div className={'media-context-pill'} aria-label={contextLabel} title={contextLabel}>
 					{contextLabel === 'Favorite' ? <BookmarkAddedRoundedIcon /> : <HistoryRoundedIcon />}
-					<span>{contextLabel}</span>
 				</div>
 
 				<div className={'price-chip'}>

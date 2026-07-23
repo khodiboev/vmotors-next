@@ -1238,18 +1238,16 @@
     .media-context-pill {
       left: 14px;
       bottom: 14px;
-      padding: 9px 10px;
-      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      justify-content: center;
+      border-radius: 50%;
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.14);
       color: #ffffff;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
 
       svg {
-        font-size: 14px;
+        font-size: 16px;
       }
     }
 

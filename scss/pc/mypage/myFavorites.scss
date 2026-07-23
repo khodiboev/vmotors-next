@@ -83,20 +83,17 @@
 			.media-context-pill {
 				left: 18px;
 				bottom: 18px;
-				padding: 10px 12px;
-				border-radius: 999px;
+				width: 36px;
+				height: 36px;
+				justify-content: center;
+				border-radius: 50%;
 				background: rgba(255, 255, 255, 0.12);
 				border: 1px solid rgba(255, 255, 255, 0.14);
 				backdrop-filter: blur(12px);
 				color: #ffffff;
-				font-family: $font;
-				font-size: 11px;
-				font-weight: 700;
-				letter-spacing: 0.08em;
-				text-transform: uppercase;
 
 				svg {
-					font-size: 16px;
+					font-size: 18px;
 				}
 			}
 
@@ -440,21 +437,13 @@
 				height: 38px;
 			}
 
-			// At 3 columns the media badges keep their 2-column padding/font sizes,
-			// which is wide enough that the bottom-left "Favorite" pill and the
-			// bottom-right price chip can collide on longer prices. Scale both down.
+			// At 3 columns the brand badge keeps its 2-column padding/font size,
+			// which is wide enough that it can crowd the bottom-right price chip
+			// on longer prices. Scale both down. (The context pill is icon-only
+			// and small enough at any column count not to need its own override.)
 			.media-badge {
 				padding: 6px 10px;
 				font-size: 10px;
-			}
-
-			.media-context-pill {
-				padding: 7px 10px;
-				font-size: 10px;
-
-				svg {
-					font-size: 14px;
-				}
 			}
 
 			.price-chip {
@@ -462,6 +451,45 @@
 				border-radius: 14px;
 
 				span {
+					font-size: 15px;
+				}
+			}
+
+			.dealer-box {
+				strong {
+					font-size: 13px;
+				}
+
+				span {
+					font-size: 11px;
+				}
+			}
+
+			// The engagement stats (views/like button/like count) keep their
+			// 2-column sizing by default, which no longer fits next to the dealer
+			// info at 3-column width and overflows the card's right edge.
+			.card-footer {
+				gap: 8px;
+			}
+
+			.engagement-box {
+				gap: 6px;
+			}
+
+			.metric,
+			.metric-count {
+				font-size: 11px;
+			}
+
+			.metric svg {
+				font-size: 15px;
+			}
+
+			.like-button {
+				width: 30px;
+				height: 30px;
+
+				svg {
 					font-size: 15px;
 				}
 			}
