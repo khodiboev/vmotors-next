@@ -7231,3 +7231,59 @@
     }
   }
 }
+
+/* ─── Santa Assistant chat widget ─── */
+#mobile-wrap {
+  .chatting {
+    .chat-button {
+      bottom: 76px;
+      right: 16px;
+      width: 46px;
+      height: 46px;
+    }
+
+    .chat-frame {
+      right: -100vw;
+      bottom: 132px;
+      width: calc(100vw - 24px);
+      max-width: 360px;
+      height: min(66vh, 480px);
+      border-radius: 24px;
+
+      &.open {
+        right: 12px;
+      }
+
+      .chat-top {
+        height: 56px;
+        font-size: 18px;
+      }
+
+      .chat-content {
+        padding: 14px;
+      }
+
+      .chat-bott {
+        height: 68px;
+        padding: 0 14px;
+        gap: 10px;
+
+        .msg-input {
+          width: auto;
+          flex: 1;
+          padding: 0 16px;
+        }
+
+        .send-msg-btn {
+          flex-shrink: 0;
+          margin-left: 0;
+        }
+      }
+
+      .msg-left,
+      .msg-right {
+        max-width: calc(100% - 60px);
+      }
+    }
+  }
+}
