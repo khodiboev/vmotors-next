@@ -541,6 +541,35 @@
 						color: var(--cd-muted);
 					}
 
+					.comment-input-actions {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+					}
+
+					.comment-clear {
+						height: 36px;
+						padding: 0 18px;
+						background: transparent;
+						color: var(--cd-muted);
+						border: 1px solid rgba(55, 85, 195, 0.18);
+						border-radius: 9px;
+						font-family: $font;
+						font-size: 13px;
+						font-weight: 500;
+						text-transform: none;
+						transition: background 0.15s ease, border-color 0.15s ease;
+
+						&:hover {
+							background: rgba(55, 85, 195, 0.06);
+							border-color: var(--cd-secondary);
+						}
+
+						&.Mui-disabled {
+							opacity: 0.5;
+						}
+					}
+
 					.comment-submit {
 						height: 36px;
 						padding: 0 22px;

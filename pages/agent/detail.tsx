@@ -436,6 +436,13 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 						/>
 						<div className="submit-row">
 							<Button
+								className="clear-btn"
+								disabled={insertCommentData.commentContent === ''}
+								onClick={() => setInsertCommentData({ ...insertCommentData, commentContent: '' })}
+							>
+								Clear
+							</Button>
+							<Button
 								className="submit-btn"
 								disabled={insertCommentData.commentContent === '' || user?._id === ''}
 								onClick={createCommentHandler}

@@ -696,13 +696,22 @@ const VehicleDetail: NextPage = ({ initialComment }: any) => {
 							/>
 							<div className={'comment-compose-footer'}>
 								<span>{user?._id ? 'Your comment will appear with your Santa profile.' : 'Sign in to join the conversation.'}</span>
-								<Button
-									disabled={!insertCommentData.commentContent || !user?._id}
-									onClick={createCommentHandler}
-									className={'submit-comment'}
-								>
-									Submit comment
-								</Button>
+								<div className={'comment-compose-actions'}>
+									<Button
+										disabled={!insertCommentData.commentContent}
+										onClick={() => setInsertCommentData((prev) => ({ ...prev, commentContent: '' }))}
+										className={'clear-comment'}
+									>
+										Clear
+									</Button>
+									<Button
+										disabled={!insertCommentData.commentContent || !user?._id}
+										onClick={createCommentHandler}
+										className={'submit-comment'}
+									>
+										Submit comment
+									</Button>
+								</div>
 							</div>
 						</div>
 

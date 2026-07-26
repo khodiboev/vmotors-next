@@ -21,7 +21,7 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 
 	const [updateMember] = useMutation(UPDATE_MEMBER);
 
-	useEffect(() => {
+	const syncFromUser = useCallback(() => {
 		setUpdateData((prev) => ({
 			...prev,
 			memberNick: user?.memberNick ?? '',
@@ -31,6 +31,11 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 			memberFullName: user?.memberFullName ?? '',
 			memberDesc: user?.memberDesc ?? '',
 		}));
+	}, [user]);
+
+	useEffect(() => {
+		syncFromUser();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [user]);
 
 	const uploadImage = async (e: any) => {
@@ -228,6 +233,9 @@ const MyProfile: NextPage = ({ initialValues }: any) => {
 					</Stack>
 
 					<Stack className="about-me-box">
+						<Button className="cancel-button" onClick={syncFromUser}>
+							<Typography>Cancel</Typography>
+						</Button>
 						<Button className="update-button" onClick={updatePropertyHandler} disabled={isUpdateDisabled}>
 							<Typography>Update profile</Typography>
 							<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">

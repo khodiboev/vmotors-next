@@ -85,9 +85,36 @@
 			overflow: hidden;
 		}
 
+		// Cancel button
+		.editor-cancel-btn {
+			margin: 28px 0;
+			width: 180px;
+			height: 48px;
+			border-radius: 14px;
+			border: 1px solid rgba(10, 31, 68, 0.18);
+			background: transparent;
+			color: var(--dashboard-text, #0a1f44);
+			font-family: $font;
+			font-size: 14px;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: none;
+			transition: background 0.22s ease, border-color 0.22s ease;
+
+			&:hover {
+				background: rgba(10, 31, 68, 0.05);
+				border-color: rgba(10, 31, 68, 0.28);
+			}
+
+			&:disabled {
+				opacity: 0.5;
+				cursor: not-allowed;
+			}
+		}
+
 		// Submit button
 		.editor-submit-btn {
-			margin: 28px auto;
+			margin: 28px 0;
 			width: 260px;
 			height: 48px;
 			border-radius: 14px;

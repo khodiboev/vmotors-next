@@ -256,6 +256,31 @@
 			.about-me-box {
 				display: flex;
 				justify-content: flex-end;
+				gap: 12px;
+			}
+
+			.cancel-button {
+				min-width: 140px;
+				min-height: 52px;
+				padding: 0 22px;
+				border-radius: 16px;
+				border: 1px solid rgba(10, 31, 68, 0.18);
+				background: transparent;
+				transition: background 0.22s ease, border-color 0.22s ease;
+
+				&:hover {
+					background: rgba(10, 31, 68, 0.05);
+					border-color: rgba(10, 31, 68, 0.28);
+				}
+
+				p {
+					color: var(--dashboard-text, #0a1f44);
+					font-family: $font;
+					font-size: 13px;
+					font-weight: 700;
+					letter-spacing: 0.08em;
+					text-transform: uppercase;
+				}
 			}
 
 			.update-button {

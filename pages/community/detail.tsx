@@ -358,9 +358,21 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 								/>
 								<div className="comment-input-footer">
 									<span>{wordsCnt}/100</span>
-									<Button className="comment-submit" onClick={createCommentHandler}>
-										Post comment
-									</Button>
+									<div className="comment-input-actions">
+										<Button
+											className="comment-clear"
+											disabled={!comment}
+											onClick={() => {
+												setComment('');
+												setWordsCnt(0);
+											}}
+										>
+											Clear
+										</Button>
+										<Button className="comment-submit" onClick={createCommentHandler}>
+											Post comment
+										</Button>
+									</div>
 								</div>
 							</div>
 

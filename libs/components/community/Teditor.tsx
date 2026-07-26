@@ -261,6 +261,11 @@ const TuiEditor = () => {
 		}
 	};
 
+	const cancelHandler = async () => {
+		clearStoredDraft();
+		await router.push({ pathname: '/mypage', query: { category: 'myArticles' } });
+	};
+
 	const changeCategoryHandler = (e: any) => {
 		setArticleCategory(e.target.value);
 	};
@@ -423,7 +428,15 @@ const TuiEditor = () => {
 				</div>
 			)}
 
-			<Stack direction="row" justifyContent="center">
+			<Stack direction="row" justifyContent="center" gap={'16px'}>
+				<Button
+					variant="outlined"
+					className="editor-cancel-btn"
+					onClick={cancelHandler}
+					disabled={isArticleLoading}
+				>
+					Cancel
+				</Button>
 				<Button
 					variant="contained"
 					className="editor-submit-btn"

@@ -728,6 +728,36 @@
 			border-top: 1px solid rgba(118, 135, 178, 0.12);
 		}
 
+		.comment-compose-actions {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.clear-comment {
+			padding: 0 18px;
+			min-height: 46px;
+			border-radius: 16px;
+			background: transparent;
+			border: 1px solid rgba(118, 135, 178, 0.24);
+			color: var(--detail-muted);
+			font-family: $font;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			transition: background 0.22s ease, border-color 0.22s ease;
+
+			&:hover {
+				background: rgba(118, 135, 178, 0.08);
+				border-color: rgba(55, 85, 195, 0.3);
+			}
+
+			&.Mui-disabled {
+				opacity: 0.5;
+			}
+		}
+
 		.submit-comment {
 			padding: 0 18px;
 			min-height: 46px;
