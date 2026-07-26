@@ -109,7 +109,7 @@ While investigating 6.6, a card in Recently Viewed turned out to be a **sold** v
 
 ### 6.8 — Environment Note: `.next` Corruption Between `yarn build` and `yarn dev`
 
-Running a production `yarn build` and then starting `yarn dev` **without** clearing `.next` in between reliably broke the dev server into a `"missing required error components, refreshing..."` loop (matches the already-documented iCloud-sync `.next` corruption pattern, but this specific trigger — production/dev mode mismatch in the same `.next` folder — is a new, reproducible variant of it). Hit this twice in this session; the fix both times was `rm -rf .next` before restarting `yarn dev`. **Rule of thumb: always `rm -rf .next` when switching between `yarn build` and `yarn dev`, not just when dev misbehaves on its own.**
+Running a production `yarn build` and then starting `yarn dev` **without** clearing `.next` in between reliably broke the dev server into a `"missing required error components, refreshing..."` loop (matches the already-documented `.next` cache corruption pattern, but this specific trigger — production/dev mode mismatch in the same `.next` folder — is a new, reproducible variant of it). Hit this twice in this session; the fix both times was `rm -rf .next` before restarting `yarn dev`. **Rule of thumb: always `rm -rf .next` when switching between `yarn build` and `yarn dev`, not just when dev misbehaves on its own.**
 
 ---
 
@@ -130,7 +130,7 @@ Running a production `yarn build` and then starting `yarn dev` **without** clear
 - **Fix:** moved the optimistic like/unlike bookkeeping up to the page components (`pages/vehicle/detail.tsx`, `pages/vehicle/index.tsx`) as a `likeOverrides` map keyed by vehicle `_id`, set synchronously the moment a like/unlike is clicked and merged into every vehicle object handed down to cards (`applyLikeOverride`). Because this state lives in the page, it survives child cards remounting when the underlying list reshuffles. `VehicleDetailRelatedCard` and `VehicleListCard` were simplified back to plain prop-driven rendering (no local like state) plus a small `pendingRef` guard against double-firing the same click.
 - Files: `pages/vehicle/detail.tsx`, `pages/vehicle/index.tsx`, `libs/components/vehicle-detail/VehicleDetailRelatedCard.tsx`, `libs/components/vehicle-list/VehicleListCard.tsx`.
 
-**Validation:** `yarn tsc --noEmit` passed with zero errors across all eight changed files. Verified live in-browser (after clearing a corrupted `.next` dev cache — see note in `PROJECT_OVERVIEW.md` about this being an iCloud-sync artifact, not a code issue): liked/unliked three different related-vehicle cards back and forth, cross-checked each result directly against `getVehicle`/`getVehicles` GraphQL responses, and confirmed the UI matched backend truth and stayed stable for 6+ seconds after each click (no reversion).
+**Validation:** `yarn tsc --noEmit` passed with zero errors across all eight changed files. Verified live in-browser (after clearing a corrupted `.next` dev cache — see note in `PROJECT_OVERVIEW.md`, not a code issue): liked/unliked three different related-vehicle cards back and forth, cross-checked each result directly against `getVehicle`/`getVehicles` GraphQL responses, and confirmed the UI matched backend truth and stayed stable for 6+ seconds after each click (no reversion).
 
 ---
 

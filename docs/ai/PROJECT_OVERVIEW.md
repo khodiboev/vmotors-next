@@ -197,7 +197,7 @@ yarn -s tsc --noEmit --incremental false   # TypeScript check (must be clean)
 yarn build                                  # Full Next.js build
 ```
 
-**Dev-server note:** this project lives under an iCloud-synced Desktop folder. iCloud's background file sync can corrupt `.next`'s webpack persistent cache mid-write (seen as `ENOENT`/rename failures in the dev server log, or a page suddenly 500ing with a `ReferenceError` for something that is clearly imported in the source). If `yarn dev` starts behaving strangely (stale code running, random 500s, HMR not applying, or a page failing to find data that clearly exists), stop the server, `rm -rf .next`, and restart — this is an environment artifact, not a code bug. Re-verify the fix immediately after restarting.
+**Dev-server note:** `.next`'s webpack persistent cache can occasionally get corrupted mid-write (seen as `ENOENT`/rename failures in the dev server log, or a page suddenly 500ing with a `ReferenceError` for something that is clearly imported in the source). If `yarn dev` starts behaving strangely (stale code running, random 500s, HMR not applying, or a page failing to find data that clearly exists), stop the server, `rm -rf .next`, and restart — this is a stale-cache artifact, not a code bug. Re-verify the fix immediately after restarting.
 
 ---
 
