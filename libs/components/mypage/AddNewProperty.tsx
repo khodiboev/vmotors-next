@@ -3,6 +3,9 @@ import { useRouter } from 'next/router';
 import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { getJwtToken } from '../../auth';
 import { REACT_APP_API_URL } from '../../config';
@@ -99,6 +102,19 @@ const AddProperty = ({ initialValues }: any) => {
 			await sweetMixinErrorAlert(err.message);
 		}
 	}
+
+	const removeImageHandler = (index: number) => {
+		const nextImages = insertVehicleData.vehicleImages.filter((_, i) => i !== index);
+		setInsertVehicleData({ ...insertVehicleData, vehicleImages: nextImages });
+	};
+
+	const moveImageHandler = (index: number, direction: -1 | 1) => {
+		const targetIndex = index + direction;
+		if (targetIndex < 0 || targetIndex >= insertVehicleData.vehicleImages.length) return;
+		const nextImages = [...insertVehicleData.vehicleImages];
+		[nextImages[index], nextImages[targetIndex]] = [nextImages[targetIndex], nextImages[index]];
+		setInsertVehicleData({ ...insertVehicleData, vehicleImages: nextImages });
+	};
 
 	const doDisabledCheck = () => {
 		return (
@@ -322,14 +338,42 @@ const AddProperty = ({ initialValues }: any) => {
 							</Button>
 						</Stack>
 						<Stack className="gallery-box">
-							{insertVehicleData.vehicleImages.map((image) => (
+							{insertVehicleData.vehicleImages.map((image, index) => (
 								<Stack key={image} className="image-box">
 									<img src={`${REACT_APP_API_URL}/${image}`} alt="" />
+									<button type="button" className={'remove-image-btn'} onClick={() => removeImageHandler(index)} aria-label={'Remove image'}>
+										<CloseIcon />
+									</button>
+									<div className={'reorder-controls'}>
+										<button
+											type="button"
+											disabled={index === 0}
+											onClick={() => moveImageHandler(index, -1)}
+											aria-label={'Move image earlier'}
+										>
+											<ArrowBackIosNewIcon />
+										</button>
+										<button
+											type="button"
+											disabled={index === insertVehicleData.vehicleImages.length - 1}
+											onClick={() => moveImageHandler(index, 1)}
+											aria-label={'Move image later'}
+										>
+											<ArrowForwardIosIcon />
+										</button>
+									</div>
+									{index === 0 && <span className={'cover-badge'}>Cover</span>}
 								</Stack>
 							))}
 						</Stack>
 					</Stack>
 					<Stack className="buttons-row">
+						<Button
+							className="cancel-button"
+							onClick={() => router.push({ pathname: '/mypage', query: { category: 'myVehicles' } })}
+						>
+							<Typography className="cancel-button-text">Cancel</Typography>
+						</Button>
 						<Button className="next-button" disabled={doDisabledCheck()} onClick={vehicleId ? updateVehicleHandler : insertVehicleHandler}>
 							<Typography className="next-button-text">Save</Typography>
 						</Button>

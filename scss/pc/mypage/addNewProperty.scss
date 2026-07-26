@@ -297,18 +297,78 @@
 							img {
 								width: 100%;
 								height: 100%;
+								object-fit: cover;
 							}
-							.absolute-box {
+							.remove-image-btn {
 								position: absolute;
-								width: 31px;
-								height: 30px;
+								width: 28px;
+								height: 28px;
+								top: 8px;
+								right: 8px;
 								display: flex;
 								align-items: center;
 								justify-content: center;
-								top: 7px;
-								left: 7px;
-								border-radius: 12px;
-								background: #fff;
+								border-radius: 50%;
+								border: none;
+								background: rgba(15, 23, 42, 0.62);
+								color: #fff;
+								cursor: pointer;
+								transition: background 0.2s ease, transform 0.2s ease;
+								svg {
+									font-size: 16px;
+								}
+								&:hover {
+									background: #e92c28;
+									transform: scale(1.06);
+								}
+							}
+							.reorder-controls {
+								position: absolute;
+								left: 0;
+								right: 0;
+								bottom: 0;
+								display: flex;
+								justify-content: space-between;
+								padding: 6px;
+								background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.55) 100%);
+								button {
+									width: 26px;
+									height: 26px;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									border-radius: 8px;
+									border: none;
+									background: rgba(255, 255, 255, 0.9);
+									color: #181a20;
+									cursor: pointer;
+									transition: background 0.2s ease, opacity 0.2s ease;
+									svg {
+										font-size: 12px;
+									}
+									&:disabled {
+										opacity: 0.35;
+										cursor: not-allowed;
+									}
+									&:not(:disabled):hover {
+										background: var(--dashboard-secondary);
+										color: #fff;
+									}
+								}
+							}
+							.cover-badge {
+								position: absolute;
+								top: 8px;
+								left: 8px;
+								padding: 4px 9px;
+								border-radius: 999px;
+								background: rgba(10, 31, 68, 0.82);
+								color: #fff;
+								font-family: $font;
+								font-size: 10px;
+								font-weight: 700;
+								letter-spacing: 0.06em;
+								text-transform: uppercase;
 							}
 						}
 					}
@@ -318,10 +378,12 @@
 					height: auto;
 					flex-direction: row;
 					justify-content: flex-end;
+					gap: 16px;
 					button:disabled {
 						background: #181a2045;
 					}
-					.prev-button {
+					.prev-button,
+					.cancel-button {
 						width: 190px;
 						height: 44px;
 						padding: 16px 30px;
@@ -330,7 +392,13 @@
 						gap: 10px;
 						border-radius: 12px;
 						border: 1px solid #181a20;
-						.prev-button-text {
+						background: transparent;
+						transition: background 0.2s ease;
+						&:hover {
+							background: rgba(24, 26, 32, 0.05);
+						}
+						.prev-button-text,
+						.cancel-button-text {
 							color: #181a20;
 							font-family: $font;
 							font-size: 15px;

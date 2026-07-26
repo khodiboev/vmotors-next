@@ -126,26 +126,6 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 					</Stack>
 
 					<Stack className="list-box">
-						<Stack className="listing-title-box">
-							<Typography className="title-text">Vehicle</Typography>
-							<Typography className="title-text">Published</Typography>
-							<Typography className="title-text">Status</Typography>
-							<Typography className="title-text">Views</Typography>
-							<Typography className="title-text">Actions</Typography>
-						</Stack>
-
-						{loading && !dealerVehicles.length
-							? Array.from({ length: 4 }).map((_, index) => (
-									<div className={'inventory-row-skeleton'} key={`inventory-skeleton-${index}`}>
-										<div className={'vehicle-block'} />
-										<div className={'date-block'} />
-										<div className={'status-block'} />
-										<div className={'views-block'} />
-										<div className={'actions-block'} />
-									</div>
-							  ))
-							: null}
-
 						{!loading && dealerVehicles.length === 0 ? (
 							<div className={'dashboard-empty-state'}>
 								<div className={'empty-icon'}>
@@ -156,11 +136,24 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 							</div>
 						) : null}
 
-						{dealerVehicles.length !== 0
-							? dealerVehicles.map((vehicle) => (
-									<PropertyCard key={vehicle._id} property={vehicle} updatePropertyHandler={updatePropertyHandler} />
-							  ))
-							: null}
+						<div className={'cards-grid'}>
+							{loading && !dealerVehicles.length
+								? Array.from({ length: 4 }).map((_, index) => (
+										<div className={'inventory-card-skeleton'} key={`inventory-skeleton-${index}`}>
+											<div className={'media-block'} />
+											<div className={'line-block wide'} />
+											<div className={'line-block'} />
+											<div className={'line-block narrow'} />
+										</div>
+								  ))
+								: null}
+
+							{dealerVehicles.length !== 0
+								? dealerVehicles.map((vehicle) => (
+										<PropertyCard key={vehicle._id} property={vehicle} updatePropertyHandler={updatePropertyHandler} />
+								  ))
+								: null}
+						</div>
 
 						{dealerVehicles.length !== 0 && (
 							<Stack className="pagination-config">
@@ -188,7 +181,7 @@ const MyProperties: NextPage = ({ initialInput }: any) => {
 MyProperties.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 5,
+		limit: 6,
 		sort: 'createdAt',
 		search: {
 			vehicleStatus: VehicleStatus.AVAILABLE,
