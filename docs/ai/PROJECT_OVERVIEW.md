@@ -9,7 +9,7 @@
 
 **Santa** is the Next.js frontend for a Hyundai and Kia vehicle marketplace targeting South Korea. It allows users to browse vehicles, discover dealers, read and post community articles, and manage their profiles.
 
-The project was originally a real-estate marketplace called **Nestar** (built on a starter called `nestar-next`), then forked and converted into an automotive marketplace called **VMotors**, and subsequently rebranded to **Santa**. The rebranding and frontend redesign is an ongoing effort. The backend API was not forked — the existing backend (running at `localhost:3007`) continues to serve data and its schema was intentionally preserved.
+The project was originally a real-estate marketplace called **Nestar** (built on a starter called `nestar-next`), then forked and converted into an automotive marketplace, and subsequently rebranded to **Santa**. The rebranding and frontend redesign is an ongoing effort. The backend API was not forked — the existing backend (running at `localhost:3007`) continues to serve data and its schema was intentionally preserved.
 
 ---
 
@@ -204,7 +204,7 @@ yarn build                                  # Full Next.js build
 ## Related Documentation
 
 - [COMPLETED_TASKS.md](./COMPLETED_TASKS.md) — Chronological history of all completed work
-- [FRONTEND_MIGRATION.md](./FRONTEND_MIGRATION.md) — Nestar → VMotors → Santa migration guide
+- [FRONTEND_MIGRATION.md](./FRONTEND_MIGRATION.md) — Nestar → Santa migration guide
 - [DECISIONS.md](./DECISIONS.md) — Key architectural and naming decisions with rationale
 
 ---

@@ -1,4 +1,4 @@
-# Frontend Migration Guide: Nestar → VMotors → Santa
+# Frontend Migration Guide: Nestar → Santa
 
 This document explains the full lineage of the codebase, what was migrated, what was preserved, and what legacy code still exists and why. Any AI working on this project should read this file to avoid accidentally removing intentionally-kept code or misinterpreting Nestar-era names.
 
@@ -21,9 +21,9 @@ The `CHANGELOG.md` at the project root contains the full Nestar git history. All
 
 ---
 
-## Stage 1: Initial VMotors Fork
+## Stage 1: Initial Automotive Fork
 
-At some point before June 2026, the Nestar frontend was forked into a new automotive marketplace called VMotors. The backend was also rewritten to add vehicle-specific models. The key changes during this stage:
+At some point before June 2026, the Nestar frontend was forked into a new automotive marketplace (later rebranded to Santa). The backend was also rewritten to add vehicle-specific models. The key changes during this stage:
 
 ### Backend Changes (Done Before This Frontend Work)
 - `Property` domain was extended with a parallel `Vehicle` domain
@@ -50,16 +50,16 @@ This is the main active phase of work. The goal is to modernize the entire front
 
 | Item | Before | After |
 |---|---|---|
-| Product name | VMotors / Nestar | **Santa** |
-| Logo SVGs | VMotors wordmark | `SANTA` text-only wordmark |
-| Favicon | Car icon (VMotors) | Santa-branded SVG |
-| README | VMotors description | Santa description |
-| Page titles | VMotors | Santa |
-| Footer | VMotors branding | Santa branding |
+| Product name | Nestar (and its earlier automotive fork) | **Santa** |
+| Logo SVGs | Previous automotive wordmark | `SANTA` text-only wordmark |
+| Favicon | Car icon (previous brand) | Santa-branded SVG |
+| README | Previous brand description | Santa description |
+| Page titles | Previous brand | Santa |
+| Footer | Previous branding | Santa branding |
 
 ### What Was Changed: UI/Design
 
-All redesigned pages moved from the Nestar/VMotors UI (MUI Box/Stack/Typography, mobile placeholder pattern, Nestar-era color palette) to the Santa premium design system:
+All redesigned pages moved from the Nestar-era UI (MUI Box/Stack/Typography, mobile placeholder pattern, Nestar-era color palette) to the Santa premium design system:
 
 - **Removed:** `useDeviceDetect` from redesigned components (CSS handles responsive now)
 - **Removed:** Mobile placeholder pattern (`device === 'mobile' ? <MobilePlaceholder /> : <Content />`)
@@ -103,7 +103,7 @@ Contains `PropertyType`, `PropertyStatus`, `PropertyRent`, `PropertyBarter` and 
 
 ### `propertyYears` and `propertySquare` in `config.ts`
 
-These constants predate the VMotors migration and are still used by vehicle filter inputs. The names have not been changed because doing so would require finding and updating every reference and verifying no schema field expects these names.
+These constants predate the automotive migration and are still used by vehicle filter inputs. The names have not been changed because doing so would require finding and updating every reference and verifying no schema field expects these names.
 
 ### `topPropertyRank` in `config.ts`
 
@@ -181,7 +181,7 @@ Pages partially polished but not yet fully redesigned (structure still Nestar-er
 Additional housekeeping pending:
 - Confirm responsive/mobile behavior after orbital carousel additions
 - Run a production build (`yarn build`) after final UI polish
-- Review remaining "SANTA" branding text vs any lingering "VMotors" copy
+- Review remaining "SANTA" branding text for consistency across pages
 - Consider whether to clean up `pages/property/` (old real-estate routes, still harmless but unused)
 
 When redesigning any of these, follow the established Santa pattern:

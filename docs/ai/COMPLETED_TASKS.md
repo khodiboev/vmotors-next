@@ -97,13 +97,13 @@ Both `#recently-visited-page` and `#my-favorites-page` reuse `DashboardVehicleCa
 
 While investigating 6.6, a card in Recently Viewed turned out to be a **sold** vehicle with a broken image, and clicking it landed on "We couldn't find that vehicle." — `pages/vehicle/detail.tsx` calls `getVehicle`, which (correctly) only returns `vehicleStatus: AVAILABLE` vehicles. The list endpoints behind Recently Viewed and Saved Vehicles did not apply the same rule.
 
-**Root cause (backend, `vmotors` repo):** `ViewService.getVisitedVehicles` and `LikeService.getFavoriteVehicles` both filtered their vehicle lookup only by `deletedAt: { $exists: false }`, with no `vehicleStatus` filter — so a vehicle that later became `SOLD` (or `RESERVED`) stayed visible in a user's history/favorites indefinitely, as a dead link. This directly contradicts the migration's own documented intent ("Public listings show available non-deleted vehicles" — `vmotors/docs/ai/COMPLETED_TASKS.md`).
+**Root cause (backend, `Santa` repo):** `ViewService.getVisitedVehicles` and `LikeService.getFavoriteVehicles` both filtered their vehicle lookup only by `deletedAt: { $exists: false }`, with no `vehicleStatus` filter — so a vehicle that later became `SOLD` (or `RESERVED`) stayed visible in a user's history/favorites indefinitely, as a dead link. This directly contradicts the migration's own documented intent ("Public listings show available non-deleted vehicles" — `Santa/docs/ai/COMPLETED_TASKS.md`).
 
 **Fix:** added `vehicleStatus: VehicleStatus.AVAILABLE` to both aggregation `$match` stages, identical to the rule already enforced by `getVehicle`/`getVehicles`. The vehicle document itself is untouched — this only changes which vehicles are eligible to appear in these two list queries. The main public `/vehicle` listing (`getVehicles`) already had this filter and needed no change.
 
 **Verification:** looked up the exact vehicle from the report directly in MongoDB (`db.views.findOne({ viewRefId: ... })`) to find the real affected member (`David`, an `AGENT`), then called `getVisited` with his credentials before/after: his list dropped from 16 to 15 entries and the sold `Sonata` is gone; all 15 remaining entries are `AVAILABLE`. `npx tsc -p apps/vmotors-api/tsconfig.app.json --noEmit` passed; the `nest start --watch` dev process picked up the change without a crash.
 
-**Files:** `vmotors/apps/vmotors-api/src/components/view/view.service.ts`, `vmotors/apps/vmotors-api/src/components/like/like.service.ts`.
+**Files:** `Santa/apps/vmotors-api/src/components/view/view.service.ts`, `Santa/apps/vmotors-api/src/components/like/like.service.ts`.
 
 ---
 
@@ -162,7 +162,7 @@ Running a production `yarn build` and then starting `yarn dev` **without** clear
 
 **What happened:** A series of Vehicle Detail (`/vehicle/detail`) redesign experiments were attempted and rejected: desktop scale reduction, gallery/sidebar height alignment, a 3-column related-inventory grid, merging the two specification cards, repositioning the Trusted Dealer card, a bookmark save icon, and a new backend-supported "Vehicle Highlights" feature (schema field + create/edit form UI + detail-page card).
 
-**Outcome:** Everything was reverted via `git checkout` to the last committed state. `pages/vehicle/detail.tsx`, `scss/pc/property/detail.scss`, `apollo/user/query.ts`, all three `libs/types/vehicle/` files, `libs/components/mypage/AddNewProperty.tsx`, and `scss/pc/mypage/addNewProperty.scss` are byte-identical to the pre-experiment state. The backend repo (`vmotors`) had the `vehicleHighlights` field added to its Mongoose schema and GraphQL DTOs during the experiment and was also fully reverted — **the backend ends the day unchanged**. No vehicle data was ever written with highlights, so no data cleanup was needed.
+**Outcome:** Everything was reverted via `git checkout` to the last committed state. `pages/vehicle/detail.tsx`, `scss/pc/property/detail.scss`, `apollo/user/query.ts`, all three `libs/types/vehicle/` files, `libs/components/mypage/AddNewProperty.tsx`, and `scss/pc/mypage/addNewProperty.scss` are byte-identical to the pre-experiment state. The backend repo (`Santa`) had the `vehicleHighlights` field added to its Mongoose schema and GraphQL DTOs during the experiment and was also fully reverted — **the backend ends the day unchanged**. No vehicle data was ever written with highlights, so no data cleanup was needed.
 
 **Why documented:** So future work knows the Vehicle Detail page is still the original Nestar-era-derived design and remains the top redesign priority — and that a highlights-style feature was prototyped end-to-end and works, if it's ever wanted again.
 
@@ -277,7 +277,7 @@ This was a CSS-only polish pass; no component logic, routing, or data was change
 
 ### 4.1 — MyPage Section Improvements
 
-**What changed:** Several MyPage sub-sections were audited and polished for VMotors/Santa consistency:
+**What changed:** Several MyPage sub-sections were audited and polished for Santa brand consistency:
 - **Write Article editor:** Investigated and fixed a default text bug in `Teditor.tsx`. Editor default content and styling corrected.
 - **Followers empty state:** Redesigned the empty state in `MemberFollowers.tsx` to match Santa premium style.
 - **Following section:** UI improved in `MemberFollowings.tsx`.
@@ -368,7 +368,7 @@ GraphQL queries, mutations, pagination logic, and authentication checks were not
 
 ### 3.1 — Dealer Detail Page Redesign
 
-**What changed:** The Dealer Detail page (`/agent/detail`) was fully redesigned from the old Nestar/VMotors layout to the Santa premium UI.
+**What changed:** The Dealer Detail page (`/agent/detail`) was fully redesigned from the old Nestar-era layout to the Santa premium UI.
 
 **New three-section layout:**
 
@@ -442,14 +442,14 @@ Auth controls (avatar, notifications, language selector, login button) were pres
 
 ---
 
-### 1.0 — Branding: Nestar/VMotors → Santa
+### 1.0 — Branding: Nestar → Santa
 
 **What changed (user-visible):**
 - Project name in README, titles, and meta tags updated to "Santa"
 - Logo SVGs in `public/img/logo/` (favicon.svg, logoText.svg, logoWhite.svg) replaced with Santa wordmark
 - Footer and header references updated to Santa
 - Color palette shifted to navy/blue/coral Santa tokens
-- Old VMotors and Nestar visible UI copy removed
+- Old Nestar-era and interim automotive-brand visible UI copy removed
 
 **What was NOT changed (intentionally):**
 - Internal TypeScript type names (`Property`, `PropertyBigCard`, `propertyRank`, etc.) — these are schema-coupled
@@ -463,9 +463,9 @@ See `DECISIONS.md` for the full rationale on what was and was not renamed.
 
 ---
 
-## Pre-Santa: Nestar → VMotors Migration (Pre-June 2026)
+## Pre-Santa: Initial Automotive Migration (Pre-June 2026)
 
-The original codebase was `nestar-next` — a real-estate marketplace. Before the Santa work began, the initial VMotors migration:
+The original codebase was `nestar-next` — a real-estate marketplace. Before the Santa work began, the initial automotive migration:
 
 - Renamed `Property` GraphQL type to `Vehicle` in the backend
 - Added `Vehicle` TypeScript types in `libs/types/vehicle/`
@@ -474,4 +474,4 @@ The original codebase was `nestar-next` — a real-estate marketplace. Before th
 - Converted the property listing/detail pages to vehicle listing/detail pages
 - Kept many Nestar-era component names internally (`PropertyBigCard`, `property.enum.ts`, `propertyYears`, etc.) because renaming was deferred
 
-The `CHANGELOG.md` at the root records the full Nestar-era git history (up to v2.2.0 in May 2024). All entries in that changelog predate the Santa/VMotors work.
+The `CHANGELOG.md` at the root records the full Nestar-era git history (up to v2.2.0 in May 2024). All entries in that changelog predate the Santa work.

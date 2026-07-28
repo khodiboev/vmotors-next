@@ -48,5 +48,5 @@ Project history, migration guide, and architectural decisions live in [`docs/ai/
 
 - [`PROJECT_OVERVIEW.md`](./docs/ai/PROJECT_OVERVIEW.md) — Full project context, tech stack, page status
 - [`COMPLETED_TASKS.md`](./docs/ai/COMPLETED_TASKS.md) — Chronological record of all completed work
-- [`FRONTEND_MIGRATION.md`](./docs/ai/FRONTEND_MIGRATION.md) — Nestar → VMotors → Santa migration history and legacy code guide
+- [`FRONTEND_MIGRATION.md`](./docs/ai/FRONTEND_MIGRATION.md) — Nestar → Santa migration history and legacy code guide
 - [`DECISIONS.md`](./docs/ai/DECISIONS.md) — Key architectural and naming decisions with rationale
