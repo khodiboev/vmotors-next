@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Stack, Typography, Box, List, ListItem } from '@mui/material';
 import Link from 'next/link';
-import { useLazyQuery, useReactiveVar } from '@apollo/client';
+import { useLazyQuery, useQuery, useReactiveVar } from '@apollo/client';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -13,6 +13,7 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
@@ -21,7 +22,8 @@ import { userVar } from '../../../apollo/store';
 import { REACT_APP_API_URL } from '../../config';
 import { logOut } from '../../auth';
 import { sweetConfirmAlert, sweetMixinErrorAlert } from '../../sweetAlert';
-import { GET_SUPPORT_CONTACT } from '../../../apollo/user/query';
+import { GET_MY_CONVERSATIONS, GET_SUPPORT_CONTACT } from '../../../apollo/user/query';
+import { ConversationSummary } from '../../types/notification/notification';
 import { Member } from '../../types/member/member';
 import ChatModal from '../common/ChatModal';
 
@@ -35,6 +37,15 @@ const MyMenu = () => {
 	const [fetchSupportContact, { loading: supportContactLoading }] = useLazyQuery(GET_SUPPORT_CONTACT, {
 		fetchPolicy: 'network-only',
 	});
+
+	const { data: conversationsData } = useQuery(GET_MY_CONVERSATIONS, {
+		fetchPolicy: 'cache-and-network',
+		skip: !user?._id,
+	});
+	const unreadMessages = useMemo(() => {
+		const list: ConversationSummary[] = conversationsData?.getMyConversations?.list ?? [];
+		return list.reduce((acc, ele) => acc + (ele.unreadCount ?? 0), 0);
+	}, [conversationsData]);
 
 	const listingItems = [
 		...(user?.memberType === 'AGENT'
@@ -164,6 +175,27 @@ const MyMenu = () => {
 						Dashboard
 					</Typography>
 					{renderNavItems(listingItems)}
+				</Stack>
+
+				<Stack className={'section'}>
+					<Typography className="title" variant={'h5'}>
+						Messages
+					</Typography>
+					<List className={'sub-section'}>
+						<ListItem className={pathname === 'messages' ? 'focus' : ''}>
+							<Link href={'/mypage?category=messages'} scroll={false}>
+								<div className={'flex-box'}>
+									<span className={'com-icon'}>
+										<MailOutlineRoundedIcon />
+									</span>
+									<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+										Messages
+									</Typography>
+									{unreadMessages > 0 && <em className={'nav-unread-badge'}>{unreadMessages}</em>}
+								</div>
+							</Link>
+						</ListItem>
+					</List>
 				</Stack>
 
 				<Stack className={'section'}>

@@ -9,6 +9,7 @@ import RecentlyVisited from '../../libs/components/mypage/RecentlyVisited';
 import AddProperty from '../../libs/components/mypage/AddNewProperty';
 import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
+import MyMessages from '../../libs/components/mypage/MyMessages';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { getJwtToken } from '../../libs/auth';
@@ -82,6 +83,11 @@ const MyPage: NextPage = () => {
 				eyebrow: 'Dealer network',
 				title: 'Accounts you follow',
 				description: 'Keep up with the dealers, members, and marketplace voices you want to watch closely.',
+			},
+			messages: {
+				eyebrow: 'Direct messages',
+				title: 'Your conversations',
+				description: 'Browse every conversation with dealers, buyers, and admins in one place, Telegram-style.',
 			},
 		}),
 		[],
@@ -257,6 +263,7 @@ const MyPage: NextPage = () => {
 								{category === 'myFavorites' && <MyFavorites />}
 								{category === 'recentlyVisited' && <RecentlyVisited />}
 								{category === 'myArticles' && <MyArticles />}
+								{category === 'messages' && <MyMessages />}
 								{category === 'writeArticle' && <WriteArticle />}
 								{category === 'myProfile' && <MyProfile />}
 								{category === 'followers' && (

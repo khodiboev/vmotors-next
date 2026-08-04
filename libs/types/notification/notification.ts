@@ -13,6 +13,9 @@ export interface Notification {
 	receiverId: string;
 	vehicleId?: string;
 	articleId?: string;
+	attachmentUrl?: string;
+	attachmentName?: string;
+	attachmentSize?: number;
 	createdAt: Date;
 	updatedAt: Date;
 	authorData?: Member;
@@ -25,8 +28,11 @@ export interface Notifications {
 
 export interface MessageInput {
 	receiverId: string;
-	notificationDesc: string;
+	notificationDesc?: string;
 	vehicleId?: string;
+	attachmentUrl?: string;
+	attachmentName?: string;
+	attachmentSize?: number;
 }
 
 export interface NotificationsInquiry {

@@ -693,6 +693,9 @@ export const GET_MY_CONVERSATIONS = gql`
 					authorId
 					receiverId
 					notificationStatus
+					attachmentUrl
+					attachmentName
+					attachmentSize
 					createdAt
 				}
 			}
@@ -710,6 +713,9 @@ export const GET_CONVERSATION = gql`
 				receiverId
 				notificationStatus
 				vehicleId
+				attachmentUrl
+				attachmentName
+				attachmentSize
 				createdAt
 			}
 			metaCounter {

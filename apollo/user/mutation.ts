@@ -352,6 +352,9 @@ export const SEND_MESSAGE = gql`
 			authorId
 			receiverId
 			vehicleId
+			attachmentUrl
+			attachmentName
+			attachmentSize
 			createdAt
 		}
 	}
