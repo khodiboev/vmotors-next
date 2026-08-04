@@ -1,14 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
 import { Stack, Box } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import { alpha, styled } from '@mui/material/styles';
-import Menu, { MenuProps } from '@mui/material/Menu';
+import Menu from '@mui/material/Menu';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { CaretDown } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
 import NotificationsMenu from './common/NotificationsMenu';
@@ -82,11 +79,8 @@ const Top = () => {
 	const { t } = useTranslation('common');
 	const router = useRouter();
 	const shouldReduceMotion = useReducedMotion();
-	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
-	const [lang, setLang] = useState<string | null>('en');
 	const [colorChange, setColorChange] = useState(false);
 	const [logoutAnchor, setLogoutAnchor] = useState<null | HTMLElement>(null);
-	const drop = Boolean(anchorEl2);
 	const logoutOpen = Boolean(logoutAnchor);
 	const pathname = router.pathname;
 	const isHome = pathname === '/';
@@ -95,15 +89,6 @@ const Top = () => {
 	const detachedJourney = useMemo(() => isDetachedRoute(pathname, journeyIndex), [pathname, journeyIndex]);
 
 	/** LIFECYCLES **/
-	useEffect(() => {
-		if (localStorage.getItem('locale') === null) {
-			localStorage.setItem('locale', 'en');
-			setLang('en');
-		} else {
-			setLang(localStorage.getItem('locale'));
-		}
-	}, [router]);
-
 	useEffect(() => {
 		const jwt = getJwtToken();
 		if (jwt) updateUserInfo(jwt);
@@ -123,67 +108,16 @@ const Top = () => {
 	}, []);
 
 	/** HANDLERS **/
-	const langClick = (e: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl2(e.currentTarget);
-	};
-
-	const langClose = () => {
-		setAnchorEl2(null);
-	};
-
-	const langChoice = useCallback(
-		async (e: React.MouseEvent<HTMLElement>) => {
-			const nextLocale = e.currentTarget.id;
-			setLang(nextLocale);
-			localStorage.setItem('locale', nextLocale);
-			setAnchorEl2(null);
-			await router.push(router.asPath, router.asPath, { locale: nextLocale });
-		},
-		[router],
+	const renderLangToggle = (mobile = false) => (
+		<div className={`lang-toggle ${mobile ? 'is-mobile' : ''}`} role="group" aria-label="Language">
+			<button type="button" className="lang-option is-active" aria-pressed="true">
+				ENG
+			</button>
+			<button type="button" className="lang-option is-disabled" aria-pressed="false" disabled title="Korean — coming soon">
+				KOR
+			</button>
+		</div>
 	);
-
-	const StyledMenu = styled((props: MenuProps) => (
-		<Menu
-			elevation={0}
-			anchorOrigin={{
-				vertical: 'bottom',
-				horizontal: 'right',
-			}}
-			transformOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
-			{...props}
-		/>
-	))(({ theme }) => ({
-		'& .MuiPaper-root': {
-			borderRadius: 18,
-			marginTop: theme.spacing(1),
-			minWidth: 174,
-			padding: '6px',
-			color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-			background: 'rgba(255, 255, 255, 0.96)',
-			backdropFilter: 'blur(18px)',
-			boxShadow:
-				'0 18px 40px rgba(6, 19, 46, 0.16), rgba(15, 23, 42, 0.08) 0px 0px 0px 1px',
-			'& .MuiMenu-list': {
-				padding: 0,
-			},
-			'& .MuiMenuItem-root': {
-				borderRadius: 12,
-				fontSize: 14,
-				fontWeight: 600,
-				'& .MuiSvgIcon-root': {
-					fontSize: 18,
-					color: theme.palette.text.secondary,
-					marginRight: theme.spacing(1.5),
-				},
-				'&:active': {
-					backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
-				},
-			},
-		},
-	}));
 
 	const renderMilestone = (item: JourneyItem, itemIndex: number, mobile = false) => {
 		const state = getJourneyState(itemIndex, journeyIndex, detachedJourney);
@@ -301,15 +235,7 @@ const Top = () => {
 							</Link>
 						)}
 
-						<Button disableRipple className="btn-lang mobile-btn-lang" onClick={langClick} endIcon={<CaretDown size={14} weight="fill" />}>
-							<Box component={'div'} className={'flag'}>
-								{lang !== null ? (
-									<img src={`/img/flag/lang${lang}.png`} alt={'selected language'} />
-								) : (
-									<img src={`/img/flag/langen.png`} alt={'English'} />
-									)}
-								</Box>
-							</Button>
+						{renderLangToggle(true)}
 					</div>
 				</div>
 
@@ -338,21 +264,6 @@ const Top = () => {
 						Logout
 					</MenuItem>
 				</Menu>
-
-				<StyledMenu anchorEl={anchorEl2} open={drop} onClose={langClose}>
-					<MenuItem disableRipple onClick={langChoice} id="en">
-						<img className="img-flag" src={'/img/flag/langen.png'} alt={'usaFlag'} />
-						{t('English')}
-					</MenuItem>
-					<MenuItem disableRipple onClick={langChoice} id="kr">
-						<img className="img-flag" src={'/img/flag/langkr.png'} alt={'koreanFlag'} />
-						{t('Korean')}
-					</MenuItem>
-					<MenuItem disableRipple onClick={langChoice} id="ru">
-						<img className="img-flag" src={'/img/flag/langru.png'} alt={'russiaFlag'} />
-						{t('Russian')}
-					</MenuItem>
-				</StyledMenu>
 			</Stack>
 		);
 	}
@@ -424,32 +335,7 @@ const Top = () => {
 							</Link>
 						)}
 
-						<div className={'lan-box'}>
-							<Button disableRipple className="btn-lang" onClick={langClick} endIcon={<CaretDown size={14} weight="fill" />}>
-								<Box component={'div'} className={'flag'}>
-									{lang !== null ? (
-										<img src={`/img/flag/lang${lang}.png`} alt={'selected language'} />
-									) : (
-										<img src={`/img/flag/langen.png`} alt={'English'} />
-									)}
-								</Box>
-							</Button>
-
-							<StyledMenu anchorEl={anchorEl2} open={drop} onClose={langClose}>
-								<MenuItem disableRipple onClick={langChoice} id="en">
-									<img className="img-flag" src={'/img/flag/langen.png'} alt={'usaFlag'} />
-									{t('English')}
-								</MenuItem>
-								<MenuItem disableRipple onClick={langChoice} id="kr">
-									<img className="img-flag" src={'/img/flag/langkr.png'} alt={'koreanFlag'} />
-									{t('Korean')}
-								</MenuItem>
-								<MenuItem disableRipple onClick={langChoice} id="ru">
-									<img className="img-flag" src={'/img/flag/langru.png'} alt={'russiaFlag'} />
-									{t('Russian')}
-								</MenuItem>
-							</StyledMenu>
-						</div>
+						{renderLangToggle()}
 					</Box>
 				</Stack>
 			</Stack>

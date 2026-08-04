@@ -18,6 +18,7 @@
 @import '/scss/pc/mypage/myProfile.scss';
 @import '/scss/pc/mypage/myArticles.scss';
 @import '/scss/pc/mypage/writeArticle.scss';
+@import '/scss/pc/mypage/myMessages.scss';
 
 @import '/scss/pc/community/community.scss';
 @import '/scss/pc/community/detail.scss';
@@ -446,53 +447,43 @@ body::-webkit-scrollbar {
 							font-size: 21px;
 						}
 
-						.lan-box {
+						.lang-toggle {
 							display: flex;
 							align-items: center;
-						}
-
-						.btn-lang {
 							height: 40px;
-							min-width: 56px;
-							padding: 0 10px;
+							padding: 3px;
 							border-radius: 999px;
 							border: 1px solid rgba(255, 255, 255, 0.14);
 							background: rgba(255, 255, 255, 0.05);
-							color: rgba(255, 255, 255, 0.92);
 							box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-							transition:
-								background 220ms ease,
-								border-color 220ms ease,
-								transform 220ms ease;
-
-							&:hover {
-								transform: translateY(-1px);
-								border-color: rgba(255, 255, 255, 0.22);
-								background: rgba(255, 255, 255, 0.08);
-							}
-
-							.flag {
-								display: inline-flex;
-								align-items: center;
-							}
-
-							img {
-								width: 22px;
-								height: 15px;
-								border-radius: 4px;
-							}
-
-							.MuiButton-endIcon {
-								margin-left: 4px;
-								color: currentColor;
-							}
 						}
 
-						.img-flag {
-							width: 22px;
-							height: 15px;
-							border-radius: 4px;
-							margin-right: 8px;
+						.lang-option {
+							height: 100%;
+							padding: 0 14px;
+							border: none;
+							border-radius: 999px;
+							background: transparent;
+							font-family: $font;
+							font-size: 11.5px;
+							font-weight: 700;
+							letter-spacing: 0.04em;
+							color: rgba(255, 255, 255, 0.55);
+							cursor: default;
+							transition:
+								background 220ms ease,
+								color 220ms ease;
+
+							&.is-active {
+								background: #ffffff;
+								color: #0a1f44;
+								box-shadow: 0 4px 12px rgba(6, 19, 46, 0.24);
+							}
+
+							&.is-disabled {
+								color: rgba(255, 255, 255, 0.32);
+								cursor: not-allowed;
+							}
 						}
 					}
 				}
@@ -1596,7 +1587,7 @@ body::-webkit-scrollbar {
 
 					.join-box,
 					.utility-link,
-					.btn-lang {
+					.lang-toggle {
 						border-color: rgba(255, 255, 255, 0.18);
 						background: rgba(255, 255, 255, 0.06);
 						backdrop-filter: blur(12px);
@@ -2204,12 +2195,6 @@ body::-webkit-scrollbar {
 	}
 }
 
-.img-flag {
-	width: 24px;
-	height: 17px;
-	border-radius: 2px;
-	margin-right: 8px;
-}
 
 /* ── Notifications bell + panel (Popover portals to body) ─────────── */
 .notifications-bell {
