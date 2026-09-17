@@ -20,7 +20,7 @@ import { T } from '../../libs/types/common';
 import EditIcon from '@mui/icons-material/Edit';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { BoardArticle } from '../../libs/types/board-article/board-article';
-import { Messages } from '../../libs/config';
+import { Messages, REACT_APP_API_URL } from '../../libs/config';
 import { sweetConfirmAlert, sweetLoginConfirmAlert, sweetMixinErrorAlert, sweetMixinSuccessAlert } from '../../libs/sweetAlert';
 import { CREATE_COMMENT, LIKE_TARGET_BOARD_ARTICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
 import { GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
@@ -79,7 +79,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		if (!boardArticleData?.getBoardArticle) return;
 		setBoardArticle(boardArticleData.getBoardArticle);
 		if (boardArticleData.getBoardArticle?.memberData?.memberImage) {
-			setMemberImage(`${process.env.REACT_APP_API_URL}/${boardArticleData.getBoardArticle.memberData.memberImage}`);
+			setMemberImage(`${REACT_APP_API_URL}/${boardArticleData.getBoardArticle.memberData.memberImage}`);
 		}
 	}, [boardArticleData]);
 
@@ -225,7 +225,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	};
 
 	const getCommentMemberImage = (imageUrl: string | undefined) => {
-		if (imageUrl) return `${process.env.REACT_APP_API_URL}/${imageUrl}`;
+		if (imageUrl) return `${REACT_APP_API_URL}/${imageUrl}`;
 		else return '/img/community/articleImg.png';
 	};
 
